@@ -1,0 +1,882 @@
+/* ==========================================================================
+   05 · Pages — composições específicas de Home, listagens, detalhe e builder.
+   Só entra aqui o que é layout de página; visual de componente fica na 04.
+   ========================================================================== */
+
+/* --- Sem JavaScript ------------------------------------------------------- */
+
+.noscript {
+  margin: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--color-accent-line);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-faint);
+  color: var(--color-text);
+}
+
+/* --- Home: hero ----------------------------------------------------------- */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-10);
+  align-items: center;
+  padding: var(--space-8) 0 var(--space-4);
+}
+.hero__content { min-width: 0; }
+/* A largura limita o TÍTULO, não a coluna: força as três linhas do conceito
+   ("Skills / for a more / capable you.") sem estreitar copy e busca. */
+.hero__title {
+  margin: var(--space-5) 0 var(--space-5);
+  max-width: 13ch;
+  font-size: var(--text-hero);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: -.035em;
+}
+.hero__copy {
+  max-width: 46ch;
+  margin-bottom: var(--space-6);
+  color: var(--color-text-muted);
+}
+.hero__search { max-width: 520px; }
+.hero__art {
+  justify-self: end;
+  color: var(--color-accent);
+}
+
+/* --- Home: categorias ----------------------------------------------------- */
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-10);
+  min-height: 176px;
+}
+.category-card__foot { display: grid; gap: var(--space-1); }
+
+/* --- Home: bloco editorial claro ----------------------------------------- */
+
+.pitch {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-8);
+  align-items: center;
+}
+/* Sem max-width: a frase cabe numa linha no desktop e a coluna 1fr do .pitch
+   já a deixa quebrar sozinha quando a tela estreita. */
+.pitch__title { font-size: var(--text-xl); }
+
+/* --- Listagens ------------------------------------------------------------ */
+
+.listing__count {
+  margin-bottom: var(--space-3);
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+}
+.listing__filter-block { margin-bottom: var(--space-5); }
+.listing__filters {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* O botão de recolher só existe em tablet/mobile (DESIGN_SYSTEM §22): no
+   desktop ele não é renderizado visualmente e `.is-collapsed` não tem efeito,
+   então o painel fica sempre aberto em telas largas. */
+.listing__toggle { display: none; }
+
+@media (max-width: 1179px) {
+  .listing__toggle {
+    display: inline-flex;
+    margin-bottom: var(--space-3);
+  }
+  .listing__filters.is-collapsed { display: none; }
+}
+.listing__filter-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.listing__filter-label {
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* --- Detalhe -------------------------------------------------------------- */
+
+.detail__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.detail__title > .card__icon { flex: 0 0 auto; }
+.detail__title > span:last-child { min-width: 0; }
+.detail__block { margin-top: var(--space-6); }
+.detail__block-title {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-lg);
+}
+.detail__prose {
+  color: var(--color-text-muted);
+  font-size: var(--text-md);
+}
+.detail__aside { display: grid; gap: var(--space-4); }
+.detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.detail__back:hover { color: var(--color-accent); }
+
+/* --- Builder -------------------------------------------------------------- */
+
+/* --- Builder: escolha da ferramenta -------------------------------------- */
+
+.format-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.format-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-2);
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard);
+}
+.format-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong);
+}
+.format-card.is-selected {
+  border-color: var(--color-accent);
+  background: var(--color-accent-faint);
+}
+.format-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.format-card__tool {
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.format-card__label {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-text);
+}
+.format-card__file {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+}
+.format-card__copy {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.format-card.is-selected .format-card__tool { color: var(--color-accent); }
+
+.builder__head { margin-bottom: var(--space-8); }
+.builder__title {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+.builder__stepper {
+  margin: var(--space-8) 0 var(--space-8);
+  padding: var(--space-5) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  /* Região secundária: um passo abaixo do card de conteúdo. */
+  background: var(--color-bg-soft);
+}
+.builder__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--space-6);
+  align-items: start;
+}
+/* Mesma razão do .split: o preview do SKILL.md precisa rolar dentro do card, não
+   empurrar a coluna. */
+.builder__layout > *,
+.builder__aside > * { min-width: 0; }
+.builder__step-title {
+  margin-bottom: var(--space-1);
+  font-size: var(--text-lg);
+}
+.builder__step-copy {
+  margin-bottom: var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.builder__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+.builder__aside { display: grid; gap: var(--space-4); }
+.builder__fieldset {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  padding: 0;
+  border: 0;
+}
+.builder__fieldset > legend {
+  padding: 0 0 var(--space-3);
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.builder__path {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+.builder__path-row {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: var(--space-3);
+}
+.builder__path-key {
+  color: var(--color-text-faint);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+}
+.builder__path-value { color: var(--color-accent); overflow-wrap: anywhere; }
+.builder__path-hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-family: var(--font-sans);
+}
+
+.builder__files { display: grid; gap: var(--space-3); }
+.builder__file {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+.builder__file-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px auto;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.builder__tools { display: grid; gap: var(--space-3); }
+.builder__suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.builder__review { display: grid; gap: var(--space-5); }
+.builder__summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.builder__export { display: grid; gap: var(--space-4); }
+.builder__export-group {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+.builder__export-title { font-size: var(--text-sm); font-weight: 600; }
+.builder__export-copy { color: var(--color-text-muted); font-size: var(--text-xs); }
+
+.builder__draft {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-accent-line);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-faint);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+/* --- Apresentação "O que é uma Skill" (#/what-is-a-skill) ------------------ */
+
+/* Um canvas único com uma câmera, em vez de slides que trocam.
+   Ver assets/js/deck/camera.js (matemática) e deck/steps.js (conteúdo).
+
+   A decisão que sustenta o resto: o QUADRO tem o tamanho da área útil, então um
+   passo que enquadra um quadro inteiro cai em escala exatamente 1. Em repouso a
+   apresentação é uma página responsiva comum — a câmera só acrescenta o
+   movimento entre passos. É isso que a deixa legível a 360px sem precisar de um
+   segundo renderizador, e é isso que mantém o texto nítido: a maioria dos voos
+   é translação pura, e os passos de conteúdo ficam em escala 1, pixel a pixel.
+
+   Consequência para quem editar: as medidas dos quadros vêm de --deck-frame-w/h,
+   postos em runtime pelo layout() do deck.js. Não use `vw`, `vh` nem
+   `display: contents` dentro do canvas — o primeiro embaralha a remedição, e o
+   último apaga a caixa que a câmera precisa medir. */
+
+.deck {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* Sem isto o viewport não encolhe e a barra é empurrada para fora da tela. */
+  min-height: 0;
+}
+
+.deck__viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  /* O canvas é bem maior que a tela: clipar aqui evita barra de rolagem.
+     A área útil da câmera é exatamente esta caixa — a barra é irmã, não
+     sobreposta, então nada de conteúdo fica escondido atrás dela. */
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 700px at 78% -12%, var(--color-accent-faint), transparent 64%),
+    var(--color-bg);
+  /* pan-y preserva o zoom por pinça; `none` o mataria, e é justamente no toque
+     que ampliar mais importa. */
+  touch-action: pan-y;
+}
+.deck__viewport:focus-visible { outline-offset: -3px; }
+
+.deck__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Fora do fluxo: é o que evita um elemento de milhares de pixels esticar o
+     documento, e é o que faz dele um offsetParent válido para a medição. */
+  width: var(--deck-canvas-w, 100%);
+  height: var(--deck-canvas-h, 100%);
+  /* A fórmula da câmera assume origem em (0,0). Com o padrão 50% 50% tudo
+     desloca metade do canvas. */
+  transform-origin: 0 0;
+  /* Lista completa de funções desde o início, igual à que o JS emite: se os dois
+     lados da transição tiverem listas diferentes, o navegador desiste da
+     interpolação por função e cai em decomposição de matriz — daí o voo sai
+     numa curva em vez de ir reto. */
+  transform: translate(0px, 0px) rotate(0deg) scale(1);
+}
+/* A transição só entra depois do primeiro enquadramento, senão abrir a
+   apresentação começaria com um voo indesejado desde a origem do canvas.
+   Mesmo padrão do .app-shell.is-animated. */
+.deck__canvas.is-animated {
+  transition: transform var(--duration-camera) var(--ease-camera);
+}
+
+/* --- Quadros -------------------------------------------------------------- */
+
+.deck__frame {
+  position: absolute;
+  /* O span permite um quadro mais alto que a área útil — o arquivo inteiro é um
+     deles. Enquadrá-lo dá escala menor que 1 de propósito: é um plano de
+     conjunto, e a legenda diz o que se está olhando. */
+  width: calc(var(--deck-frame-w) * var(--deck-span-x, 1));
+  height: calc(var(--deck-frame-h) * var(--deck-span-y, 1));
+  left: calc(var(--deck-col) * var(--deck-frame-w) * 1.14);
+  top: calc(var(--deck-row) * var(--deck-frame-h) * 1.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-5);
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+/* Quadro fora do passo atual: recua e sai da interação. Nenhum elemento focável
+   mora dentro de um quadro — as ações vivem na barra e na topbar — então não há
+   tabindex para administrar aqui. */
+.deck__frame[data-current="false"] {
+  opacity: .32;
+  pointer-events: none;
+}
+
+/* O quadro é uma coluna flex, então os filhos esticam por padrão — e a pílula
+   do eyebrow viraria uma faixa da largura inteira. */
+.deck__frame > .eyebrow,
+.deck__frame > .badge-row,
+.deck__frame > .deck__actions { align-self: flex-start; }
+.deck__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.deck__eyebrow { color: var(--color-accent); }
+.deck__title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: -.02em;
+  overflow-wrap: anywhere;
+}
+.deck__frame--hero .deck__title {
+  font-size: var(--text-hero);
+  letter-spacing: -.035em;
+  max-width: 18ch;
+}
+.deck__lead {
+  color: var(--color-text-muted);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  max-width: 42ch;
+}
+.deck__body {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 62ch;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+}
+.deck__body strong { color: var(--color-text); }
+.deck__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+.deck__panel {
+  display: grid;
+  gap: var(--space-2);
+  /* Mesma razão do .deck__code: um painel do tamanho do quadro faz a câmera
+     enquadrar algo tão largo quanto o próprio quadro, e o zoom vira escala 1. */
+  max-width: 64ch;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+.deck__panel-title { color: var(--color-text); font-size: var(--text-lg); font-weight: 600; }
+.deck__panel-copy { color: var(--color-text-muted); font-size: var(--text-md); }
+.deck__panel--accent {
+  border-color: var(--color-accent-line);
+  background: var(--color-accent-faint);
+}
+
+/* --- Bloco de código com um nó por linha ---------------------------------- */
+
+/* ui.codeBox não serve na apresentação: ele põe o conteúdo num único nó de
+   texto (e a câmera precisa medir trechos), dá `tabindex="0"` ao <pre> — um
+   ponto de foco dentro de um quadro — e limita a altura a 460px, o que cortaria
+   o arquivo e faria a câmera voar para uma região vazia. Mesma aparência de
+   .code-box, estrutura diferente. */
+.deck__code {
+  margin: 0;
+  /* A largura importa para a câmera, não só para a estética: um grupo é um
+     bloco, então ele herda a largura do <pre>. Com o <pre> ocupando o quadro
+     inteiro, "dar zoom numa linha" enquadraria um retângulo tão largo quanto o
+     quadro e a escala sairia ~1 — zoom nenhum. Limitar em ch amarra a medida à
+     fonte e faz o trecho realmente aproximar. */
+  max-width: 72ch;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.75;
+  /* pre-wrap, e não pre: a linha da description passa de 120 caracteres, e
+     cortá-la ou deixá-la escapar do quadro seria pior do que quebrá-la. A
+     indentação do YAML continua preservada. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+.deck__line { display: block; padding: 0 var(--space-2); }
+.deck__line--blank { min-height: 1.75em; }
+
+/* Grupos são os alvos da câmera: um trecho nomeado do arquivo. São derivados do
+   TEXTO das linhas, nunca de índices, para uma edição no catálogo não reapontar
+   o zoom para o lugar errado. */
+.deck__group {
+  display: block;
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-normal) var(--ease-standard);
+}
+.deck__group[data-focus="true"] { background: var(--color-accent-soft); }
+.deck__group[data-focus="true"] .deck__line { color: var(--color-text); }
+
+/* --- Barra de controle ---------------------------------------------------- */
+
+.deck__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  /* Altura fixa, não min-height: ver o comentário de --deck-bar-h em 01-tokens. */
+  height: var(--deck-bar-h);
+  padding: 0 var(--page-pad);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-soft);
+}
+.deck__bar-meta {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.deck__bar-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.deck__chapter {
+  color: var(--color-accent);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.deck__count {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+.deck__caption {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+.deck__progress {
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-3);
+  overflow: hidden;
+}
+.deck__progress-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transition: width var(--duration-normal) var(--ease-standard);
+}
+.deck__nav { display: flex; gap: var(--space-2); flex: 0 0 auto; }
+
+/* --- Visão geral ---------------------------------------------------------- */
+
+/* A visão geral é a câmera enquadrando o canvas inteiro MAIS uma lista real de
+   passos por cima. A 360px o canvas afastado é textura ilegível atrás de uma
+   lista perfeitamente usável — o que está correto, não é concessão. */
+.deck__map {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: auto;
+  padding: var(--space-6) var(--page-pad);
+  background: var(--color-overlay);
+  backdrop-filter: blur(10px);
+}
+.deck__map-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-2);
+  max-width: var(--page-max);
+  margin: 0 auto;
+}
+.deck__map-item {
+  display: grid;
+  /* Item de grid não encolhe abaixo do conteúdo sem isto, e a legenda de cada
+     passo é longa: as colunas 1fr estouravam e a lista rolava na horizontal. */
+  min-width: 0;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard);
+}
+.deck__map-item:hover { border-color: var(--color-border-strong); }
+.deck__map-item[aria-current="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-faint);
+}
+.deck__map-title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+/* A legenda quebra e é cortada em duas linhas, para todo item ter a mesma
+   altura e a grade não desalinhar. */
+.deck__map-meta {
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+/* --- Coding Style (#/coding-style) ---------------------------------------- */
+
+.doc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-6);
+}
+.doc-actions__source {
+  margin-left: auto;
+  font-family: var(--font-mono);
+}
+
+/* Layout de documentação: índice estreito e fixo, conteúdo largo. Invertido em
+   relação ao .split do detalhe, onde o aside vem depois. */
+.split--doc {
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.doc-index {
+  position: sticky;
+  /* Abaixo da topbar, que é sticky e opaca. */
+  top: calc(var(--topbar-height) + var(--space-4));
+  /* Flex, e não grid: com `display: grid` as linhas são dimensionadas por
+     `auto`, que NÃO encolhe abaixo do conteúdo. O max-height era respeitado
+     pelo card, a lista vazava para fora da janela e os links de seção ficavam
+     em coordenada negativa ou abaixo da dobra — inclicáveis. Com flex, o
+     `flex: 1; min-height: 0` da lista a deixa encolher e rolar por dentro. */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-height: calc(100vh - var(--topbar-height) - var(--space-10));
+}
+.doc-index__label {
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.doc-index__list {
+  display: grid;
+  gap: 1px;
+  align-content: start;
+  /* O par que faz a rolagem interna funcionar. */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.doc-index__link {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  transition: background var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.doc-index__link:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+.doc-index__number {
+  color: var(--color-text-faint);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+.doc-index__title { min-width: 0; }
+.doc-index__empty { margin-top: var(--space-2); }
+
+/* --- Markdown renderizado ------------------------------------------------- */
+
+/* Só para conteúdo autorado no repositório. Conteúdo de catálogo continua em
+   code box, como texto (ADR-010). Ver assets/js/markdown.js. */
+.markdown {
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+}
+
+.markdown__h1 {
+  margin: var(--space-10) 0 var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  scroll-margin-top: calc(var(--topbar-height) + var(--space-4));
+}
+.markdown__h1:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  font-size: var(--text-2xl);
+}
+.markdown__h1:focus { outline: none; }
+.markdown__h1:focus-visible { outline: 2px solid var(--color-accent); }
+.markdown__h2 {
+  margin: var(--space-6) 0 var(--space-3);
+  color: var(--color-text);
+  font-size: var(--text-lg);
+}
+.markdown__h3 {
+  margin: var(--space-5) 0 var(--space-2);
+  color: var(--color-text);
+  font-size: var(--text-md);
+}
+
+.markdown__p { margin: var(--space-3) 0; }
+.markdown__p strong,
+.markdown__list strong { color: var(--color-text); }
+
+.markdown__list {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+  padding-left: var(--space-5);
+  list-style: disc;
+}
+.markdown__list ol,
+ol.markdown__list { list-style: decimal; }
+.markdown__list--tasks {
+  padding-left: 0;
+  list-style: none;
+}
+.markdown__task {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: baseline;
+}
+/* Caixa desenhada, não um input: não há estado para guardar, e um checkbox aqui
+   seria decoração focável. */
+.markdown__box {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+  font-size: var(--text-xs);
+}
+
+.markdown__code {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  /* Bloco largo rola dentro de si, e não empurra a página. */
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+.markdown code {
+  padding: 1px var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-3);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: .92em;
+}
+.markdown__code code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.markdown__quote {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid var(--color-accent-rail);
+  background: var(--color-accent-faint);
+  color: var(--color-text);
+}
+
+.markdown__table-wrap {
+  margin: var(--space-4) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  /* Mesma razão do bloco de código: a tabela rola aqui dentro. */
+  overflow-x: auto;
+}
+.markdown__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.markdown__table th,
+.markdown__table td {
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+.markdown__table th {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.markdown__table tbody tr:last-child td { border-bottom: 0; }
+
+.markdown__rule {
+  margin: var(--space-6) 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.markdown__link { color: var(--color-accent); }
+.markdown__link:hover { text-decoration: underline; }

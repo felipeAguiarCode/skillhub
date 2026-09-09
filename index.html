@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Skill Hub — Marketplace gratuito de Skills</title>
+  <meta name="description" content="Marketplace gratuito e estático de Claude Skills, Codex Skills, prompts e agentes, com um Skill Builder guiado para Claude Code. Sem login, sem backend.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0d0c0b">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Skill Hub — Marketplace gratuito de Skills">
+  <meta property="og:description" content="Descubra, inspecione e crie Skills para Claude Code e Codex. Estático, gratuito e sem cadastro.">
+  <meta property="og:image" content="assets/og-cover.svg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23ff5d3a'/><circle cx='16' cy='16' r='3.4' fill='%23171411'/><path d='M16 6v3.6M16 22.4V26M6 16h3.6M22.4 16H26' stroke='%23171411' stroke-width='3' stroke-linecap='round'/></svg>">
+
+  <link rel="stylesheet" href="assets/css/01-tokens.css">
+  <link rel="stylesheet" href="assets/css/02-base.css">
+  <link rel="stylesheet" href="assets/css/03-layout.css">
+  <link rel="stylesheet" href="assets/css/04-components.css">
+  <link rel="stylesheet" href="assets/css/05-pages.css">
+  <link rel="stylesheet" href="assets/css/06-utilities.css">
+  <link rel="stylesheet" href="assets/css/07-responsive.css">
+</head>
+<body>
+  <a class="u-skip-link" href="#app">Ir para o conteúdo</a>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#/home">
+        <span class="brand__mark" data-icon="hub" aria-hidden="true"></span>
+        <span class="brand__word">skill-hub</span>
+      </a>
+
+      <nav class="nav" id="main-nav" aria-label="Navegação principal">
+        <a class="nav__link" href="#/home" data-route="home" data-icon="home"><span>Home</span></a>
+        <a class="nav__link" href="#/claude-skills" data-route="claude-skills" data-icon="sparkle"><span>Claude Skills</span></a>
+        <a class="nav__link" href="#/codex-skills" data-route="codex-skills" data-icon="hexagon"><span>Codex Skills</span></a>
+        <a class="nav__link" href="#/prompt-engineering" data-route="prompt-engineering" data-icon="doc"><span>Prompt Engineering</span></a>
+        <a class="nav__link" href="#/coding-styles" data-route="coding-styles" data-icon="book"><span>Coding Styles</span></a>
+        <a class="nav__link" href="#/agents" data-route="agents" data-icon="graph"><span>Agentes</span></a>
+        <span class="nav__divider" aria-hidden="true"></span>
+        <a class="nav__link" href="#/skill-builder" data-route="skill-builder" data-icon="wand"><span>Skill Builder</span></a>
+      </nav>
+
+      <a class="sidebar__cta" href="#/what-is-a-skill" data-route="what-is-a-skill" data-icon="info">
+        <span>O que é uma Skill?</span>
+      </a>
+
+      <div class="sidebar__footer">
+        <span>Build</span>
+        <span>Share</span>
+        <span>Improve</span>
+        <span>Together</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="btn btn--icon topbar__toggle" id="sidebar-toggle" type="button"
+                data-icon="panel" aria-controls="sidebar" aria-expanded="true"
+                aria-label="Recolher menu" title="Recolher menu"></button>
+        <div class="topbar__lead" id="topbar-lead"></div>
+        <div class="topbar__actions" id="topbar-actions"></div>
+      </header>
+      <div class="page" id="app" tabindex="-1"></div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div id="dialog-root"></div>
+
+  <noscript>
+    <p class="noscript">O Skill Hub renderiza o catálogo e o Skill Builder no próprio navegador, sem backend. Ative o JavaScript para usá-lo.</p>
+  </noscript>
+
+  <script src="assets/js/data/claude-skills.js"></script>
+  <script src="assets/js/data/claude-extra.js"></script>
+  <script src="assets/js/data/codex-skills.js"></script>
+  <script src="assets/js/data/codex-extra.js"></script>
+  <script src="assets/js/data/prompts.js"></script>
+  <script src="assets/js/data/prompts-extra.js"></script>
+  <script src="assets/js/data/agents.js"></script>
+  <script src="assets/js/data/agents-extra.js"></script>
+  <script src="assets/js/data/coding-styles.js"></script>
+  <script src="assets/js/core.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/formats.js"></script>
+  <script src="assets/js/zip.js"></script>
+  <script src="assets/js/markdown.js"></script>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/catalog.js"></script>
+  <script src="assets/js/router.js"></script>
+  <script src="assets/js/pages/home.js"></script>
+  <script src="assets/js/pages/listing.js"></script>
+  <script src="assets/js/pages/detail.js"></script>
+  <script src="assets/js/builder/state.js"></script>
+  <script src="assets/js/builder/serialize.js"></script>
+  <script src="assets/js/builder/validate.js"></script>
+  <script src="assets/js/builder/steps.js"></script>
+  <script src="assets/js/builder/export.js"></script>
+  <script src="assets/js/pages/builder.js"></script>
+  <script src="assets/js/deck/camera.js"></script>
+  <script src="assets/js/deck/steps.js"></script>
+  <script src="assets/js/pages/deck.js"></script>
+  <script src="assets/js/pages/coding-styles.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

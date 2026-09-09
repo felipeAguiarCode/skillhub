@@ -1,0 +1,9 @@
+# Nada é instalado para rodar este projeto (ADR-003): não há node_modules nem
+# artefato de build. O que fica de fora é ruído de sistema operacional e editor.
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/

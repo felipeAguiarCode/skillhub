@@ -1,0 +1,372 @@
+/* ==========================================================================
+   03 · Layout — shell, sidebar, topbar, área de página e grids.
+   ========================================================================== */
+
+.u-skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 80;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.u-skip-link:focus-visible { transform: translateY(0); }
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* --- Sidebar colapsável ---------------------------------------------------- */
+
+/* A transição só entra depois do primeiro paint (classe posta pelo JS), senão
+   o estado recuperado do localStorage animaria na carga, o que parece bug. */
+.app-shell.is-animated {
+  transition: grid-template-columns var(--duration-normal) var(--ease-standard);
+}
+.app-shell.is-animated .sidebar,
+.app-shell.is-animated .brand,
+.app-shell.is-animated .nav__link,
+.app-shell.is-animated .sidebar__cta,
+.app-shell.is-animated .sidebar__footer {
+  transition: padding var(--duration-normal) var(--ease-standard),
+              gap var(--duration-normal) var(--ease-standard),
+              max-height var(--duration-normal) var(--ease-standard),
+              opacity var(--duration-fast) var(--ease-standard);
+}
+/* O rótulo encolhe a própria largura junto com a coluna: é isso que dá a
+   sensação de deslizar e encaixar, em vez de o texto sumir no lugar. */
+.app-shell.is-animated .brand__word,
+.app-shell.is-animated .nav__link span,
+.app-shell.is-animated .sidebar__cta span {
+  transition: max-width var(--duration-normal) var(--ease-standard),
+              opacity var(--duration-fast) var(--ease-standard);
+}
+
+.brand__word,
+.nav__link span,
+.sidebar__cta span {
+  max-width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Recolhido: a coluna vira bitola de ícones. Os rótulos precisam perder a
+   LARGURA, não só a opacidade — com opacity sozinha eles continuam ocupando
+   espaço e empurram a marca para fora da bitola. */
+.app-shell[data-sidebar="collapsed"] { --sidebar-width: var(--sidebar-rail); }
+.app-shell[data-sidebar="collapsed"] .brand__word,
+.app-shell[data-sidebar="collapsed"] .nav__link span,
+.app-shell[data-sidebar="collapsed"] .sidebar__cta span {
+  max-width: 0;
+  opacity: 0;
+}
+.app-shell[data-sidebar="collapsed"] .sidebar__footer {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.app-shell[data-sidebar="collapsed"] .sidebar { padding-left: var(--space-2); padding-right: var(--space-2); }
+.app-shell[data-sidebar="collapsed"] .brand { justify-content: center; gap: 0; padding: 0; }
+.app-shell[data-sidebar="collapsed"] .nav__link { justify-content: center; gap: 0; padding: 0; }
+.app-shell[data-sidebar="collapsed"] .sidebar__cta { justify-content: center; gap: 0; padding: 0; }
+.app-shell[data-sidebar="collapsed"] .nav__divider { margin-left: var(--space-2); margin-right: var(--space-2); }
+
+/* --- Modo apresentação ---------------------------------------------------- */
+
+/* A apresentação (#/what-is-a-skill) precisa da tela inteira, então recolhe a
+   sidebar até zero. Não é um estado novo de animação: reusa a MESMA transição de
+   grid-template-columns da sidebar colapsável, então abrir a apresentação desliza
+   e encaixa com o movimento da casa.
+
+   O atributo é posto por pages/deck.js e removido no teardown. Ele NÃO grava nada
+   em skillhub.ui.v1: ao sair, o data-sidebar que já estava lá volta a mandar e a
+   preferência real da pessoa continua intacta. É por isso que o botão de recolher
+   fica escondido aqui — clicá-lo gravaria a preferência sem efeito visível, já que
+   esta regra ganha de qualquer jeito.
+
+   Sobre o seletor: o concorrente NÃO é o `:root` das media queries de
+   07-responsive.css. Declaração no próprio elemento sempre ganha de valor
+   herdado, então especificidade nem chega a ser comparada ali. Quem disputa é
+   `.app-shell[data-sidebar="collapsed"]`, acima neste arquivo: mesmo elemento e
+   especificidade idêntica (0,2,0), decidida por ordem de origem. O
+   `[data-sidebar]` a mais sobe para (0,3,0) e torna o estado independente da
+   ordem — sem ele, mover este bloco para cima daquele deixaria a sidebar travada
+   na bitola de 76px para quem a tem recolhida. */
+.app-shell[data-deck="on"][data-sidebar] { --sidebar-width: 0px; }
+
+/* Uma coluna de largura zero esconde a sidebar mas NÃO a tira da ordem de
+   tabulação: a marca e os seis links continuam focáveis, e o foco desaparece num
+   ponto invisível na borda esquerda. `visibility: hidden` resolve em todos os
+   engines e, diferente de `display: none`, preserva o deslizar dos rótulos. */
+.app-shell[data-deck="on"] .sidebar {
+  visibility: hidden;
+  border-right-width: 0;
+}
+.app-shell[data-deck="on"] .topbar__toggle { display: none; }
+
+/* Altura definida na shell, e não `calc(100vh - var(--topbar-height))`: aquele
+   token é um `min-height` da topbar, então a conta erraria assim que a barra
+   crescesse. Com flex, a página fica exatamente com a altura que sobrar. */
+.app-shell[data-deck="on"] { height: var(--deck-shell-h); }
+.app-shell[data-deck="on"] .main { min-height: 0; }
+/* Sangra até a borda e passa a ser contêiner flex: é o que dá altura definida ao
+   viewport da apresentação. Sem `overflow: hidden` aqui, o canvas — que é bem
+   maior que a tela — geraria barra de rolagem horizontal no documento. */
+.app-shell[data-deck="on"] .page {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* --- Sidebar -------------------------------------------------------------- */
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: 100vh;
+  padding: var(--space-6) var(--space-4);
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface);
+  /* Clipar na horizontal é o que faz os rótulos "entrarem" na bitola. */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  color: var(--color-accent);
+}
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  font-weight: 800;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  transition: background var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.nav__link .icon { flex: 0 0 auto; }
+.nav__link:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+.nav__link[aria-current="page"] {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+.nav__divider {
+  height: 1px;
+  margin: var(--space-3) var(--space-3);
+  background: var(--color-border);
+}
+
+/* Botão no fim do menu, para a apresentação. Fica FORA de #main-nav de
+   propósito: a navegação continua com exatamente os seis itens que o
+   docs/PRD.md §5 fixa, e este tem aparência de botão, não de item de lista.
+   Mesmo assim carrega data-route, então o router marca aria-current nele como
+   em qualquer alvo de rota. */
+.sidebar__cta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-accent-line);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-faint);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  transition: background var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.sidebar__cta .icon {
+  flex: 0 0 auto;
+  color: var(--color-accent);
+}
+.sidebar__cta:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+.sidebar__cta[aria-current="page"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.sidebar__footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-3);
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+}
+.sidebar__footer span:first-child { color: var(--color-text-muted); }
+
+/* --- Main ---------------------------------------------------------------- */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--topbar-height);
+  padding: 0 var(--page-pad);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-blur);
+  backdrop-filter: blur(16px);
+}
+/* O botão de recolher só faz sentido onde a sidebar tem duas larguras: abaixo
+   de 1180px ela já é bitola de ícones por media query. */
+.topbar__toggle { flex: 0 0 auto; margin-right: var(--space-2); }
+
+.topbar__lead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+/* A topbar é uma linha só: um nome comprido trunca aqui. Quebrar linha
+   aumentaria a altura da barra e empurrar as ações as tiraria da tela. */
+.topbar__lead span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.topbar__lead svg,
+.topbar__lead .badge { flex: 0 0 auto; }
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.page {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page-max);
+  padding: var(--space-10) var(--page-pad) var(--space-20);
+}
+.page:focus { outline: none; }
+
+.page-header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+.page-header__text { max-width: 60ch; }
+.page-title {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+.page-copy {
+  color: var(--color-text-muted);
+  font-size: var(--text-md);
+}
+.page-header__art {
+  flex: 0 0 auto;
+  color: var(--color-accent);
+  opacity: .9;
+}
+
+.section { margin-top: var(--space-12); }
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+.section__title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+.section__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.section__link:hover { color: var(--color-accent); }
+
+/* --- Grids --------------------------------------------------------------- */
+
+.grid { display: grid; gap: var(--space-4); }
+.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+/* Sem isto, um item de grid não encolhe abaixo do min-content dos filhos — e um
+   <pre white-space: pre> com linha longa estoura a coluna em vez de rolar. */
+.split > *,
+.grid > * { min-width: 0; }

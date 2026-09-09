@@ -1,0 +1,7 @@
+# O repositório guarda LF, independente do sistema de quem clona. Sem isto, um
+# checkout no Windows commitaria CRLF e o diff de qualquer arquivo apareceria
+# inteiro alterado para quem estivesse em outro sistema.
+* text=auto eol=lf
+
+# Binários não passam por normalização.
+*.png binary

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Toko Design System</title>
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+  <header class="ds-topbar">
+    <div class="ds-container ds-topbar__inner">
+      <a class="ds-brand" href="#top" aria-label="Toko Design System">
+        <span class="ds-brand__mark">t</span>
+        <span>toko</span>
+      </a>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge badge--accent">Design System</span>
+        <button class="btn btn--secondary" data-show-toast>Testar toast</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="ds-section">
+      <div class="ds-container">
+        <div class="ds-section__header">
+          <div>
+            <div class="ds-eyebrow">Visual language</div>
+            <h1 class="ds-title">Warm dark. Editorial. Preciso.</h1>
+            <p class="ds-copy">Uma biblioteca visual para um marketplace de Skills que combina superfícies escuras, accent laranja e cards off-white com uma linguagem minimalista.</p>
+          </div>
+        </div>
+        <div class="ds-grid">
+          <article class="ds-card ds-card--editorial ds-span-4">
+            <div class="ds-card__icon">✦</div>
+            <div>
+              <h3>Surface</h3>
+              <p>Cards escuros com bordas muito discretas e quase nenhuma sombra.</p>
+            </div>
+          </article>
+          <article class="ds-card ds-card--paper ds-card--editorial ds-span-4">
+            <div class="ds-card__icon">↗</div>
+            <div>
+              <h3>Editorial contrast</h3>
+              <p>Off-white aparece pontualmente para quebrar a monotonia sem transformar o produto em tema claro.</p>
+            </div>
+          </article>
+          <article class="ds-card ds-card--editorial ds-span-4">
+            <div class="ds-card__icon">◎</div>
+            <div>
+              <h3>Accent</h3>
+              <p>Laranja quente para seleção, ação primária e pequenas ilustrações geométricas.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="ds-section">
+      <div class="ds-container">
+        <div class="ds-section__header">
+          <div>
+            <div class="ds-eyebrow">Controls</div>
+            <h2 class="ds-title">Botões, filtros e busca</h2>
+          </div>
+        </div>
+        <div class="ds-grid">
+          <div class="ds-card ds-span-6">
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn--primary">Explorar Skills →</button>
+              <button class="btn btn--secondary">Ver detalhes</button>
+              <button class="btn btn--ghost">Cancelar</button>
+              <button class="btn btn--secondary btn--icon" aria-label="Mais opções">•••</button>
+            </div>
+          </div>
+          <div class="ds-card ds-span-6">
+            <div class="search">
+              <span aria-hidden="true">⌕</span>
+              <input aria-label="Buscar" placeholder="Buscar skills, prompts e agentes...">
+              <kbd>⌘ K</kbd>
+            </div>
+            <div class="chips" style="margin-top:14px">
+              <button class="chip is-active" data-chip>Todos</button>
+              <button class="chip" data-chip>Development</button>
+              <button class="chip" data-chip>Data</button>
+              <button class="chip" data-chip>Automation</button>
+              <button class="chip" data-chip>Research</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ds-section">
+      <div class="ds-container">
+        <div class="ds-section__header">
+          <div>
+            <div class="ds-eyebrow">Marketplace</div>
+            <h2 class="ds-title">Skill cards</h2>
+          </div>
+        </div>
+        <div class="ds-grid">
+          <article class="ds-card skill-card ds-span-6">
+            <div class="skill-card__icon">⌁</div>
+            <div class="skill-card__body">
+              <h3 class="skill-card__title">API Reviewer</h3>
+              <p class="skill-card__desc">Revisa mudanças de API contra convenções do projeto.</p>
+              <div class="skill-card__meta"><span class="badge">Claude Code</span><span class="badge">Development</span><span class="badge">Low risk</span></div>
+            </div>
+            <button class="btn btn--primary">Ver</button>
+          </article>
+          <article class="ds-card skill-card ds-span-6">
+            <div class="skill-card__icon">⌘</div>
+            <div class="skill-card__body">
+              <h3 class="skill-card__title">Release Assistant</h3>
+              <p class="skill-card__desc">Organiza changelog e checklist de release.</p>
+              <div class="skill-card__meta"><span class="badge">Claude Code</span><span class="badge badge--warning">Bash</span><span class="badge badge--warning">Moderate</span></div>
+            </div>
+            <button class="btn btn--secondary">Ver</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="ds-section">
+      <div class="ds-container">
+        <div class="ds-section__header">
+          <div>
+            <div class="ds-eyebrow">Forms</div>
+            <h2 class="ds-title">Builder fields</h2>
+          </div>
+        </div>
+        <div class="ds-grid">
+          <div class="ds-card ds-span-4">
+            <div class="field"><label for="name">Nome da Skill</label><input id="name" class="input" value="api-reviewer"></div>
+          </div>
+          <div class="ds-card ds-span-4">
+            <div class="field"><label for="target">Destino</label><select id="target" class="select"><option>Claude Code — projeto</option><option>Claude Code — pessoal</option><option>Portable Agent Skill</option></select></div>
+          </div>
+          <div class="ds-card ds-span-4">
+            <div class="field"><label for="desc">Descrição</label><textarea id="desc" class="textarea">Review API changes against project conventions.</textarea></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ds-section">
+      <div class="ds-container">
+        <div class="ds-section__header">
+          <div>
+            <div class="ds-eyebrow">Wizard</div>
+            <h2 class="ds-title">Stepper de 7 etapas</h2>
+          </div>
+        </div>
+        <div class="ds-card ds-span-12">
+          <div class="stepper">
+            <div class="step is-done"><div class="step__dot">✓</div><span>Básico</span></div>
+            <div class="step is-done"><div class="step__dot">✓</div><span>Invocação</span></div>
+            <div class="step is-active"><div class="step__dot">3</div><span>Ferramentas</span></div>
+            <div class="step"><div class="step__dot">4</div><span>Instruções</span></div>
+            <div class="step"><div class="step__dot">5</div><span>Arquivos</span></div>
+            <div class="step"><div class="step__dot">6</div><span>Revisão</span></div>
+            <div class="step"><div class="step__dot">7</div><span>Exportar</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ds-section">
+      <div class="ds-container">
+        <div class="ds-section__header">
+          <div>
+            <div class="ds-eyebrow">Code & trust</div>
+            <h2 class="ds-title">Preview e risco</h2>
+          </div>
+        </div>
+        <div class="ds-grid">
+          <div class="code-box ds-span-8">
+            <div class="code-box__top"><span>SKILL.md</span><button class="btn btn--ghost" data-copy-demo>Copiar</button></div>
+            <pre id="demo-code">---
+name: api-reviewer
+description: "Review API changes against project conventions."
+allowed-tools:
+  - Read
+  - Grep
+---
+
+# Goal
+Review API changes and report concrete risks.</pre>
+          </div>
+          <div class="ds-span-4" style="display:grid;gap:12px">
+            <div class="risk">
+              <div class="risk__head"><h3 class="risk__title">Baixo risco aparente</h3><span class="badge">1 / 10</span></div>
+              <p class="risk__copy">Somente ferramentas de leitura foram declaradas.</p>
+            </div>
+            <div class="risk">
+              <div class="risk__head"><h3 class="risk__title">Portabilidade alta</h3><span class="badge badge--accent">100</span></div>
+              <p class="risk__copy">O exemplo usa apenas campos compatíveis com o perfil portátil.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="demo-toast" role="status" aria-live="polite">Componente de toast funcionando.</div>
+  <script src="assets/js/demo.js"></script>
+</body>
+</html>

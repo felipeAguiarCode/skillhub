@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Skill Hub — marketplace gratuito de Skills">
+  <defs>
+    <radialGradient id="glow" cx="82%" cy="-6%" r="70%">
+      <stop offset="0%" stop-color="#ff5d3a" stop-opacity=".16"/>
+      <stop offset="100%" stop-color="#ff5d3a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0d0c0b"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Marca -->
+  <rect x="80" y="76" width="44" height="44" rx="12" fill="#ff5d3a"/>
+  <path d="M91 92h22M102 92v22" stroke="#171411" stroke-width="5.5" stroke-linecap="round"/>
+  <text x="140" y="109" font-family="Segoe UI, system-ui, sans-serif" font-size="30" font-weight="700" fill="#ff5d3a" letter-spacing="-1">skill-hub</text>
+
+  <!-- Eyebrow -->
+  <rect x="80" y="188" width="168" height="30" rx="8" fill="rgba(255,93,58,.08)" stroke="rgba(255,93,58,.25)"/>
+  <text x="98" y="208" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="600" fill="#ff5d3a" letter-spacing="2.2">OPEN SOURCE</text>
+
+  <!-- Headline -->
+  <text font-family="Segoe UI, system-ui, sans-serif" font-size="78" font-weight="700" fill="#f6f1eb" letter-spacing="-3">
+    <tspan x="80" y="316">Skills for a more</tspan>
+    <tspan x="80" y="398">capable you.</tspan>
+  </text>
+
+  <text x="80" y="452" font-family="Segoe UI, system-ui, sans-serif" font-size="23" fill="#a9a098">Claude Skills, Codex Skills, prompts e agentes — com Skill Builder.</text>
+
+  <!-- Selos -->
+  <g font-family="Segoe UI, system-ui, sans-serif" font-size="15" fill="#a9a098">
+    <rect x="80" y="496" width="150" height="38" rx="19" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.08)"/>
+    <text x="104" y="521">Sem login</text>
+    <rect x="244" y="496" width="176" height="38" rx="19" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.08)"/>
+    <text x="268" y="521">Sem backend</text>
+    <rect x="434" y="496" width="216" height="38" rx="19" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.08)"/>
+    <text x="458" y="521">100% estático</text>
+  </g>
+
+  <!-- Arte geométrica, igual ao hero -->
+  <rect x="900" y="196" width="196" height="196" rx="30" fill="#a83e25" opacity=".5"/>
+  <rect x="862" y="234" width="176" height="176" rx="26" fill="#ff5d3a"/>
+  <path d="M930 296l-22 26 22 26M970 296l22 26-22 26" stroke="#171411" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M1052 424v58M1023 453h58" stroke="#ff5d3a" stroke-width="13" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,138 @@
+/* ==========================================================================
+   01 · Tokens — única fonte de verdade visual do Skill Hub.
+   Referência: docs/DESIGN_SYSTEM.md §2–§6, §20. Nenhum valor visual novo deve
+   ser escrito fora deste arquivo quando existir token equivalente (ADR-005).
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Neutros escuros ---------------------------------------------------- */
+  --color-bg: #0d0c0b;
+  --color-bg-soft: #11100e;
+  --color-bg-blur: rgba(13, 12, 11, .88);
+  --color-surface: #161310;
+  --color-surface-2: #1c1815;
+  --color-surface-3: #241e1a;
+  --color-border: rgba(255, 255, 255, .08);
+  --color-border-strong: rgba(255, 255, 255, .14);
+  --color-overlay: rgba(6, 5, 5, .68);
+
+  /* --- Accent ------------------------------------------------------------- */
+  --color-accent: #ff5d3a;
+  --color-accent-hover: #ff704f;
+  --color-accent-deep: #a83e25;
+  --color-accent-soft: rgba(255, 93, 58, .14);
+  --color-accent-faint: rgba(255, 93, 58, .08);
+  --color-accent-line: rgba(255, 93, 58, .25);
+  --color-accent-rail: rgba(255, 93, 58, .55);
+  --color-accent-ring: rgba(255, 93, 58, .1);
+
+  /* --- Claros ------------------------------------------------------------- */
+  --color-paper: #eee8e0;
+  --color-paper-2: #f7f2ec;
+  --color-paper-border: rgba(0, 0, 0, .08);
+  --color-ink: #171411;
+  --color-ink-muted: rgba(23, 20, 17, .66);
+  --color-text: #f6f1eb;
+  --color-text-muted: #a9a098;
+  --color-text-faint: #746d66;
+
+  /* --- Semânticas --------------------------------------------------------- */
+  --color-success: #7abf8c;
+  --color-success-soft: rgba(122, 191, 140, .08);
+  --color-success-line: rgba(122, 191, 140, .24);
+  --color-warning: #e1a85a;
+  --color-warning-soft: rgba(225, 168, 90, .08);
+  --color-warning-line: rgba(225, 168, 90, .24);
+  --color-danger: #e66b62;
+  --color-danger-soft: rgba(230, 107, 98, .08);
+  --color-danger-line: rgba(230, 107, 98, .24);
+  --color-info: #7fa8c9;
+  --color-info-soft: rgba(127, 168, 201, .08);
+  --color-info-line: rgba(127, 168, 201, .24);
+
+  /* --- Código ------------------------------------------------------------- */
+  --color-code-bg: #090807;
+  --color-code-text: #ddd5cb;
+
+  /* --- Tipografia --------------------------------------------------------- */
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 34px;
+  --text-hero: clamp(42px, 6vw, 72px);
+
+  --leading-tight: 1.08;
+  --leading-snug: 1.25;
+  --leading-normal: 1.55;
+
+  /* --- Spacing (base 4px) ------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* --- Radius ------------------------------------------------------------- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  /* --- Elevação ----------------------------------------------------------- */
+  --shadow-card: 0 14px 40px rgba(0, 0, 0, .18);
+  --shadow-float: 0 18px 55px rgba(0, 0, 0, .28);
+
+  /* --- Motion ------------------------------------------------------------- */
+  --duration-fast: 140ms;
+  --duration-normal: 220ms;
+  --duration-slow: 360ms;
+  --ease-standard: cubic-bezier(.2, .8, .2, 1);
+
+  /* Voo de câmera da apresentação (#/what-is-a-skill), e só dela. O DESIGN_SYSTEM
+     §20 mapeia motion em 140–360ms porque trata de cromo de interface: hover,
+     troca de passo, drawer. Aqui o movimento é o conteúdo — é ele que mostra de
+     onde para onde a atenção foi. Mesmo assim a duração é proporcional à
+     distância: salto curto fica no piso, só travessia entre capítulos chega ao
+     teto. Nada do app fica mais lento por causa destes tokens. */
+  /* Lidos também pelo JS, via getComputedStyle — uma varredura por `var()` não
+     os encontra, mas eles não estão sem uso. */
+  --duration-camera: 420ms;
+  --duration-camera-max: 900ms;
+  /* Ease-out de cauda longa: sai rápido e freia devagar. Uma curva simétrica
+     fica arrastada nos voos mais longos. */
+  --ease-camera: cubic-bezier(.32, .72, 0, 1);
+
+  /* --- Layout ------------------------------------------------------------- */
+  --sidebar-width: 220px;
+  --sidebar-rail: 76px;
+  --topbar-height: 68px;
+  --page-max: 1440px;
+  --page-pad: var(--space-8);
+  --control-height: 44px;
+  --control-height-lg: 52px;
+
+  /* Apresentação. A altura da barra é FIXA de propósito: se a legenda pudesse
+     crescer para duas linhas, o viewport encolheria, a escala de enquadramento
+     mudaria e a câmera saltaria entre passos sem motivo visível. */
+  --deck-shell-h: 100vh;
+  --deck-bar-h: 88px;
+  --deck-inset: var(--space-8);
+
+  /* Breakpoints não viram token: `@media` não resolve custom properties.
+     Os valores de DESIGN_SYSTEM §7 vivem em 07-responsive.css — mobile 768px,
+     tablet 1180px, wide 1480px. */
+}

@@ -1,0 +1,170 @@
+/* ==========================================================================
+   07 · Responsive — overrides por breakpoint (DESIGN_SYSTEM §7 e PRD §16).
+   Desktop >= 1180px é o layout base definido nas camadas anteriores.
+   ========================================================================== */
+
+/* --- Wide: mais respiro ---------------------------------------------------- */
+
+@media (min-width: 1480px) {
+  :root { --page-pad: var(--space-12); }
+}
+
+/* 100vh no iOS Safari é o viewport GRANDE: a barra de controle ficaria sob a
+   barra do navegador. Vai por @supports, e não por um par de declarações de
+   token: valor de custom property não é validado na declaração, então uma
+   unidade não suportada seria ACEITA como token e só falharia no uso, derrubando
+   a altura para `auto` — colapso silencioso em vez de degradação. */
+@supports (height: 100dvh) {
+  :root { --deck-shell-h: 100dvh; }
+}
+
+/* --- Tablet: 768–1179px --------------------------------------------------- */
+
+@media (max-width: 1179px) {
+  :root {
+    --page-pad: var(--space-6);
+    --sidebar-width: var(--sidebar-rail);
+  }
+
+  /* Abaixo de 1180px a sidebar é sempre bitola: o botão de recolher não tem
+     função aqui, e o estado colapsado guardado não deve interferir. */
+  .topbar__toggle { display: none; }
+
+  /* O rótulo do botão do menu entra aqui também. Aqui a bitola é imposta pela
+     media query, não pelo estado recolhido, então a regra de
+     [data-sidebar="collapsed"] não vale — sem esta linha o botão fica com 162px
+     de largura dentro de uma coluna de 76px. */
+  .brand__word,
+  .nav__link span,
+  .sidebar__cta span,
+  .sidebar__footer { display: none; }
+
+  .sidebar { align-items: center; padding: var(--space-6) var(--space-2); }
+  .brand { padding: 0; }
+  .nav { width: 100%; }
+  .nav__link { justify-content: center; padding: 0; }
+  .sidebar__cta { justify-content: center; gap: 0; padding: 0; width: 100%; }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .hero__content { max-width: none; }
+  .hero__art { display: none; }
+
+  .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .split,
+  .builder__layout { grid-template-columns: minmax(0, 1fr); }
+
+  /* Abaixo de 1180px o índice deixa de ser coluna: vira um bloco no topo, sem
+     sticky, para não roubar altura do conteúdo. */
+  .split--doc { grid-template-columns: minmax(0, 1fr); }
+  .doc-index {
+    position: static;
+    max-height: 320px;
+  }
+
+  .pitch { grid-template-columns: minmax(0, 1fr); }
+
+  .page-header__art { display: none; }
+
+  .builder__stepper { overflow-x: auto; }
+  .stepper { min-width: 620px; }
+}
+
+/* --- Mobile: < 768px ------------------------------------------------------ */
+
+@media (max-width: 767px) {
+  :root {
+    --page-pad: var(--space-4);
+    --sidebar-width: 100%;
+  }
+
+  .app-shell { grid-template-columns: minmax(0, 1fr); }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+  }
+  .nav {
+    flex-direction: row;
+    width: auto;
+    gap: var(--space-1);
+  }
+  .nav__divider { display: none; }
+  /* Na faixa horizontal o botão não encolhe nem estica: o `width: 100%` da
+     bitola do tablet ainda se aplica aqui e o deixaria com a largura da tela. */
+  .sidebar__cta { flex: 0 0 auto; width: auto; }
+
+  .page { padding: var(--space-6) var(--page-pad) var(--space-16); }
+
+  .page-header { flex-direction: column; gap: var(--space-4); }
+
+  .grid--4,
+  .grid--3,
+  .grid--2 { grid-template-columns: minmax(0, 1fr); }
+
+  .toolbar { grid-template-columns: minmax(0, 1fr); }
+
+  .form-grid,
+  .format-grid,
+  .builder__summary { grid-template-columns: minmax(0, 1fr); }
+
+  .builder__file-head { grid-template-columns: minmax(0, 1fr); }
+
+  .skill-card {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: var(--space-4);
+  }
+  .skill-card__desc { white-space: normal; }
+  /* O aside tem um botão só desde que a data saiu do card. */
+  .skill-card__aside { justify-items: start; }
+
+  .meta-row,
+  .builder__path-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+
+  /* Stepper vira indicador textual compacto (DESIGN_SYSTEM §15). */
+  .builder__stepper { padding: var(--space-4); }
+  .stepper { display: none; }
+  .stepper__compact { display: block; }
+
+  .toast {
+    left: var(--space-4);
+    right: var(--space-4);
+    bottom: var(--space-4);
+    max-width: none;
+  }
+
+  .builder__actions { flex-direction: column-reverse; align-items: stretch; }
+  .builder__actions .btn { width: 100%; }
+
+  /* Aqui a sidebar é uma faixa horizontal no topo, não uma coluna: zerar
+     --sidebar-width não a recolhe. Na apresentação ela simplesmente sai. */
+  .app-shell[data-deck="on"] .sidebar { display: none; }
+
+  /* A barra vira duas linhas: legenda em cima, controles embaixo. A altura
+     continua FIXA — o que não pode mudar é entre passos, não entre
+     breakpoints, e o layout é remedido a cada resize. */
+  :root { --deck-bar-h: 128px; }
+  .deck__bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--page-pad);
+  }
+  .deck__nav { justify-content: space-between; }
+  .deck__nav .btn { flex: 1; justify-content: center; }
+  /* O caminho para o builder mora no último passo, onde há espaço para ele. */
+  .deck__topbar-cta { display: none; }
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Toko — marketplace gratuito de Skills para Claude, Codex e agentes.">
+  <title>Toko — Free Skills Marketplace</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#/home"><span class="brand__mark">t</span><span>toko</span></a>
+      <nav class="nav" id="main-nav">
+        <a href="#/home" data-route="home">⌂ <span>Home</span></a>
+        <a href="#/claude-skills" data-route="claude-skills">✳ <span>Claude Skills</span></a>
+        <a href="#/codex-skills" data-route="codex-skills">◇ <span>Codex Skills</span></a>
+        <a href="#/prompt-engineering" data-route="prompt-engineering">▤ <span>Prompt Engineering</span></a>
+        <a href="#/agents" data-route="agents">⌘ <span>Agentes</span></a>
+        <a href="#/skill-builder" data-route="skill-builder" class="nav__builder">＋ <span>Skill Builder</span></a>
+      </nav>
+      <div class="sidebar__footer">
+        <strong>100% Free</strong>
+        <span>Open · Static · No login</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar__search">
+          <span aria-hidden="true">⌕</span>
+          <input id="global-search" placeholder="Buscar skills, prompts e agentes..." autocomplete="off">
+          <kbd>/</kbd>
+        </div>
+        <a class="topbar__builder" href="#/skill-builder">Criar Skill →</a>
+      </header>
+      <div id="app" class="page" tabindex="-1"></div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="assets/js/catalog-data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
