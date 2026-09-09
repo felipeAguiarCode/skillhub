@@ -11,21 +11,27 @@ coisa.
 
 ## 📍 Onde o código vive
 
-Três árvores, e só uma é o produto:
+Só uma árvore é o produto:
 
 | Caminho | O que é |
 |---|---|
 | `index.html` + `assets/` | **O aplicativo.** É aqui que se mexe. |
+| `tools/` | Scripts de desenvolvimento, rodados à mão com `node`. Não fazem parte do app. |
 | `prototype/` | Protótipo original do blueprint. **Referência histórica — não editar.** |
 | `design-system/` | Vitrine de tokens/componentes do blueprint. **Referência — não editar.** |
 | `docs/` | Especificação (PRD, ADR, Design System, Spec do Builder, Gates, QA). |
 | `reference/concept-ui.png` | Conceito visual de 6 frames. |
 
-O app está **completo** (gates 1 a 8 de `docs/IMPLEMENTATION_GATES.md`). Não há
-gate pendente; trate pedidos novos como evolução, não como continuação da
-sequência de gates.
+O app está **completo** (gates 1 a 8 de `docs/IMPLEMENTATION_GATES.md`) e já
+cresceu além deles: a coleção Coding Styles, a apresentação `#/what-is-a-skill` e
+o renderizador de Markdown são posteriores ao blueprint. Não há gate pendente;
+trate pedidos novos como evolução, não como continuação da sequência.
 
-## ▶️ Executar e verificar
+Quando um pedido novo contrariar `docs/`, o `docs/` **não** é reescrito — é
+registro do blueprint. O estado corrente é este arquivo, e a divergência fica
+anotada aqui, onde ela aparece (ver Navegação, sobre o sétimo item da sidebar).
+
+## ▶️ Executar
 
 Não existe build, npm, bundler nem lint configurado — isso é deliberado (ADR-003).
 
@@ -35,31 +41,79 @@ Não existe build, npm, bundler nem lint configurado — isso é deliberado (ADR
 python -m http.server 8000     #  2. servidor estático local
 #  3. qualquer host de arquivos estáticos
 
-# Checar sintaxe de um arquivo (Node é conveniência de dev, não dependência)
-node --check assets/js/pages/builder.js
-for f in $(find assets/js -name '*.js'); do node --check "$f" || echo "FAIL $f"; done
+# Sintaxe de todo o JS (Node é conveniência de dev, não dependência)
+for f in $(find assets/js tools -name '*.js'); do node --check "$f" || echo "FAIL $f"; done
+
+# Regerar os guias de coding style depois de editá-los em ~/.claude/coding-styles/
+node tools/gen-coding-styles.js
 ```
 
-**Não há suíte de testes no repositório.** A verificação é manual e dirigida por
-`docs/QA_CHECKLIST.md`, que é a superfície de aceite. O que funciona sem instalar
-nada:
+## 🚀 Git e publicação
 
-- **Screenshot headless** para conferir visual:
-  `chrome --headless=new --window-size=1440,1400 --virtual-time-budget=4000 --screenshot=out.png "http://127.0.0.1:8000/#/claude-skills"`
-  Use um `--user-data-dir` novo a cada captura: o perfil persistente **cacheia o CSS**
-  e você vai fotografar a versão anterior.
-- **Teste interativo** via DevTools Protocol: subir o Chrome com
-  `--remote-debugging-port=9222` e dirigir por WebSocket (o Node 22 já tem
-  `WebSocket` e `fetch` globais, então dá para automatizar sem npm). É assim que se
-  capturam erros de console de verdade (`Runtime.exceptionThrown`, `Log.entryAdded`).
+O repositório é `felipeAguiarCode/skillhub`, e a branch `main` é publicada por
+**GitHub Pages** na raiz: <https://felipeaguiarcode.github.io/skillhub/>. Não há
+workflow de build — o Pages serve os arquivos como estão. Publicar é `git push`.
+
+Dois arquivos existem só por causa disso, e removê-los quebra a publicação:
+
+- **`.nojekyll`** — impede o Pages de processar o site com Jekyll, que ignoraria
+  qualquer arquivo ou pasta começando com `_`.
+- **`.gitattributes`** — `* text=auto eol=lf`. Sem isso, um checkout no Windows
+  commitaria CRLF e o diff de qualquer arquivo apareceria inteiro alterado para
+  quem clonasse em outro sistema.
+
+Como o app usa **só caminhos relativos** e hash routing, ele funciona igual em
+domínio raiz e em subpasta. É por isso que `/skillhub/` no Pages não precisa de
+nenhuma regra de rewrite — e é por isso que introduzir um caminho absoluto
+quebra a versão publicada sem quebrar o `localhost`.
+
+## 🧪 Verificar
+
+**Não há suíte de testes versionada no repositório**, e isso é uma lacuna real,
+não uma decisão. A superfície de aceite formal é `docs/QA_CHECKLIST.md`.
+
+Nesta sessão foram construídas nove suítes que juntas rodam **666 asserções**,
+com `node` puro e sem nenhuma dependência. Elas vivem **fora do repositório**, no
+scratchpad da sessão, então **serão perdidas**. Se ainda existirem, valem mais
+que qualquer verificação manual; se não, o mais barato é reconstruir as duas
+primeiras antes de mexer em algo grande.
+
+| Suíte | Asserções | Cobre |
+|---|---|---|
+| `drive.js` | 157 | bootstrap, as nove rotas mais quatro detalhes, catálogo, busca e filtros, builder, rascunho, `localStorage`, acúmulo de listener |
+| `drive-deck.js` | 87 | a apresentação: montagem, voo, teclado, mapa, deep link, resíduo no teardown |
+| `smoke-serialize.js` | 115 | serialização determinística (ADR-008) |
+| `smoke-formats.js` | 77 | o registry de formatos contra o catálogo |
+| `smoke-camera.js` | 67 | matemática da câmera, com prova algébrica do enquadramento |
+| `drive-qa.js` | 57 | itens do QA checklist, conteúdo hostil, filtros recolhíveis |
+| `smoke-markdown.js` | 51 | o renderizador de Markdown e os caminhos de injeção |
+| `drive-a11y.js` | 44 | overflow de 360 a 1920, movimento reduzido, foco, risco nunca só por cor |
+| `drive-export.js` | 11 | download real, `SKILL.md` e ZIP comparados byte a byte |
+| `check-catalog.js` | — | integridade do catálogo: ids, ícones, categorias, `content` válido para o formato |
+
+As três de `smoke-*` rodam sem navegador. As de `drive-*` precisam de um servidor
+e de um Chrome com `--remote-debugging-port`, dirigido por WebSocket — o Node 22
+já tem `WebSocket` e `fetch` globais, então dá para automatizar sem npm. É assim
+que se capturam erros de console de verdade (`Runtime.exceptionThrown`,
+`Log.entryAdded`).
+
+### Armadilhas de automação que já custaram tempo
+
+- **Screenshot headless:** use um `--user-data-dir` novo a cada captura. O perfil
+  persistente **cacheia o CSS** e você fotografa a versão anterior.
+- `Page.navigate` para uma URL que **só difere no hash não recarrega** a página.
+  Estado em memória vaza entre blocos de teste; use `about:blank` no meio.
+- Atribuir `location.hash` por script **sem gesto do usuário** é convertido em
+  *replace* pelo Chrome. Testar voltar/avançar exige clique real via
+  `Input.dispatchMouseEvent`.
+- `Browser.setDownloadBehavior` precisa do caminho **com barras invertidas** do
+  Windows, e de `eventsEnabled: true`. Com barra normal, o download é cancelado
+  em silêncio.
+- Ao medir posição depois de rolar um contêiner por script, **releia o
+  retângulo**: um `getBoundingClientRect` guardado antes da rolagem transforma um
+  teste que passaria em falha inexplicável.
 - Ao testar `AGENTS.md`/ZIP no Windows, confira a extração em **duas** ferramentas
   (`Expand-Archive` e o leitor do Explorer) — elas discordam sobre ZIPs malformados.
-
-Duas armadilhas de automação que já custaram tempo: `Page.navigate` para uma URL que
-só difere no hash **não recarrega** a página (estado em memória vaza entre testes,
-use `about:blank` no meio); e atribuir `location.hash` por script **sem gesto do
-usuário** é convertido em *replace* pelo Chrome, então testar voltar/avançar exige
-clique real via `Input.dispatchMouseEvent`.
 
 ## 🧱 Restrições inegociáveis
 
@@ -137,7 +191,10 @@ certa em `index.html`.
 - **`core.js`** — `SkillHub.dom`, `util`, `store`, `toast`, `clipboard`, `download`.
 - **`formats.js`** — o registry acima.
 - **`components.js`** — `SkillHub.ui.*`: toda fábrica de componente. Reutilize antes
-  de criar CSS de página.
+  de criar CSS de página. `ui.rowActivatable(node, href)` faz a linha inteira de um
+  card navegar: o botão continua sendo o **único** focável, e o clique na linha é
+  conveniência de mouse. Envolver o card num `<a>` colocaria um botão dentro de um
+  link — HTML inválido e ruim de teclado.
 - **`catalog.js`** — busca, facetas, filtros por rota, ordenação.
 - **`data/*.js`** — o catálogo em si, dividido em arquivos por coleção (nenhum deles
   grande demais para ler de uma vez). Cada um faz
@@ -303,6 +360,10 @@ estático e não mede nada, então exibir número seria invenção. Destaque é 
 declarada no dado (`featured: true`) e a segunda seção da Home é `updatedAt`
 descendente, já excluindo o que apareceu em destaque logo acima.
 
+O card também não mostra data: `updatedAt` existe no dado e alimenta ordenação e a
+seção de recentes, mas sumiu da linha do card por pedido. `ui.statRow`, `.stat-row` e
+o ícone `calendar` foram removidos junto, porque ficaram sem consumidor.
+
 ### CSS
 
 Sete camadas (`01-tokens` → `07-responsive`), na ordem de `DESIGN_SYSTEM.md` §23.
@@ -312,6 +373,30 @@ Nomes de componente são os do `design-system/` (`.btn`, `.card`, `.skill-card`,
 uso e é assim que deve continuar. Cuidado ao varrer por token morto: `--deck-inset`,
 `--duration-camera` e `--duration-camera-max` também são lidos pelo JS via
 `getComputedStyle`, então um `grep` por `var(` não os encontra.
+
+### Grid e flex: quem pode encolher
+
+Duas armadilhas da mesma família, e as duas já custaram tempo aqui.
+
+**Item de grid ou flex não encolhe abaixo do conteúdo** sem `min-width: 0` /
+`min-height: 0`. É por isso que `.split > *`, `.grid > *`, `.builder__layout > *` e
+`.builder__aside > *` têm `min-width: 0`: sem isso um `<pre>` largo estoura a coluna
+em vez de rolar dentro dela.
+
+**Linha de grid dimensionada por `auto` também não encolhe** — e `min-height: 0` no
+filho não resolve, porque quem não cede é a linha. Foi o defeito do índice de seções
+do Coding Styles: `.doc-index` era `display: grid` com `max-height`, o card respeitava
+o limite, e a lista de 27 seções vazava para fora da janela com links inclicáveis
+abaixo da dobra. Para uma coluna com uma região que rola, use **flex**:
+
+```css
+.doc-index      { display: flex; flex-direction: column; max-height: ...; }
+.doc-index__list { flex: 1; min-height: 0; overflow-y: auto; }
+```
+
+`flex: 1` mais `min-height: 0` é o par que cria um contêiner de rolagem de verdade.
+Com grid seria preciso declarar `grid-template-rows` com um `minmax(0, 1fr)` na linha
+certa — frágil, porque a contagem de filhos muda (um filho `hidden` não cria linha).
 
 ### Chaves de `localStorage`
 
@@ -417,6 +502,8 @@ Avisos **não** bloqueiam download; só erros bloqueantes bloqueiam.
 - todo input tem label; todo botão tem nome acessível;
 - a apresentação abre sem voo indesejado, sai sem deixar `data-deck` na shell e
   não altera a preferência da sidebar;
+- nenhum caminho absoluto: quebra o Pages em `/skillhub/` sem quebrar o `localhost`;
+- região que rola cabe na janela — item de grid com linha `auto` não encolhe;
 - o builder gera arquivo válido **para o formato escolhido**;
 - nenhum conteúdo de Skill é executado;
 - código novo não duplica tokens/componentes existentes e não introduz `innerHTML`.
