@@ -152,19 +152,41 @@
      --sidebar-width não a recolhe. Na apresentação ela simplesmente sai. */
   .app-shell[data-deck="on"] .sidebar { display: none; }
 
-  /* A barra vira duas linhas: legenda em cima, controles embaixo. A altura
-     continua FIXA — o que não pode mudar é entre passos, não entre
-     breakpoints, e o layout é remedido a cada resize. */
-  :root { --deck-bar-h: 128px; }
-  .deck__bar {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-content: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--page-pad);
-  }
-  .deck__nav { justify-content: space-between; }
-  .deck__nav .btn { flex: 1; justify-content: center; }
-  /* O caminho para o builder mora no último passo, onde há espaço para ele. */
+  /* A barra continua numa linha, só um pouco mais alta para o alvo de toque.
+     A altura segue FIXA — o que não pode mudar é entre passos, não entre
+     breakpoints, e o slide é remedido a cada resize. */
+  :root { --deck-bar-h: 56px; }
+  .deck__bar-inner { padding: 0 var(--page-pad); }
+  /* Na largura de celular a legenda perde para o contador e as setas: ela já
+     é anunciada pela região viva, então some da tela em vez de espremer. */
+  .deck__caption { display: none; }
+  .deck__count { margin-left: auto; }
+  /* O caminho para o builder mora no último slide, onde há espaço para ele. */
   .deck__topbar-cta { display: none; }
+
+  /* Numa coluna só: o que era lado a lado empilha, e o fio entre o agente e as
+     pastas some — ele liga colunas que deixaram de existir. */
+  .slide { gap: var(--space-4); }
+  .slide__split,
+  .slide__split--folder,
+  .slide__split--craft,
+  .slide__split--levels,
+  .slide__cover { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+  .levels__item { grid-template-columns: auto minmax(0, 1fr); }
+  .levels__cost { grid-column: 2; justify-self: start; }
+  .uses__item { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  /* O split do arquivo é flex, não grid: empilhar aqui é trocar a direção. */
+  .slide__split--code { flex-direction: column; gap: var(--space-5); }
+  .slide__split--code > .slide__code { flex: 1 1 auto; }
+  .slide__split--code > .slide__notes { flex: 0 0 auto; }
+  .wiring { grid-template-columns: minmax(0, 1fr); }
+  .wiring__wires { display: none; }
+  .pill-row { grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3); }
+  .pill-row .pill { grid-column: 1 / -1; }
+  .paths__item { grid-template-columns: minmax(0, 1fr); }
+  .paths__key,
+  .paths__value,
+  .paths__hint { grid-column: 1; grid-row: auto; }
+  .pill { justify-self: start; }
+  .slide__cover-art { justify-items: start; }
 }

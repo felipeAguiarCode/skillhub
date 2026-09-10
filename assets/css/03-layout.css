@@ -116,11 +116,13 @@
 /* Altura definida na shell, e não `calc(100vh - var(--topbar-height))`: aquele
    token é um `min-height` da topbar, então a conta erraria assim que a barra
    crescesse. Com flex, a página fica exatamente com a altura que sobrar. */
-.app-shell[data-deck="on"] { height: var(--deck-shell-h); }
+/* A topbar encolhe junto: em apresentação ela é só a saída e o mapa, e os 68px
+   do resto do app viram altura de slide. */
+.app-shell[data-deck="on"] { height: var(--deck-shell-h); --topbar-height: var(--deck-topbar-h); }
 .app-shell[data-deck="on"] .main { min-height: 0; }
 /* Sangra até a borda e passa a ser contêiner flex: é o que dá altura definida ao
-   viewport da apresentação. Sem `overflow: hidden` aqui, o canvas — que é bem
-   maior que a tela — geraria barra de rolagem horizontal no documento. */
+   palco da apresentação. Sem `overflow: hidden` aqui, um slide que entra
+   deslocado durante o morph geraria barra de rolagem no documento. */
 .app-shell[data-deck="on"] .page {
   display: flex;
   flex-direction: column;

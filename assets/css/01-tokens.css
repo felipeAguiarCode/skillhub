@@ -102,19 +102,27 @@
   --duration-slow: 360ms;
   --ease-standard: cubic-bezier(.2, .8, .2, 1);
 
-  /* Voo de câmera da apresentação (#/what-is-a-skill), e só dela. O DESIGN_SYSTEM
-     §20 mapeia motion em 140–360ms porque trata de cromo de interface: hover,
-     troca de passo, drawer. Aqui o movimento é o conteúdo — é ele que mostra de
-     onde para onde a atenção foi. Mesmo assim a duração é proporcional à
-     distância: salto curto fica no piso, só travessia entre capítulos chega ao
-     teto. Nada do app fica mais lento por causa destes tokens. */
+  /* Morph da apresentação (#/what-is-a-skill), e só dela. O DESIGN_SYSTEM §20
+     mapeia motion em 140–360ms porque trata de cromo de interface: hover, troca
+     de passo, drawer. Aqui o movimento é o conteúdo — é ele que mostra que a
+     pílula do slide anterior virou a code box deste. Mesmo assim a duração é
+     proporcional ao esforço: deslocamento curto fica no piso, só a travessia
+     com troca de escala chega ao teto. Nada do app fica mais lento por isto. */
   /* Lidos também pelo JS, via getComputedStyle — uma varredura por `var()` não
      os encontra, mas eles não estão sem uso. */
-  --duration-camera: 420ms;
-  --duration-camera-max: 900ms;
+  --duration-morph: 320ms;
+  --duration-morph-max: 720ms;
   /* Ease-out de cauda longa: sai rápido e freia devagar. Uma curva simétrica
-     fica arrastada nos voos mais longos. */
-  --ease-camera: cubic-bezier(.32, .72, 0, 1);
+     fica arrastada nos percursos mais longos. */
+  --ease-morph: cubic-bezier(.32, .72, 0, 1);
+
+  /* Traço desenhado à mão: duas variantes do mesmo desenho alternando a ~8
+     quadros por segundo. É a técnica da animação tradicional, e a única
+     animação contínua do app — vale só para ilustração decorativa, e o bloco
+     global de prefers-reduced-motion (02-base.css) a desliga inteira. */
+  --duration-boil: 250ms;
+  /* Entrada elástica com leve ultrapassagem, para o desenho "cair" no lugar. */
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
 
   /* --- Layout ------------------------------------------------------------- */
   --sidebar-width: 220px;
@@ -125,11 +133,14 @@
   --control-height: 44px;
   --control-height-lg: 52px;
 
-  /* Apresentação. A altura da barra é FIXA de propósito: se a legenda pudesse
-     crescer para duas linhas, o viewport encolheria, a escala de enquadramento
-     mudaria e a câmera saltaria entre passos sem motivo visível. */
+  /* Apresentação. As duas barras são finas de propósito: cada pixel de cromo
+     sai da altura do slide, e slide que não cabe vira rolagem no meio de uma
+     apresentação. A altura da barra de baixo é FIXA — se a legenda pudesse
+     crescer para duas linhas, o palco encolheria no meio da transição e o
+     morph mediria o destino errado, entregando o slide deslocado. */
   --deck-shell-h: 100vh;
-  --deck-bar-h: 88px;
+  --deck-bar-h: 52px;
+  --deck-topbar-h: 48px;
   --deck-inset: var(--space-8);
 
   /* Breakpoints não viram token: `@media` não resolve custom properties.

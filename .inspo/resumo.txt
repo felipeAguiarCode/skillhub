@@ -1,0 +1,27 @@
+Este vídeo apresenta um guia aprofundado sobre a utilização de **Skills (habilidades)** no ecossistema *Claude* (Claude Code e Claude Work). Abaixo, detalho os conceitos fundamentais, a estrutura técnica e a aplicação prática discutida pelo autor:
+
+### O que são Skills (0:00 - 3:00)
+As *Skills* funcionam como **agentes especializados** ou arquivos de instrução que eliminam a necessidade de repetir diretrizes longas em cada nova interação. Em vez de enviar prompts gigantescos, você configura um "manual" para o *Claude*, que ele ativa automaticamente ao identificar a necessidade da tarefa.
+
+### Arquitetura de uma Skill (3:01 - 4:29)
+A estrutura de uma *Skill* é organizada em pastas locais, contendo quatro componentes principais:
+* **skill.md:** O núcleo da *Skill*, contendo as instruções, regras de negócio e metodologia que o agente deve seguir.
+* **Arquivos/Referências:** Materiais de suporte, como planilhas de dados, manuais em PDF ou exemplos de sucesso que orientam a IA.
+* **Scripts:** Códigos (código-fonte) que permitem ao *Claude* executar ações externas, como realizar chamadas de *API* (ex: transcrever vídeos ou criar imagens via *Nano Banana*).
+* **Assets:** Recursos visuais ou de design, como templates, ícones e guias de estilo da marca.
+
+### Aplicações Práticas (4:30 - 6:32)
+O vídeo demonstra o poder das *Skills* em dois pilares:
+1. **Criação de Conteúdo:** Automação total desde a transcrição de vídeos do *YouTube*, passando pela criação de posts para o *LinkedIn* baseados em metodologias específicas, até a geração automática de imagens de frameworks.
+2. **Desenvolvimento de Software:** No *Claude Code*, *Skills* são usadas para padronizar o desenvolvimento, aplicando automaticamente boas práticas de bibliotecas ou serviços como *Supabase* (banco de dados) ou *Stripe* (pagamentos).
+
+### Ciclo de Vida e Gerenciamento (6:33 - 10:48)
+O autor enfatiza a **melhoria contínua (PDCA)**:
+* **Criação:** Utilização do *Claude Work* para entrevistar o usuário e estruturar a *Skill*.
+* **Iteração:** Testar, verificar os erros (ex: formatação de PDFs ou qualidade das respostas) e refinar os arquivos `skill.md` ou os scripts.
+* **Empacotamento:** O processo de transformar as instruções e ferramentas em uma unidade que pode ser facilmente reutilizada ou compartilhada.
+
+### Instalação e Ecossistema (10:49 - 14:20)
+Além de criar, é possível escalar o uso de *Skills*:
+* **Marketplace:** Exploração de repositórios oficiais da *Anthropic* no *GitHub* para baixar habilidades verificadas.
+* **Integração Técnica:** Instalação de *Skills* diretamente no ambiente do *Claude Code* através de comandos no terminal, permitindo que o assistente de programação conheça as regras específicas do seu projeto.

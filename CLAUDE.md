@@ -21,6 +21,7 @@ Só uma árvore é o produto:
 | `design-system/` | Vitrine de tokens/componentes do blueprint. **Referência — não editar.** |
 | `docs/` | Especificação (PRD, ADR, Design System, Spec do Builder, Gates, QA). |
 | `reference/concept-ui.png` | Conceito visual de 6 frames. |
+| `.inspo/` | Quatro capturas de uma aula sobre Skills mais um resumo. É a base do conteúdo e do desenho da apresentação. **Referência — não editar.** |
 
 O app está **completo** (gates 1 a 8 de `docs/IMPLEMENTATION_GATES.md`) e já
 cresceu além deles: a coleção Coding Styles, a apresentação `#/what-is-a-skill` e
@@ -45,6 +46,7 @@ python -m http.server 8000     #  2. servidor estático local
 for f in $(find assets/js tools -name '*.js'); do node --check "$f" || echo "FAIL $f"; done
 
 # Regerar os guias de coding style depois de editá-los em ~/.claude/coding-styles/
+# (escreve data/coding-styles.js e data/coding-styles-extra.js; valida antes de gravar)
 node tools/gen-coding-styles.js
 ```
 
@@ -81,10 +83,11 @@ primeiras antes de mexer em algo grande.
 | Suíte | Asserções | Cobre |
 |---|---|---|
 | `drive.js` | 157 | bootstrap, as nove rotas mais quatro detalhes, catálogo, busca e filtros, builder, rascunho, `localStorage`, acúmulo de listener |
-| `drive-deck.js` | 87 | a apresentação: montagem, voo, teclado, mapa, deep link, resíduo no teardown |
+| `drive-deck.js` | 326 | a apresentação: montagem sem morph, morph, builds, teclado, mapa, deep link, movimento reduzido, foco, doodle animando, resíduo no teardown, os 19 passos a 1440 e a 360 |
+| `drive-deck-file.js` | 10 | a mesma apresentação por `file://`, onde `replaceState` lançaria |
 | `smoke-serialize.js` | 115 | serialização determinística (ADR-008) |
 | `smoke-formats.js` | 77 | o registry de formatos contra o catálogo |
-| `smoke-camera.js` | 67 | matemática da câmera, com prova algébrica do enquadramento |
+| `smoke-morph.js` | 92 | matemática do morph, com prova algébrica de que a transformação leva o destino exatamente sobre a origem |
 | `drive-qa.js` | 57 | itens do QA checklist, conteúdo hostil, filtros recolhíveis |
 | `smoke-markdown.js` | 51 | o renderizador de Markdown e os caminhos de injeção |
 | `drive-a11y.js` | 44 | overflow de 360 a 1920, movimento reduzido, foco, risco nunca só por cor |
@@ -194,13 +197,25 @@ certa em `index.html`.
   de criar CSS de página. `ui.rowActivatable(node, href)` faz a linha inteira de um
   card navegar: o botão continua sendo o **único** focável, e o clique na linha é
   conveniência de mouse. Envolver o card num `<a>` colocaria um botão dentro de um
-  link — HTML inválido e ruim de teclado.
+  link — HTML inválido e ruim de teclado. `ui.chipLine(label, group, options, onSelect)`
+  é a linha de chips de filtro, usada por `listing` e por `coding-styles`: o
+  `data-group`/`data-value` é contrato, porque quem consome vira o `aria-pressed`
+  **no lugar** em vez de recriar os nós — é isso que mantém o foco no campo de busca.
+  `ui.openDialog(opts)` serve dois papéis, e quem decide é a presença de
+  `onConfirm`: **com** ela é confirmação (Cancelar + Confirmar, `items` como lista
+  de aviso, foco na ação); **sem** ela é informativo (`dismissLabel` como única
+  ação, `body` com nós livres, `wide` para caminho em monoespaçado, e o foco vai
+  para o próprio diálogo — focar o botão do fim faria a caixa abrir rolada até
+  embaixo, escondendo o primeiro passo).
 - **`catalog.js`** — busca, facetas, filtros por rota, ordenação.
 - **`data/*.js`** — o catálogo em si, dividido em arquivos por coleção (nenhum deles
   grande demais para ler de uma vez). Cada um faz
   `window.SKILL_HUB_CATALOG = (window.SKILL_HUB_CATALOG || []).concat([...])`, então
   a ordem entre eles não importa — só precisam vir **antes** de `catalog.js` no
   `index.html`. Para acrescentar uma coleção, crie `data/<nome>.js` e registre a tag.
+  `coding-styles.js` e `coding-styles-extra.js` seguem o mesmo padrão de concat, mas
+  num global separado (`SKILL_HUB_CODING_STYLES`) e são **gerados** — ver a seção
+  Coding Styles.
 - **`router.js`** — hash router, um único listener de `hashchange`, `teardown()` da
   rota anterior (é o que impede acúmulo de listeners), 404 real. Três coisas que
   uma rota pode declarar: `ownsParam` (o router não re-renderiza quando só o
@@ -213,9 +228,10 @@ certa em `index.html`.
   `export`.
 - **`markdown.js`** — renderizador de Markdown para DOM, sem `innerHTML`. Só para
   conteúdo do repositório; ver a seção Markdown abaixo.
-- **`deck/`** — a apresentação `#/what-is-a-skill`: `camera` (matemática pura de
-  enquadramento, testável sem navegador), `steps` (os 20 passos como dado).
-  `pages/deck.js` orquestra. Ver a seção da apresentação abaixo.
+- **`deck/`** — a apresentação `#/what-is-a-skill`: `morph` (o FLIP; a parte pura
+  é testável sem navegador), `doodles` (ilustrações de traço à mão, no molde de
+  `icons.js`), `slides` (os 10 slides como dado). `pages/deck.js` orquestra. Ver a
+  seção da apresentação abaixo.
 - **`zip.js`** — writer ZIP store-only em JS puro. Entradas de diretório explícitas e
   bit 11 de UTF-8 são o que faz o arquivo abrir no Explorer do Windows.
 
@@ -227,12 +243,13 @@ calculados em runtime — estilo estático vive no CSS. Toda URL de catálogo pa
 `dom.safeHref()`, que rejeita tudo fora de `http:`/`https:`/`mailto:`.
 
 Consequência prática: **o código novo não deve introduzir `innerHTML`.** Hoje há zero
-usos reais no app. A varredura precisa excluir dois falsos positivos, que são
-menção e não uso — o guia `vanilla-web` tem uma seção sobre nunca usar `innerHTML`,
-e `markdown.js` cita a proibição no cabeçalho:
+usos reais no app. A varredura precisa excluir os falsos positivos, que são
+menção e não uso — os guias `vanilla-web` e `react-typescript` têm seção sobre
+nunca usar `innerHTML` (e `dangerouslySetInnerHTML`), e `markdown.js` cita a
+proibição no cabeçalho:
 
 ```bash
-grep -rn "innerHTML" index.html assets/   | grep -v "assets/js/data/coding-styles.js"   | grep -v "assets/js/markdown.js:"
+grep -rn "innerHTML" index.html assets/   | grep -v "assets/js/data/coding-styles.js"   | grep -v "assets/js/data/coding-styles-extra.js"   | grep -v "assets/js/markdown.js:"
 ```
 
 Isso deve continuar vazio.
@@ -259,11 +276,26 @@ Trocar de formato remapeia o passo atual pela chave.
 
 ### Coding Styles: guias que moram fora do repositório
 
-A coleção `#/coding-styles` lista guias de estilo por stack, em cards, e
+A coleção `#/coding-styles` lista **20 guias** de estilo em cards, e
 `#/coding-styles/<id>` abre o guia com índice de seções.
 
+São **10 stacks × 2 variantes**, ligadas pelo campo `family`:
+
+| | |
+|---|---|
+| Backend | Node.js + TypeScript · Python · Java + Spring · C# + .NET |
+| Frontend | Vanilla Web · React + TypeScript |
+| Mobile | Kotlin + Android |
+| Dados | PostgreSQL + SQL |
+| Infra | Bash + Shell · Docker + CI |
+
+`depth: 'full'` é o guia inteiro; `depth: 'essential'` é o cartão de referência
+da mesma stack (12–17 seções), para citar numa sessão sem gastar contexto. O
+Essencial é **documento próprio, não um recorte** do completo — um subconjunto
+copiado divergiria na primeira edição.
+
 **A fonte não está aqui.** Os guias vivem em `~/.claude/coding-styles/`, um
-arquivo Markdown por stack, porque valem entre projetos. O navegador não lê
+arquivo Markdown por guia, porque valem entre projetos. O navegador não lê
 aquele caminho e o app não faz `fetch` (ADR-004), então o texto entra como dado
 estático gerado:
 
@@ -271,14 +303,45 @@ estático gerado:
 node tools/gen-coding-styles.js
 ```
 
-O gerador copia byte a byte e confere o resultado carregando o que escreveu — se
-divergir, ele falha em vez de gravar. `assets/js/data/coding-styles.js` é
-**gerado**: editar à mão é perder a mudança na próxima geração. Para acrescentar
-um guia, escreva o `.md` na pasta de origem e registre os metadados de card
-(`icon`, `tags`, `eyebrow`, `summary`) na lista `GUIDES` do gerador.
+Saem **dois** arquivos, particionados por `depth`: `data/coding-styles.js` (os
+completos) e `data/coding-styles-extra.js` (os essenciais). Num arquivo só
+seriam doze mil linhas. Cada um faz `concat` no mesmo global, então a ordem
+entre eles não importa — só precisam vir antes de `catalog.js`.
+
+O gerador copia byte a byte, grava em `.gen.js`, confere carregando o que
+escreveu e só então renomeia: divergência sai com código 1 **sem** deixar
+arquivo ruim no disco. Antes disso ele valida `GUIDES` na fronteira — `icon`
+existe em `icons.js`, `area` está na lista, `depth` é `full`/`essential`, id
+único e no máximo uma variante por `family`+`depth`. Essa validação é a rede de
+proteção real: ícone inexistente não gera erro de console, só renderiza
+`sparkle` calado (`icons.js:181`).
+
+Os dois arquivos de dado são **gerados**: editar à mão é perder a mudança na
+próxima geração. Para acrescentar um guia, escreva o `.md` na pasta de origem,
+acrescente a linha no `README.md` de lá e registre os metadados de card
+(`area`, `depth`, `family`, `icon`, `tags`, `stack`, `summary`) na lista
+`GUIDES` do gerador. São três lugares, e nenhum deles é o arquivo de dado.
 
 A contagem de seções de cada card é derivada do texto em runtime, não gravada
-pelo gerador — número fixo envelheceria em silêncio quando o guia mudasse.
+pelo gerador — número fixo envelheceria em silêncio quando o guia mudasse. Por
+isso ela é memoizada no próprio guia junto com o `__haystack`, na técnica do
+`catalog.js`: a busca cobre o corpo do texto, e recalcular 20 outlines sobre
+~200 KB de Markdown a cada tecla digitada trava a digitação.
+
+A vitrine reusa as classes de `listing` (`.listing__filter-block`,
+`.listing__filters`, `.listing__toggle`) e por isso não tem CSS próprio —
+inclusive o colapso de filtro só em tablet/mobile, que vem de
+`05-pages.css:87-95`. Duas linhas de chip (área, profundidade) e um
+`ui.bareSelect` de ordenação. **Agrupar é um modo da ordenação, não um segundo
+controle**: em `Por área` (o padrão) sai um `ui.section` por área, com área
+vazia omitida; nas outras três ordens sai um `.catalog` plano.
+
+`AREAS` vive em `pages/coding-styles.js` com a ordem de exibição (Backend →
+Frontend → Mobile → Dados → Infra, não alfabética) e os rótulos; o dado carrega
+só a chave. `ui.styleCard(guide, { areaLabel, depthLabel })` recebe os rótulos
+de fora, como o `categoryLabel` do `skillCard` — duas tabelas de rótulo
+divergiriam. E `linkLabel` de `DEPTHS` não é derivado do `label` porque tem de
+concordar com "versão": "Ver a versão completo" estaria errado.
 
 Um dos guias, `vanilla-web.md`, descreve a stack **deste** app. Os outros não se
 aplicam aqui: este projeto não tem TypeScript, npm nem build.
@@ -298,50 +361,90 @@ O subconjunto é o que os guias usam e nada além: `#`/`##`/`###`, ` ``` `, tabe
 lista, lista de tarefa, citação, régua, `` `code` ``, `**bold**` e link. O que
 não estiver na lista sai como texto literal, de propósito.
 
-### Apresentação: um canvas, uma câmera, um modo
+### Apresentação: keynote com morph, e doodles que respiram
 
-`#/what-is-a-skill` é uma apresentação de 20 passos no estilo Prezi: todos os
-quadros vivem num canvas e a câmera voa entre eles.
+`#/what-is-a-skill` é um keynote de **10 slides / 19 passos**. Não há canvas nem
+câmera: cada slide é uma página responsiva comum, em escala 1, e a transição
+entre eles é o **Morph do PowerPoint** — o elemento que existe nos dois slides
+viaja de um para o outro, e o resto entra e sai. Isso é o que mantém o texto
+nítido em qualquer largura e dispensa um segundo renderizador para o celular.
 
-**A decisão que sustenta o resto:** o quadro tem o tamanho da área útil, então um
-passo que enquadra um quadro inteiro cai em **escala exatamente 1**. Em repouso a
-apresentação é uma página responsiva comum, e a câmera só acrescenta o movimento.
-É isso que a deixa legível a 360px sem um segundo renderizador, e que mantém o
-texto nítido — a maioria dos voos é translação pura, e os passos de conteúdo ficam
-a 1:1. `layout()` recalcula `--deck-frame-w/h` a cada resize; o teste afirma
-`k ≈ 1` em quatro larguras, e é essa asserção que denuncia se o desenho quebrou.
+O conteúdo e o desenho vêm de `.inspo/` (quatro capturas de uma aula: o que são,
+estrutura, pra que serve, exemplo de agente) — a composição, a borda tracejada, a
+pílula clara e a pasta. A paleta roxa do material **não** foi adotada: a estrutura
+é de lá, a cor é a do Skill Hub.
 
 Consequências práticas:
 
-- **Alvo de câmera é sempre um nó do DOM**, medido pela cadeia de `offsetParent`
-  (valor de layout, que o transform do ancestral não afeta — `getBoundingClientRect`
-  tornaria a medida circular). O canvas precisa continuar `position: absolute`,
-  senão a cadeia passa direto por ele e a medida sai errada em silêncio. Nada de
-  `display: contents` nem de `vw`/`vh` dentro do canvas.
+- **O contrato do morph é `data-morph="<chave>"`.** A mesma chave em dois slides
+  faz o elemento viajar. `data-morph-type="text"` interpola `font-size` em vez de
+  escalar — escalar texto o deixa borrado no meio do caminho. O padrão é `box`,
+  que escala **e** cria um fantasma clonado do elemento que sai, fazendo
+  cross-fade por cima; sem o fantasma, o conteúdo do destino apareceria espremido
+  no tamanho da origem.
+- **Aqui `getBoundingClientRect` é a ferramenta certa**, ao contrário da câmera
+  que existiu antes (aquela media por `offsetParent` para não ficar circular). No
+  FLIP é justamente a posição renderizada que se compara. Consequência: o palco
+  **não pode ganhar `transform`, `filter` nem `perspective`** — mudariam o
+  referencial do `.deck__ghosts`, que é `position: fixed`, e os fantasmas
+  apareceriam deslocados.
+- **`prefers-reduced-motion` tem DOIS caminhos aqui, e só um é automático.** O
+  bloco global de `02-base.css` cobre `@keyframes` e `transition` — é o que
+  desliga o boil dos doodles. Ele **não alcança a Web Animations API**, e o morph
+  é a única coisa do app que usa WAAPI: por isso `morph.js` consulta
+  `matchMedia('(prefers-reduced-motion: reduce)')` na mão e troca o slide sem
+  animar. Tirar essa checagem faz a apresentação continuar voando para quem pediu
+  que não voasse, e isso reprova a DoD.
+- **O boil dos doodles vive da opacidade BASE, não do último quadro da animação.**
+  Cada doodle tem duas variantes do mesmo desenho; a variante 0 nasce visível e a
+  1 nasce escondida, e a animação só alterna. Se o estado parado viesse do fim da
+  animação, o movimento reduzido (que a encerra em 0.01ms, sem `fill-mode`) faria
+  as duas sumirem e o desenho desapareceria justamente para quem pediu menos
+  movimento.
 - **Os trechos do `SKILL.md` são agrupados por TEXTO, não por índice de linha.**
   O arquivo vem de `catalog.byId('api-reviewer')` em runtime; casar por texto é o
-  que faz o zoom sobreviver a uma edição no catálogo.
-- **`render()` devolve árvore destacada.** Medir só funciona dentro de um
-  `requestAnimationFrame`, e a transição da câmera entra um frame depois do
-  primeiro enquadramento — senão a apresentação abre com um voo indesejado.
-- **`data-deck` na shell é posto dentro desse rAF, antes de medir** (é ele que
-  torna `.page` um contêiner flex, e sem isso o viewport tem altura zero), com
-  `try/catch` que o remove se algo lançar. Sem isso uma exceção deixaria a
-  sidebar recolhida sem rota nenhuma que chamasse o `teardown`.
+  que faz o realce sobreviver a uma edição no catálogo. As quebras de linha ficam
+  **dentro do texto** e quem as desenha é o `white-space: pre` — um `<span>` por
+  linha em `display: block` desenharia igual, mas `textContent` sairia sem
+  nenhum `\n` e copiar o arquivo da tela devolveria tudo numa linha só.
+- **`render()` devolve árvore destacada.** Montar e medir só funciona dentro de um
+  `requestAnimationFrame`, e o primeiro slide entra **sem morph** — morph precisa
+  de um slide anterior, e abrir com movimento é o defeito a evitar.
+- **`data-deck` na shell é posto dentro desse rAF** (é ele que torna `.page` um
+  contêiner flex, e sem isso o palco tem altura zero), com `try/catch` que o
+  remove se algo lançar. Sem isso uma exceção deixaria a sidebar recolhida sem
+  rota nenhuma que chamasse o `teardown`.
 - **A apresentação nunca escreve em `skillhub.ui.v1`.** Ela só põe e tira
-  `data-deck`; a preferência real da sidebar volta a valer sozinha na saída. O
-  botão de recolher fica escondido justamente para que não haja caminho de
-  gravação.
-- **Nenhum quadro contém elemento focável fora do passo atual**: quadro escondido
-  ganha `aria-hidden` e os focáveis ganham `tabindex="-1"`, removido ao virar o
-  atual (são links nossos, sem tabindex de autor).
+  `data-deck`; a preferência real da sidebar volta a valer sozinha na saída.
+- **Slide centralizado por margem automática, nunca por `justify-content: center`.**
+  Com conteúdo mais alto que o palco, o `center` empurra o começo para fora da
+  área rolável e o título fica inalcançável acima do topo. `margin-top: auto` no
+  primeiro filho e `margin-bottom: auto` no último centralizam quando cabe e
+  alinham ao topo quando não cabe.
+- **Nenhum elemento focável fora do que está visível**: slide escondido ganha
+  `aria-hidden` e os focáveis ganham `tabindex="-1"`, e o mesmo vale para o que
+  ainda não foi revelado por *build* — opacidade zero não basta para o teclado.
+- **O estado padrão de um `[data-build]` é ESCONDIDO**, por
+  `:not([data-shown="true"])` no CSS e o mesmo seletor no JS. Com o negativo
+  (`[data-shown="false"]`) o elemento nasce visível e some quando o JS marca —
+  e um slide aberto direto num build adiantado pisca o conteúdo antes de
+  escondê-lo. Justamente por isso a raiz do slide guarda o build em
+  **`data-build-index`**, e não em `data-build`: são coisas diferentes — em que
+  build o slide está, versus a partir de qual build o elemento aparece — e com
+  o mesmo nome nos dois a regra pega o slide inteiro e a tela fica preta, sem
+  erro nenhum no console.
+- **Teste de apresentação afirma o que se VÊ**, não só o que existe. Toda
+  asserção de geometria passa num slide com `opacity: 0`; o que denuncia é
+  medir a opacidade computada da raiz e contar quantos nós de texto têm caixa
+  na tela.
 - **A URL acompanha por `location.replace`**, não `replaceState` — que lança
   `SecurityError` em `file://` no Chrome. A rota declara `ownsParam`, então trocar
-  de passo não re-renderiza, e `onParam()` cobre a URL editada à mão.
-- **Duração do voo é proporcional à distância** (`camera.flightDuration`), entre
-  `--duration-camera` e `--duration-camera-max`. É o que reconcilia o movimento de
-  câmera com o "motion curto e funcional" do `DESIGN_SYSTEM.md` §20: zoom curto
-  fica no piso, só travessia entre capítulos chega ao teto.
+  de passo não re-renderiza, e `onParam()` cobre a URL editada à mão. A URL numera
+  **passos**, não slides: um build é endereçável.
+- **Duração do morph é proporcional ao esforço** (`morph.duration`), entre
+  `--duration-morph` e `--duration-morph-max`, somando distância em larguras de
+  tela e troca de escala em oitavas. É o que reconcilia o movimento com o "motion
+  curto e funcional" do `DESIGN_SYSTEM.md` §20.
 
 ### Catálogo
 
@@ -370,8 +473,8 @@ Sete camadas (`01-tokens` → `07-responsive`), na ordem de `DESIGN_SYSTEM.md` �
 Nomes de componente são os do `design-system/` (`.btn`, `.card`, `.skill-card`,
 `.chip`, `.badge`, `.stepper`, `.code-box`, `.risk`, `.toast`, `.field`), sem prefixo.
 **Nenhum valor visual novo sem token equivalente** — hoje os 86 tokens estão todos em
-uso e é assim que deve continuar. Cuidado ao varrer por token morto: `--deck-inset`,
-`--duration-camera` e `--duration-camera-max` também são lidos pelo JS via
+uso e é assim que deve continuar. Cuidado ao varrer por token morto:
+`--duration-morph` e `--duration-morph-max` são lidos pelo JS via
 `getComputedStyle`, então um `grep` por `var(` não os encontra.
 
 ### Grid e flex: quem pode encolher
@@ -395,6 +498,19 @@ abaixo da dobra. Para uma coluna com uma região que rola, use **flex**:
 ```
 
 `flex: 1` mais `min-height: 0` é o par que cria um contêiner de rolagem de verdade.
+
+**Lista numerada tem duas armadilhas, e as duas já custaram tempo.** No
+`.dialog__steps` do help de instalação:
+
+- `display: grid` num `<li>` **substitui** `display: list-item`, e o número do
+  marcador desaparece sem erro nenhum;
+- e com o `<ol>` em `display: grid`, o `<li>` vira item de grid e deixa de
+  encolher abaixo do conteúdo — a barra "Copiar" da code box estourava a coluna
+  em 13 px a 390 px, o diálogo passava a rolar na horizontal e **cortava o
+  texto** em vez de quebrar.
+
+Para uma lista vertical, fluxo de bloco com `> li + li { margin-top }` resolve as
+duas de uma vez: grid ali não acrescenta nada.
 Com grid seria preciso declarar `grid-template-rows` com um `minmax(0, 1fr)` na linha
 certa — frágil, porque a contagem de filhos muda (um filho `hidden` não cria linha).
 
@@ -415,7 +531,10 @@ certa — frágil, porque a contagem de filhos muda (um filho `hidden` não cria
   por espaço e contraste.
 - Evitar gradiente roxo, glassmorphism exagerado, estética genérica de SaaS.
 - Ícones lineares em SVG inline (`SkillHub.icons`), `currentColor`.
-- Motion curto e funcional; `prefers-reduced-motion` respeitado globalmente.
+- Motion curto e funcional; `prefers-reduced-motion` respeitado globalmente. A
+  **única** animação contínua do app é o *boil* dos doodles da apresentação, e
+  ela vale só para ilustração decorativa, só no slide visível — exceção
+  deliberada, anotada no token `--duration-boil`.
 
 ## 🧭 Navegação
 
@@ -491,16 +610,41 @@ não há pacote a compactar. Sem dependência externa para compactar.
 
 Avisos **não** bloqueiam download; só erros bloqueantes bloqueiam.
 
+### Instalar: caminhos são referência, passos são procedimento
+
+`formats.js` tem as duas coisas, e a diferença importa:
+
+- **`installPaths(id, name)`** → `{ key, value, hint }[]`, todos os lugares onde
+  aquele formato pode morar. É **referência**, e aparece no bloco `Como instalar`
+  do detalhe, no builder e na apresentação.
+- **`installSteps(id, name)`** → `{ title, copy, code, codeLabel }[]`, o
+  procedimento em ordem. É o que o help do detalhe abre, e `installStepsText()` é
+  a mesma coisa em texto, para copiar.
+
+Passo é **condicional, não fixo**: `placeholders` só entra quando a lista não é
+vazia, o limite só quando o formato declara `maxLines`/`maxBytes`, e o passo de
+acionamento **não existe** quando `autoLoaded` (o `AGENTS.md` não se invoca). É
+por isso que o passo a passo tem tamanho diferente por formato, e o teste afirma
+isso em vez de contar passos.
+
+Nada de comportamento de CLI inventado: cada passo sai do que `formats.js` já
+declara, e o resto manda ler o `docUrl`.
+
+O help fica **fora do `.split`** em `pages/detail.js`, como irmão das duas
+colunas: abaixo de 1180px o split vira uma coluna e o aside cai embaixo do main,
+então um bloco dentro do main não seria o fim da página no celular.
+
 ## ✅ Definition of Done
 
 - funciona sem login e sem backend;
 - funciona via `file://` sem flags e em subpasta;
 - zero erro de console (404 conta);
 - navegação por teclado nos controles principais, foco visível;
-- `prefers-reduced-motion` respeitado;
+- `prefers-reduced-motion` respeitado — e o que usa Web Animations API checa
+  `matchMedia` na mão, porque o bloco global de CSS não o alcança;
 - sem overflow horizontal de 360 a 1920 px;
 - todo input tem label; todo botão tem nome acessível;
-- a apresentação abre sem voo indesejado, sai sem deixar `data-deck` na shell e
+- a apresentação abre sem morph indesejado, sai sem deixar `data-deck` na shell e
   não altera a preferência da sidebar;
 - nenhum caminho absoluto: quebra o Pages em `/skillhub/` sem quebrar o `localhost`;
 - região que rola cabe na janela — item de grid com linha `auto` não encolhe;
