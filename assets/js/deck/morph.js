@@ -12,7 +12,7 @@
       a posição RENDERIZADA nos dois estados.
 
    2. Nada de animar layout. Largura, altura e posição em fluxo animadas
-      empurrariam os irmãos a cada frame. Só `transform` e `opacity` — e
+      empurrariam os irmãos a cada frame. Só `transform` e `opacity`, mais
       `font-size` no caso de texto, que é a exceção deliberada abaixo.
 
    3. Duas espécies de morph, porque escalar texto o deixa borrado:
@@ -53,7 +53,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
    *
    * Devolve null para destino degenerado: `scale(Infinity)` e `scale(NaN)` são
    * descartados em silêncio pelo CSSOM, e a transição pararia sem erro nenhum
-   * no console — o mesmo cuidado que a câmera antiga tomava.
+   * no console. É o mesmo cuidado que a câmera antiga tomava.
    */
   function delta(from, to) {
     if (!from || !to) return null;
@@ -160,7 +160,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
 
   /**
    * Anima a troca de `from` para `to`, ambos já no `stage`.
-   * Devolve a duração total em ms — zero quando não houve animação nenhuma.
+   * Devolve a duração total em ms, ou zero quando não houve animação nenhuma.
    *
    * O chamador é dono do DOM: insere `to` no stage ANTES de chamar, e remove
    * `from` no `onDone`. Assim este módulo não precisa saber como o slide nasce.
@@ -230,8 +230,11 @@ window.SkillHub.deck = window.SkillHub.deck || {};
   }
 
   function animateBox(origin, target, d, ms, ghostLayer, easing) {
+    /* Cross-fade limpo: o que entra sai de zero e o fantasma vai a zero. Com o
+       destino começando meio opaco, os dois somam no meio do caminho e o olho
+       lê um brilho: um flash no lugar de uma transição. */
     play(target.node, [
-      { transform: toTransform(d), opacity: 0.4 },
+      { transform: toTransform(d), opacity: 0 },
       { transform: 'translate(0px, 0px) scale(1, 1)', opacity: 1 }
     ], ms, 0, easing);
     ghost(origin, target, ms, ghostLayer, easing);

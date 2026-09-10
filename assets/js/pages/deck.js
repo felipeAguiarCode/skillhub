@@ -2,7 +2,7 @@
    pages/deck.js — SkillHub.pages.deck
 
    A apresentação "O que é uma Skill" como keynote: um slide de cada vez, e a
-   troca entre eles é o Morph (deck/morph.js). Sem canvas e sem câmera — cada
+   troca entre eles é o Morph (deck/morph.js). Sem canvas e sem câmera: cada
    slide é uma página responsiva a 1:1, o que mantém o texto nítido em qualquer
    largura e dispensa um segundo renderizador para o celular.
 
@@ -14,7 +14,7 @@
    2. `data-deck` na shell entra DENTRO desse rAF, envolto em try/catch que o
       remove. É ele que torna `.page` um contêiner flex; sem ele o palco tem
       altura zero. E uma exceção sem o catch deixaria a shell recolhida sem
-      nenhuma rota que chamasse o teardown — só recarregar resolveria.
+      nenhuma rota que chamasse o teardown, e só recarregar resolveria.
 
    3. O primeiro slide entra SEM morph. Morph precisa de um slide anterior, e
       abrir a apresentação com movimento é justamente o defeito a evitar.
@@ -38,7 +38,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   var content = SkillHub.deck.slides;
 
   /* Entrada por roda do mouse: acumula até o limiar e zera depois do silêncio.
-     O cooldown é do domínio da ENTRADA, não do movimento — atrelá-lo à duração
+     O cooldown é do domínio da ENTRADA, não do movimento. Atrelá-lo à duração
      do morph criaria uma zona morta justamente para quem pediu movimento
      reduzido e não tem animação nenhuma. */
   var WHEEL_THRESHOLD = 140;
@@ -76,7 +76,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
 
   /* O easing é string, então não passa por parseFloat como as durações. Ler daqui
      em vez de repetir a curva no JS é o que impede o token e o código de
-     divergirem — e é o que mantém `--ease-morph` com consumidor de verdade. */
+     divergirem, e é o que mantém `--ease-morph` com consumidor de verdade. */
   function readEasing(name, fallback) {
     if (!refs.stage || typeof window.getComputedStyle !== 'function') return fallback;
     var value = window.getComputedStyle(refs.stage).getPropertyValue(name);
@@ -100,7 +100,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
 
   /*
    * Um "build" é a revelação em etapas dentro do mesmo slide, como num keynote.
-   * A URL numera PASSOS, não slides, então cada build é endereçável — e trocar
+   * A URL numera PASSOS, não slides, então cada build é endereçável, e trocar
    * de build nunca dispara morph, porque o slide é o mesmo.
    */
   function flatten(list) {
@@ -138,7 +138,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
    */
   function applyBuild(node, build) {
     if (!node) return;
-    /* `buildIndex` na raiz, `build` nos filhos: são coisas diferentes — em que
+    /* `buildIndex` na raiz, `build` nos filhos: são coisas diferentes, em que
        build o slide está, versus a partir de qual build o elemento aparece.
        Com o mesmo nome nos dois, a regra que esconde o que ainda não foi
        revelado pega o slide inteiro e a tela fica preta. */
@@ -273,7 +273,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   }
 
   /* A rota declara ownsParam, então o router não re-renderiza quando só o
-     parâmetro muda — chama isto. A comparação com `index` evita o laço com o
+     parâmetro muda; chama isto. A comparação com `index` evita o laço com o
      hashchange que o próprio syncHash dispara. */
   function onParam(param) {
     if (!mounted) return;

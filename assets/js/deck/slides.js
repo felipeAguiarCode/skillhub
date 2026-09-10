@@ -8,7 +8,7 @@
    O contrato do morph é o atributo `data-morph="<chave>"`. A mesma chave em
    dois slides consecutivos faz o elemento VIAJAR de um para o outro; chave só
    num deles faz entrar ou sair. `data-morph-type="text"` pede interpolação de
-   font-size em vez de escala — é o que mantém o título nítido enquanto encolhe.
+   font-size em vez de escala: é o que mantém o título nítido enquanto encolhe.
 
    As chaves em uso, e o caminho que cada uma percorre:
 
@@ -43,7 +43,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
   var SOURCES = [
     {
       href: 'https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview',
-      title: 'Agent Skills — visão geral',
+      title: 'Agent Skills: visão geral',
       copy: 'O que é uma Skill, a arquitetura de sistema de arquivos e a divulgação progressiva em três níveis.'
     },
     {
@@ -94,7 +94,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
     return el('p', { class: 'slide__para' }, text);
   }
 
-  /** Cartão de borda tracejada — o motivo visual que vem do material de origem. */
+  /** Cartão de borda tracejada, o motivo visual que vem do material de origem. */
   function dashCard(opts) {
     return el('div', {
       class: 'dash-card',
@@ -174,7 +174,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
 
   /*
    * As quebras de linha ficam DENTRO do texto, e o `white-space: pre` do <pre>
-   * as desenha. A alternativa — um <span> em display:block por linha — desenha
+   * as desenha. A alternativa, um <span> em display:block por linha, desenha
    * igual, mas o textContent sai sem nenhum "\n": copiar o arquivo da tela
    * devolveria tudo grudado numa linha só. Aqui `pre.textContent` é idêntico ao
    * `content` do catálogo, byte a byte.
@@ -216,7 +216,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
         el('div', { class: 'slide__cover-text' }, [
           eyebrow(),
           title('O que é uma Skill?', true),
-          lead('Um passeio de dez slides pelo formato que ensina o Claude a trabalhar do seu jeito — do arquivo à instalação.'),
+          lead('Um passeio pelo formato que ensina o Claude a trabalhar do seu jeito, do arquivo à instalação.'),
           el('p', { class: 'slide__hint' }, 'Use as setas, o espaço ou clique para avançar. A tecla O abre o mapa.')
         ]),
         el('div', { class: 'slide__cover-art' }, [
@@ -239,7 +239,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
             el('p', { class: 'slide__para slide__para--strong' },
               'Uma Skill é um arquivo de instruções que ensina o Claude a trabalhar do seu jeito.'),
             para('Em vez de explicar tudo de novo a cada conversa, você escreve uma vez e ele passa a seguir sozinho quando o assunto aparece.'),
-            para('É o manual que você daria a alguém no primeiro dia — só que ele fica pronto para sempre.')
+            para('É o manual que você daria a alguém no primeiro dia, só que ele fica pronto para sempre.')
           ]
         }),
         el('div', { class: 'slide__aside-art' }, [
@@ -288,7 +288,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
             doodle: 'palette',
             label: 'Assets',
             title: 'A identidade',
-            copy: 'Templates, fontes e ícones — o que dá forma ao resultado.'
+            copy: 'Templates, fontes e ícones: o que dá forma ao resultado.'
           })
         ])
       ])
@@ -358,7 +358,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
     return [
       eyebrow(),
       title('O que ele carrega, e quando'),
-      lead('A Skill inteira mora no disco. Só o que a tarefa pede entra no contexto — e é isso que permite ter muitas instaladas sem pagar por todas.'),
+      lead('A Skill inteira mora no disco, mas só o que a tarefa pede entra no contexto. É isso que permite ter muitas instaladas sem pagar por todas.'),
       el('div', { class: 'slide__split slide__split--levels' }, [
         el('div', { class: 'slide__tree-col' }, [
           tree(),
@@ -505,7 +505,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
   }
 
   /* Os fios que ligam o agente às pastas. `preserveAspectRatio: none` deixa a
-     curva esticar com a coluna — é decoração, não diagrama de precisão. */
+     curva esticar com a coluna: é decoração, não diagrama de precisão. */
   function wires() {
     return svg('svg', {
       class: 'wiring__wires',
@@ -528,7 +528,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
         el('ul', { class: 'rules' }, [
           rule('A descrição em terceira pessoa', 'Ela é injetada no system prompt. "Revisa mudanças de API" funciona; "eu posso te ajudar a revisar" atrapalha a escolha.'),
           rule('Diga o que faz e quando usar', 'Sem o "quando", o Claude não tem como saber que esta é a Skill certa entre dezenas.'),
-          rule('Corpo abaixo de 500 linhas', 'Passou disso, o resto vai para arquivos ao lado — que só são lidos quando a tarefa pede.', '1'),
+          rule('Corpo abaixo de 500 linhas', 'Passou disso, o resto vai para arquivos ao lado, que só são lidos quando a tarefa pede.', '1'),
           rule('Referências a um nível só', 'Arquivo que aponta para arquivo que aponta para arquivo acaba lido pela metade.', '1'),
           rule('Nada com data de validade', 'Instrução que fala em "até agosto" envelhece sozinha e ninguém percebe.', '1')
         ]),
@@ -553,6 +553,104 @@ window.SkillHub.deck = window.SkillHub.deck || {};
       el('strong', { class: 'rules__title' }, strong),
       el('span', { class: 'rules__copy' }, copy)
     ]);
+  }
+
+  /* Passo numerado com comando ao lado. Serve aos dois slides seguintes: criar
+     e refinar são a mesma forma, sequência de passos curtos, e um componente
+     só evita duas listas quase iguais no CSS. */
+  function howto(opts) {
+    return el('li', { class: 'howto__item', 'data-build': opts.build || null }, [
+      el('span', { class: 'howto__num', 'aria-hidden': 'true' }, String(opts.step)),
+      el('div', { class: 'howto__body' }, [
+        el('strong', { class: 'howto__title' }, opts.title),
+        el('span', { class: 'howto__copy' }, opts.copy),
+        opts.code ? el('code', {
+          class: 'howto__code',
+          'data-morph': opts.morph || null
+        }, opts.code) : null
+      ])
+    ]);
+  }
+
+  function creating() {
+    return [
+      eyebrow(),
+      title('Criando no Claude Code'),
+      lead('Não existe comando de scaffold, e isso é a vantagem: uma Skill é uma pasta com um arquivo de texto, então ela entra no repositório como qualquer outro código.'),
+      el('div', { class: 'slide__split slide__split--howto' }, [
+        el('ol', { class: 'howto' }, [
+          howto({
+            step: 1,
+            title: 'Crie a pasta',
+            copy: 'Dentro do projeto, para valer no repositório. Em ~/.claude/skills, para valer em tudo que você abre.',
+            code: 'mkdir -p .claude/skills/revisor-de-api'
+          }),
+          howto({
+            step: 2,
+            build: '1',
+            title: 'Escreva o SKILL.md',
+            copy: 'Dois campos bastam. A description é o que o Claude compara com o seu pedido, então diga o que faz e quando usar.',
+            morph: 'pill-skill',
+            code: '---\nname: revisor-de-api\ndescription: Revisa mudanças de API contra as\n  convenções do projeto. Use antes de publicar\n  alterações em endpoints.\n---\n\n# Objetivo\n...'
+          }),
+          howto({
+            step: 3,
+            build: '2',
+            title: 'Acione na sessão',
+            copy: 'Digite a barra para chamar pelo nome, ou apenas peça a revisão: se a description casar, o Claude aciona sozinho.',
+            code: '/revisor-de-api  ·  ou  "revisa essa API pra mim"'
+          })
+        ]),
+        el('div', { class: 'slide__aside-art' }, [
+          doodleSlot('terminal', 88),
+          noticeNode({
+            icon: 'sparkle',
+            build: '2',
+            strong: 'Peça ao próprio Claude.',
+            copy: 'Ele conhece o formato: descreva o que você acabou de fazer à mão e peça que transforme numa Skill. Depois revise o excesso, que é o erro mais comum.'
+          })
+        ])
+      ])
+    ];
+  }
+
+  function refining() {
+    return [
+      eyebrow(),
+      title('Refinar até ficar boa'),
+      lead('A primeira versão nunca é a versão boa. O ciclo é curto, e quem manda nele é o caso real, não a impressão.'),
+      el('ol', { class: 'howto howto--wide' }, [
+        howto({
+          step: 1,
+          title: 'Faça a tarefa sem Skill nenhuma',
+          copy: 'O que você explicou duas vezes na mesma conversa é exatamente o que vira arquivo. Antes disso, você está adivinhando o que é útil.'
+        }),
+        howto({
+          step: 2,
+          title: 'Escreva o mínimo que resolve',
+          copy: 'Contexto que o Claude já tem só ocupa espaço. Corte cada frase que explica algo que ele faria certo sozinho.'
+        }),
+        howto({
+          step: 3,
+          build: '1',
+          title: 'Use em trabalho de verdade e observe',
+          copy: 'Onde ele pulou um passo, qual arquivo leu na ordem errada, qual nunca abriu. Arquivo que nunca é lido ou está mal sinalizado ou não precisava existir.'
+        }),
+        howto({
+          step: 4,
+          build: '1',
+          title: 'Volte ao arquivo com o caso concreto',
+          copy: '"Esqueceu de filtrar conta de teste no relatório regional" muda a Skill. "Ficou vago" não muda nada.'
+        })
+      ]),
+      noticeNode({
+        icon: 'refresh',
+        accent: true,
+        build: '2',
+        strong: 'Três cenários antes de escrever muito.',
+        copy: 'A documentação recomenda montar as avaliações primeiro: rode a tarefa sem a Skill, anote onde falhou, e escreva só o suficiente para passar nesses casos. Sem isso você documenta um problema imaginado.'
+      })
+    ];
   }
 
   function install(paths) {
@@ -584,7 +682,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
     return [
       eyebrow(),
       title('Direto da fonte'),
-      lead('Cinco páginas oficiais da Anthropic — a documentação, as boas práticas e o repositório público.'),
+      lead('Cinco páginas oficiais da Anthropic: a documentação, as boas práticas e o repositório público.'),
       el('ul', { class: 'sources' }, SOURCES.map(function (source) {
         return el('li', { class: 'sources__item' }, [
           el('a', {
@@ -606,7 +704,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
   /* --- A lista ------------------------------------------------------------- */
 
   /**
-   * @param {object} ctx  { item, paths } — o que vem de fora e não se repete aqui
+   * @param {object} ctx  { item, paths }, o que vem de fora e não se repete aqui
    * @returns {object[]}  { id, chapter, caption, builds, layout, build(ctx) }
    */
   function all(ctx) {
@@ -621,6 +719,8 @@ window.SkillHub.deck = window.SkillHub.deck || {};
       { id: 'why', chapter: 'Pra que serve', caption: 'Padronizar, apoiar o desenvolvimento e compartilhar.', builds: 3, build: whatFor },
       { id: 'agent', chapter: 'Pra que serve', caption: 'Um agente de LinkedIn com duas Skills: o CV e o mapa de estudos.', builds: 2, build: agentExample },
       { id: 'craft', chapter: 'Como escrever', caption: 'Concisão, descrição honesta e o grau certo de liberdade.', builds: 3, build: craft },
+      { id: 'create', chapter: 'Na prática', caption: 'Uma Skill criada do zero no Claude Code, em três passos.', builds: 3, build: creating },
+      { id: 'refine', chapter: 'Na prática', caption: 'O ciclo de refino, guiado pelo caso real.', builds: 3, build: refining },
       { id: 'install', chapter: 'Onde ela mora', caption: 'Os caminhos reais de instalação no Claude Code.', builds: 2, build: function () { return install(paths); } },
       { id: 'sources', chapter: 'Fecho', caption: 'As cinco fontes oficiais, e por onde começar.', builds: 2, build: sources }
     ];

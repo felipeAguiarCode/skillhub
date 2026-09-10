@@ -116,11 +116,11 @@
      fica arrastada nos percursos mais longos. */
   --ease-morph: cubic-bezier(.32, .72, 0, 1);
 
-  /* Traço desenhado à mão: duas variantes do mesmo desenho alternando a ~8
-     quadros por segundo. É a técnica da animação tradicional, e a única
-     animação contínua do app — vale só para ilustração decorativa, e o bloco
-     global de prefers-reduced-motion (02-base.css) a desliga inteira. */
-  --duration-boil: 250ms;
+  /* Balanço do traço desenhado à mão: a única animação contínua do app, e vale
+     só para ilustração decorativa. É LENTA de propósito — a versão rápida, que
+     alternava dois desenhos a 8 quadros por segundo, lia como pisca ao lado de
+     texto. O bloco global de prefers-reduced-motion (02-base.css) a desliga. */
+  --duration-sway: 5200ms;
   /* Entrada elástica com leve ultrapassagem, para o desenho "cair" no lugar. */
   --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
 

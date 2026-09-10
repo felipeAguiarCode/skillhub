@@ -83,7 +83,7 @@ primeiras antes de mexer em algo grande.
 | Suíte | Asserções | Cobre |
 |---|---|---|
 | `drive.js` | 157 | bootstrap, as nove rotas mais quatro detalhes, catálogo, busca e filtros, builder, rascunho, `localStorage`, acúmulo de listener |
-| `drive-deck.js` | 326 | a apresentação: montagem sem morph, morph, builds, teclado, mapa, deep link, movimento reduzido, foco, doodle animando, resíduo no teardown, os 19 passos a 1440 e a 360 |
+| `drive-deck.js` | 411 | a apresentação: montagem sem morph, morph, builds, teclado, mapa, deep link, movimento reduzido, foco, slide visível de verdade, nada piscando em laço, resíduo no teardown, os 25 passos a 1440 e a 360 |
 | `drive-deck-file.js` | 10 | a mesma apresentação por `file://`, onde `replaceState` lançaria |
 | `smoke-serialize.js` | 115 | serialização determinística (ADR-008) |
 | `smoke-formats.js` | 77 | o registry de formatos contra o catálogo |
@@ -363,7 +363,7 @@ não estiver na lista sai como texto literal, de propósito.
 
 ### Apresentação: keynote com morph, e doodles que respiram
 
-`#/what-is-a-skill` é um keynote de **10 slides / 19 passos**. Não há canvas nem
+`#/what-is-a-skill` é um keynote de **12 slides / 25 passos**. Não há canvas nem
 câmera: cada slide é uma página responsiva comum, em escala 1, e a transição
 entre eles é o **Morph do PowerPoint** — o elemento que existe nos dois slides
 viaja de um para o outro, e o resto entra e sai. Isso é o que mantém o texto
@@ -390,17 +390,18 @@ Consequências práticas:
   apareceriam deslocados.
 - **`prefers-reduced-motion` tem DOIS caminhos aqui, e só um é automático.** O
   bloco global de `02-base.css` cobre `@keyframes` e `transition` — é o que
-  desliga o boil dos doodles. Ele **não alcança a Web Animations API**, e o morph
+  desliga o balanço dos doodles. Ele **não alcança a Web Animations API**, e o morph
   é a única coisa do app que usa WAAPI: por isso `morph.js` consulta
   `matchMedia('(prefers-reduced-motion: reduce)')` na mão e troca o slide sem
   animar. Tirar essa checagem faz a apresentação continuar voando para quem pediu
   que não voasse, e isso reprova a DoD.
-- **O boil dos doodles vive da opacidade BASE, não do último quadro da animação.**
-  Cada doodle tem duas variantes do mesmo desenho; a variante 0 nasce visível e a
-  1 nasce escondida, e a animação só alterna. Se o estado parado viesse do fim da
-  animação, o movimento reduzido (que a encerra em 0.01ms, sem `fill-mode`) faria
-  as duas sumirem e o desenho desapareceria justamente para quem pediu menos
-  movimento.
+- **O movimento contínuo dos doodles é transform, nunca troca de imagem.** A
+  primeira versão usava *boil* — duas variantes do mesmo desenho alternando a ~8
+  quadros por segundo, a técnica da animação tradicional. É fiel ao traço à mão e
+  errado aqui: ao lado de texto que se lê, numa tela parada, aquilo não passa
+  vida, passa **pisca**. Ficou um balanço lento (`doodle-sway`, ~5s) de rotação e
+  deslocamento mínimos, na raiz do SVG para não brigar com o `doodle-drop` do
+  invólucro. Qualquer animação de opacidade ou de troca de quadro volta a piscar.
 - **Os trechos do `SKILL.md` são agrupados por TEXTO, não por índice de linha.**
   O arquivo vem de `catalog.byId('api-reviewer')` em runtime; casar por texto é o
   que faz o realce sobreviver a uma edição no catálogo. As quebras de linha ficam
@@ -532,9 +533,10 @@ certa — frágil, porque a contagem de filhos muda (um filho `hidden` não cria
 - Evitar gradiente roxo, glassmorphism exagerado, estética genérica de SaaS.
 - Ícones lineares em SVG inline (`SkillHub.icons`), `currentColor`.
 - Motion curto e funcional; `prefers-reduced-motion` respeitado globalmente. A
-  **única** animação contínua do app é o *boil* dos doodles da apresentação, e
-  ela vale só para ilustração decorativa, só no slide visível — exceção
-  deliberada, anotada no token `--duration-boil`.
+  **única** animação contínua do app é o balanço lento dos doodles da
+  apresentação — decorativa, só no slide visível, e nunca por opacidade ou troca
+  de quadro, que é o que faz um desenho piscar ao lado de texto. Exceção
+  deliberada, anotada no token `--duration-sway`.
 
 ## 🧭 Navegação
 
