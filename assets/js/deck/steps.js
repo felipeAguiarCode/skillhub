@@ -315,8 +315,10 @@ window.SkillHub.deck = window.SkillHub.deck || {};
           return [
             ui.eyebrow(CHAPTERS.trigger),
             title('Onde o arquivo mora.'),
+            /* O contrato de installPaths é { key, value, hint }: ler label/path
+               renderizava dt/dd vazios, sem erro de console. */
             ui.metaList(paths.map(function (row) {
-              return { key: row.label, value: row.path };
+              return { key: row.key, value: row.value };
             })),
             el('p', { class: 'deck__body' }, [
               'A primeira linha é a que importa para um time: dentro do repositório, o critério passa a ser versionado, entra em pull request e vale para quem clonar.'

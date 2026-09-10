@@ -216,17 +216,28 @@
    * espera a forma de uma entrada de catálogo (format, risk, flags), e um guia
    * de estilo não tem nenhuma dessas coisas — forçar a forma seria inventar
    * campos só para satisfazer a função.
+   *
+   * Os rótulos de área e de profundidade vêm de fora (opts.areaLabel,
+   * opts.depthLabel), como o categoryLabel do skillCard: quem tem a lista
+   * ordenada de áreas é a página, e duas tabelas de rótulo divergiriam.
    */
-  function styleCard(guide) {
+  function styleCard(guide, options) {
+    var opts = options || {};
     var href = '#/coding-styles/' + encodeURIComponent(guide.id);
+    var count = guide.sectionCount;
     var node = el('article', { class: 'skill-card' }, [
       el('div', { class: 'card__icon skill-card__icon' }, icon(guide.icon, 'icon--lg')),
       el('div', { class: 'skill-card__body' }, [
         el('h3', { class: 'skill-card__title' }, guide.title),
         el('p', { class: 'skill-card__desc' }, guide.summary),
         badgeRow([
-          badge(guide.eyebrow, 'info', 'book'),
-          badge(guide.sectionCount + ' seções')
+          badge(opts.areaLabel || guide.area, 'info', 'book'),
+          /* Profundidade sem variante de cor: o botão "Ler" já repete laranja
+             em toda linha, e mais dez badges de destaque fariam do acento a cor
+             dominante da lista. O ícone e o texto distinguem. */
+          badge(opts.depthLabel || guide.depth, null,
+            guide.depth === 'full' ? 'layers' : 'zap'),
+          badge(count + ' ' + SkillHub.util.pluralize(count, 'seção', 'seções'))
         ].concat((guide.stack || []).map(function (item) {
           return badge(item);
         })))
@@ -241,6 +252,27 @@
   }
 
   /* --- Chips, segmented ---------------------------------------------------- */
+
+  /**
+   * Uma linha de chips de filtro, com rótulo. O data-group e o data-value são
+   * parte do contrato: quem consome atualiza o aria-pressed no lugar, varrendo
+   * [data-group], em vez de recriar os nós — é o que impede o foco de sair do
+   * campo de busca enquanto se digita.
+   */
+  function chipLine(label, group, options, onSelect) {
+    return el('div', { class: 'listing__filter-line', dataset: { group: group } }, [
+      el('span', { class: 'listing__filter-label' }, label),
+      el('div', { class: 'chips', role: 'group', 'aria-label': label }, options.map(function (option) {
+        return el('button', {
+          class: 'chip',
+          type: 'button',
+          'aria-pressed': 'false',
+          dataset: { value: option.value },
+          onclick: function () { onSelect(option.value); }
+        }, option.label);
+      }))
+    ]);
+  }
 
   function segmented(options) {
     var opts = options || {};
@@ -625,6 +657,16 @@
   /**
    * Diálogo modal simples com foco preso ao conteúdo e fechamento por Esc.
    * Usado no builder para confirmar a troca de perfil (ADR-009).
+   *
+   * Serve dois papéis, e o que decide é a presença de `onConfirm`:
+   *
+   * - com `onConfirm` → confirmação, Cancelar + Confirmar, e `items` como lista
+   *   de aviso (é para isso que ela tem ícone de alerta);
+   * - sem `onConfirm` → informativo, um botão só (`dismissLabel`), e `body`
+   *   com nós livres — usado pelo help de instalação do detalhe.
+   *
+   * `wide` alarga o diálogo, para caminho de arquivo em monoespaçado caber sem
+   * quebrar no meio.
    */
   function openDialog(options) {
     var opts = options || {};
@@ -651,7 +693,12 @@
       if (!focusable.length) return;
       var first = focusable[0];
       var last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      /* Com o foco no próprio diálogo, Tab cai naturalmente no primeiro filho,
+         mas Shift+Tab sairia da caixa: aqui ele volta para o último. */
+      if (event.shiftKey && document.activeElement === dialog) {
+        event.preventDefault();
+        last.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
@@ -660,11 +707,36 @@
       }
     }
 
+    /* Sem onConfirm, o diálogo não decide nada: uma ação só, e primária, porque
+       é ela que recebe o foco na abertura (ver o final desta função). */
+    var dismissOnly = !opts.onConfirm;
+    var actions = dismissOnly
+      ? [button({
+          label: opts.dismissLabel || 'Fechar',
+          variant: 'primary',
+          onClick: function () { close(); if (opts.onCancel) opts.onCancel(); }
+        })]
+      : [
+          button({
+            label: opts.cancelLabel || 'Cancelar',
+            variant: 'ghost',
+            onClick: function () { close(); if (opts.onCancel) opts.onCancel(); }
+          }),
+          button({
+            label: opts.confirmLabel || 'Confirmar',
+            variant: 'primary',
+            onClick: function () { close(); opts.onConfirm(); }
+          })
+        ];
+
     var dialog = el('div', {
-      class: 'dialog',
+      class: 'dialog' + (opts.wide ? ' dialog--wide' : ''),
       role: 'dialog',
       'aria-modal': 'true',
-      'aria-label': opts.title
+      'aria-label': opts.title,
+      /* Alvo de foco quando o diálogo informa em vez de perguntar. O -1 o mantém
+         fora do ciclo de Tab, que só percorre o conteúdo. */
+      tabindex: dismissOnly ? '-1' : null
     }, [
       el('h2', { class: 'dialog__title' }, opts.title),
       opts.copy ? el('p', { class: 'dialog__copy' }, opts.copy) : null,
@@ -676,18 +748,9 @@
             ]);
           }))
         : null,
-      el('div', { class: 'dialog__actions' }, [
-        button({
-          label: opts.cancelLabel || 'Cancelar',
-          variant: 'ghost',
-          onClick: function () { close(); if (opts.onCancel) opts.onCancel(); }
-        }),
-        button({
-          label: opts.confirmLabel || 'Confirmar',
-          variant: 'primary',
-          onClick: function () { close(); if (opts.onConfirm) opts.onConfirm(); }
-        })
-      ])
+      /* Corpo livre, para o diálogo que informa em vez de perguntar. */
+      opts.body ? el('div', { class: 'dialog__body' }, opts.body) : null,
+      el('div', { class: 'dialog__actions' }, actions)
     ]);
 
     var backdrop = el('div', {
@@ -703,8 +766,16 @@
     SkillHub.dom.replace(root, backdrop);
     document.addEventListener('keydown', onKeydown, true);
 
-    var confirmButton = dialog.querySelector('.btn--primary');
-    if (confirmButton) confirmButton.focus();
+    /* Confirmação foca a ação, porque é a decisão. Informativo foca o próprio
+       diálogo: o conteúdo é longo, e focar o botão do fim faria a caixa abrir
+       rolada até embaixo, escondendo o primeiro passo. */
+    if (dismissOnly) {
+      dialog.focus();
+      dialog.scrollTop = 0;
+    } else {
+      var confirmButton = dialog.querySelector('.btn--primary');
+      if (confirmButton) confirmButton.focus();
+    }
 
     return close;
   }
@@ -724,6 +795,7 @@
     skillCard: skillCard,
     styleCard: styleCard,
     rowActivatable: rowActivatable,
+    chipLine: chipLine,
     segmented: segmented,
     searchField: searchField,
     textField: textField,

@@ -258,6 +258,157 @@ window.SkillHub = window.SkillHub || {};
     return format.invocation.replace(/<nome>/g, safeName);
   }
 
+  /**
+   * O procedimento de instalar e usar, em ordem, para o formato.
+   *
+   * Dado, não DOM: devolve [{ title, copy, code, codeLabel }], com `code` e o
+   * rótulo opcionais. Cada
+   * passo sai do que este arquivo já declara — caminho, nome do arquivo de
+   * entrada, usesDirectory, autoLoaded, invocation, placeholders, limite. Onde a
+   * ferramenta tem comportamento que o app não modela, o passo manda ler o
+   * docUrl em vez de adivinhar.
+   */
+  /**
+   * Caminhos como bloco de código: rótulo comentado em cima, caminho embaixo.
+   *
+   * Duas linhas por caminho em vez de um comentário no fim da linha — o
+   * comentário inline desalinharia, porque os caminhos têm larguras diferentes,
+   * e alinhar coluna à mão é exatamente o que não se faz.
+   */
+  function pathBlock(rows, labelOf) {
+    var lines = [];
+    rows.forEach(function (row, index) {
+      if (index) lines.push('');
+      lines.push('# ' + labelOf(row));
+      lines.push(row.value);
+    });
+    return lines.join('\n');
+  }
+
+  function installSteps(id, name) {
+    var safeName = name || 'meu-item';
+    var format = get(id);
+    var entry = entryFileName(id, safeName);
+    var paths = installPaths(id, safeName);
+    var steps = [];
+
+    steps.push({
+      title: 'Baixe o arquivo',
+      copy: 'Use "Baixar ' + entry + '" na lateral desta página, ou copie o conteúdo do bloco ' +
+        entry + ' acima e salve num arquivo com esse nome.'
+    });
+
+    if (id === 'codex-agents') {
+      steps.push({
+        title: 'Salve na raiz do repositório',
+        copy: 'É o alcance mais comum: vale para toda sessão do Codex aberta nesse projeto.',
+        codeLabel: 'Caminho',
+        code: paths[0].value
+      });
+      steps.push({
+        title: 'Para um alcance diferente, mude o lugar',
+        copy: 'Num subdiretório, as regras sobrepõem as do raiz naquela área. Em ~/.codex/, valem ' +
+          'para todos os seus projetos.',
+        codeLabel: 'Outros caminhos',
+        code: pathBlock(paths.slice(1), function (row) { return row.hint; })
+      });
+    } else if (format.usesDirectory) {
+      /* Só os dois alcances que uma pessoa escolhe de fato. O bloco "Como
+         instalar" da página é a referência com todos os quatro; aqui é o
+         procedimento, e quatro opções num passo travam a decisão. */
+      steps.push({
+        title: 'Crie o diretório',
+        copy: 'O nome do diretório é o que identifica a Skill — tem de ser exatamente "' +
+          safeName + '". Escolha um dos dois alcances:',
+        codeLabel: 'Diretório',
+        code: pathBlock(paths.slice(0, 2), function (row) { return row.hint; })
+          .replace(/\/[^/\n]+$/gm, '/')
+      });
+      steps.push({
+        title: 'Salve o arquivo dentro dele',
+        copy: 'O arquivo de entrada tem de se chamar ' + entry + ' — o nome é como a ferramenta o ' +
+          'encontra. Arquivos auxiliares, se houver, ficam no mesmo diretório e são referenciados ' +
+          'de dentro do ' + entry + '.',
+        codeLabel: 'Arquivo',
+        code: paths[1].value
+      });
+    } else if (paths.length > 1) {
+      steps.push({
+        title: 'Salve nos caminhos das duas ferramentas',
+        copy: 'O mesmo arquivo serve as duas, sem alteração — cada uma o lê de um lugar.',
+        codeLabel: 'Caminhos',
+        code: pathBlock(paths, function (row) { return row.key + ' — ' + row.hint; })
+      });
+    } else {
+      steps.push({
+        title: 'Salve o arquivo no caminho da ferramenta',
+        copy: paths[0].hint.charAt(0).toUpperCase() + paths[0].hint.slice(1) + '.',
+        codeLabel: 'Caminho',
+        code: paths[0].value
+      });
+    }
+
+    if (format.autoLoaded) {
+      steps.push({
+        title: 'Não precisa invocar',
+        copy: 'O Codex carrega o arquivo automaticamente, do raiz do repositório até o diretório ' +
+          'atual, e concatena na ordem. Abrir uma sessão nesse projeto já basta.'
+      });
+    } else {
+      steps.push({
+        title: 'Acione na sessão',
+        copy: id === 'claude-skill'
+          ? 'O Claude Code também pode invocar sozinho, quando a descrição da Skill casar com o que ' +
+            'você pediu — o comando é o caminho explícito.'
+          : 'Digite o comando na sessão da ferramenta.',
+        codeLabel: 'Acionamento',
+        code: invocationLabel(id, safeName)
+      });
+    }
+
+    if ((format.placeholders || []).length) {
+      steps.push({
+        title: 'Passe argumentos, se o arquivo usar',
+        copy: 'Estes são os marcadores que a ferramenta substitui no momento da chamada:',
+        codeLabel: 'Marcadores',
+        code: format.placeholders.join('\n')
+      });
+    }
+
+    if (format.maxLines) {
+      steps.push({
+        title: 'Fique abaixo do limite',
+        copy: 'A documentação recomenda manter o ' + entry + ' abaixo de ' + format.maxLines +
+          ' linhas. Acima disso, mova o detalhe para arquivos auxiliares e referencie de dentro.'
+      });
+    }
+    if (format.maxBytes) {
+      steps.push({
+        title: 'Fique abaixo do limite',
+        copy: 'O Codex lê no máximo ' + Math.round(format.maxBytes / 1024) + ' KiB deste arquivo ' +
+          '(project_doc_max_bytes). O que passar disso é cortado em silêncio.'
+      });
+    }
+
+    return steps;
+  }
+
+  /** A mesma coisa em texto, para copiar e colar fora do app. */
+  function installStepsText(id, name) {
+    var lines = [];
+    installSteps(id, name).forEach(function (step, index) {
+      lines.push((index + 1) + '. ' + step.title);
+      lines.push('   ' + step.copy);
+      if (step.code) {
+        /* Linha vazia não recebe indentação: seria espaço em branco no fim. */
+        step.code.split('\n').forEach(function (line) { lines.push(line ? '   ' + line : ''); });
+      }
+      lines.push('');
+    });
+    lines.push('Documentação oficial: ' + get(id).docUrl);
+    return lines.join('\n');
+  }
+
   SkillHub.formats = {
     get: get,
     has: has,
@@ -265,6 +416,8 @@ window.SkillHub = window.SkillHub || {};
     order: ORDER.slice(),
     entryFileName: entryFileName,
     installPaths: installPaths,
+    installSteps: installSteps,
+    installStepsText: installStepsText,
     invocationLabel: invocationLabel,
     CLAUDE_KEYS: CLAUDE_KEYS,
     PORTABLE_SKILL_KEYS: PORTABLE_SKILL_KEYS,

@@ -55,6 +55,12 @@
 - [ ] scripts não são executados.
 - [ ] comandos shell não são executados.
 - [ ] ausência de licença é explicitada como desconhecida.
+- [ ] o help "Como instalar e usar" é a última coisa da página em toda largura.
+- [ ] o passo a passo do help corresponde ao formato da entrada: `AGENTS.md` não
+      mostra passo de acionamento, prompt do Codex não mostra passo de limite.
+- [ ] o diálogo do help abre no topo, prende o foco, fecha por Esc e devolve o
+      foco ao botão que o abriu.
+- [ ] o diálogo do help não rola na horizontal em 360 px.
 
 ## 🪄 Skill Builder — Básico
 

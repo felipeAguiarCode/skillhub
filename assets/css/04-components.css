@@ -860,6 +860,31 @@
   max-height: 220px;
   overflow: auto;
 }
+/* Caminho de arquivo em monoespaçado não cabe em 520px sem quebrar no meio. */
+.dialog--wide { width: min(680px, 100%); }
+.dialog__body { margin-bottom: var(--space-5); }
+
+/* `ul, ol { list-style: none }` é reset global (02-base): uma lista numerada
+   tem de declarar o marcador de volta. E aqui a ordem é a informação.
+
+   Fluxo de bloco, não grid: como item de grid o <li> não encolhe abaixo do
+   próprio conteúdo, e a barra "Copiar" da code box estourava a coluna em 13px
+   no celular — o diálogo passava a rolar na horizontal e cortava o texto. */
+.dialog__steps {
+  margin-bottom: var(--space-5);
+  padding-left: var(--space-6);
+  list-style: decimal;
+}
+.dialog__steps > li + li { margin-top: var(--space-5); }
+/* O <li> tem de continuar `list-item`: trocar por `grid` ou `flex` substitui o
+   tipo de display e o número do marcador desaparece. Daí o espaçamento entre
+   filhos vir de margem, não de `gap`. */
+.dialog__step { display: list-item; }
+.dialog__step > * + * { margin-top: var(--space-2); }
+.dialog__step-title { font-size: var(--text-md); font-weight: 600; }
+.dialog__steps::marker,
+.dialog__step::marker { color: var(--color-text-faint); }
+
 .dialog__actions {
   display: flex;
   justify-content: flex-end;

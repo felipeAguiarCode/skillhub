@@ -141,6 +141,16 @@
 }
 .detail__back:hover { color: var(--color-accent); }
 
+/* Faixa de ajuda do fim da página. Fica fora do .split, para ser a última coisa
+   na tela também abaixo de 1180px, onde o aside cai embaixo do main. */
+.detail__help { margin-top: var(--space-8); }
+.detail__help-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.detail__help-text { flex: 1; min-width: 0; }
+
 /* --- Builder -------------------------------------------------------------- */
 
 /* --- Builder: escolha da ferramenta -------------------------------------- */

@@ -2,12 +2,17 @@
    pages/coding-style.js — SkillHub.pages.codingStyles
 
    A coleção Coding Styles, lida de window.SKILL_HUB_CODING_STYLES
-   (data/coding-styles.js, gerado a partir de ~/.claude/coding-styles/).
+   (data/coding-styles.js e data/coding-styles-extra.js, gerados a partir de
+   ~/.claude/coding-styles/).
 
    Uma rota, duas vistas — o mesmo desenho de #/skill/<id>:
 
-     #/coding-styles        → coleção em cards, com busca
+     #/coding-styles        → coleção em cards, com busca, filtros e ordenação
      #/coding-styles/<id>   → o guia, com índice das seções
+
+   Cada stack tem duas variantes, Completo e Essencial, ligadas pelo campo
+   family. A vitrine agrupa por área quando a ordenação é "Por área", que é o
+   padrão: com vinte guias, lista plana não se varre.
 
    O texto é Markdown autorado fora do catálogo, então passa pelo
    SkillHub.markdown. Conteúdo de catálogo continua exibido como TEXTO em code
@@ -24,24 +29,98 @@ window.SkillHub.pages = window.SkillHub.pages || {};
 
   var MIN_QUERY = 2;
 
-  /* Espelhado no campo de busca da coleção: o input lê deste estado. */
-  var listState = { query: '' };
+  /* As áreas na ordem em que a coleção agrupa, que não é alfabética. As chaves
+     são as mesmas que tools/gen-coding-styles.js valida — um guia com área fora
+     desta lista não entraria na vista agrupada, e é o gerador que impede. */
+  var AREAS = [
+    { key: 'backend', label: 'Backend' },
+    { key: 'frontend', label: 'Frontend' },
+    { key: 'mobile', label: 'Mobile' },
+    { key: 'data', label: 'Dados' },
+    { key: 'infra', label: 'Infra' }
+  ];
 
-  var refs = { results: null, search: null, index: null, empty: null };
+  /* Profundidade: o guia inteiro, ou o cartão de referência da mesma stack.
+     linkLabel não é derivado de label porque tem de concordar com "versão", que
+     é feminino: "Ver a versão completo" estaria errado. */
+  var DEPTHS = [
+    { key: 'full', label: 'Completo', linkLabel: 'Ver a versão completa' },
+    { key: 'essential', label: 'Essencial', linkLabel: 'Ver a versão essencial' }
+  ];
+
+  /* Ordenar por área é o que agrupa. As outras ordens são de lista plana, e é
+     por isso que o agrupamento não precisa de um segundo controle. */
+  var SORT_OPTIONS = [
+    { value: 'area', label: 'Por área' },
+    { value: 'name', label: 'Título A→Z' },
+    { value: 'sections', label: 'Mais seções' },
+    { value: 'recent', label: 'Atualização' }
+  ];
+
+  /* Espelhado nos controles da coleção: os controles leem daqui, nunca o
+     contrário (ADR-007). Estado de sessão, como os filtros das outras rotas. */
+  var listState = { text: '', area: 'all', depth: 'all', sort: 'area' };
+
+  /* Em tablet/mobile os filtros começam recolhidos (DESIGN_SYSTEM §22); no
+     desktop o CSS esconde o botão e o painel fica sempre aberto. */
+  var filtersExpanded = false;
+
+  var refs = {
+    results: null, search: null, filters: null, toggle: null, index: null, empty: null
+  };
+
+  /* --- Rótulos ------------------------------------------------------------- */
+
+  function labelOf(list, key) {
+    for (var index = 0; index < list.length; index += 1) {
+      if (list[index].key === key) return list[index].label;
+    }
+    return key;
+  }
+
+  function areaLabel(key) { return labelOf(AREAS, key); }
+
+  function depthLabel(key) { return labelOf(DEPTHS, key); }
+
+  function depthLinkLabel(key) {
+    for (var index = 0; index < DEPTHS.length; index += 1) {
+      if (DEPTHS[index].key === key) return DEPTHS[index].linkLabel;
+    }
+    return depthLabel(key);
+  }
 
   /* --- Dados --------------------------------------------------------------- */
+
+  /**
+   * Deriva do texto o que a UI precisa, e memoiza no próprio guia — mesma
+   * técnica do __haystack de catalog.js.
+   *
+   * As duas coisas são caras e são pedidas a cada tecla digitada: a contagem
+   * roda o outline sobre o guia inteiro, e a busca cobre o corpo do texto. Com
+   * vinte guias e ~200 KB de Markdown, recalcular a cada keystroke trava a
+   * digitação.
+   */
+  function prepare(guide) {
+    if (guide.sectionCount === undefined) {
+      /* A contagem sai do texto: fixá-la no gerador criaria um número que
+         envelhece em silêncio quando o guia é editado. */
+      guide.sectionCount = SkillHub.markdown.outline(guide.content).length;
+    }
+    if (guide.__haystack === undefined) {
+      /* O corpo do guia entra na busca: procurar "decimal" tem de achar o de
+         Python, e "pipefail" o de Bash. */
+      guide.__haystack = [guide.title, areaLabel(guide.area), depthLabel(guide.depth), guide.summary]
+        .concat(guide.tags || [], guide.stack || [], [guide.content])
+        .join(' ')
+        .toLowerCase();
+    }
+    return guide;
+  }
 
   function guides() {
     var list = window.SKILL_HUB_CODING_STYLES;
     if (!Array.isArray(list)) return [];
-    return list.map(function (guide) {
-      var view = {};
-      Object.keys(guide).forEach(function (key) { view[key] = guide[key]; });
-      /* A contagem sai do próprio texto: fixá-la no gerador criaria um número
-         que envelhece em silêncio quando o guia é editado. */
-      view.sectionCount = SkillHub.markdown.outline(guide.content).length;
-      return view;
-    });
+    return list.map(prepare);
   }
 
   function findGuide(id) {
@@ -49,61 +128,217 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     return guides().filter(function (guide) { return guide.id === id; })[0] || null;
   }
 
-  function matches(guide, query) {
-    var needle = query.trim().toLowerCase();
+  /** A outra variante da mesma stack, quando ela existe. */
+  function sibling(guide) {
+    return guides().filter(function (other) {
+      return other.family === guide.family && other.id !== guide.id;
+    })[0] || null;
+  }
+
+  function matches(guide) {
+    if (listState.area !== 'all' && guide.area !== listState.area) return false;
+    if (listState.depth !== 'all' && guide.depth !== listState.depth) return false;
+    var needle = listState.text.trim().toLowerCase();
     if (needle.length < MIN_QUERY) return true;
-    var haystack = [guide.title, guide.eyebrow, guide.summary]
-      .concat(guide.tags || [], guide.stack || [])
-      .join(' ')
-      .toLowerCase();
-    /* O corpo do guia também entra: procurar "decimal" tem de achar o de Python. */
-    return haystack.indexOf(needle) !== -1 ||
-      guide.content.toLowerCase().indexOf(needle) !== -1;
+    return guide.__haystack.indexOf(needle) !== -1;
+  }
+
+  /* --- Ordenação ----------------------------------------------------------- */
+
+  function byTitle(a, b) {
+    return a.title.localeCompare(b.title, 'pt-BR');
+  }
+
+  /* Desempate por título em toda ordem, para a lista não dançar entre renders. */
+  function sortFlat(found) {
+    if (listState.sort === 'sections') {
+      return found.sort(function (a, b) {
+        return (b.sectionCount - a.sectionCount) || byTitle(a, b);
+      });
+    }
+    if (listState.sort === 'recent') {
+      return found.sort(function (a, b) {
+        return String(b.updatedAt).localeCompare(String(a.updatedAt)) || byTitle(a, b);
+      });
+    }
+    return found.sort(byTitle);
+  }
+
+  /* Dentro da área, as duas variantes da mesma stack ficam juntas, o completo
+     antes do essencial. */
+  function byVariant(a, b) {
+    if (a.family !== b.family) return a.family.localeCompare(b.family, 'pt-BR');
+    if (a.depth === b.depth) return 0;
+    return a.depth === 'full' ? -1 : 1;
   }
 
   /* --- Coleção ------------------------------------------------------------- */
 
+  function card(guide) {
+    return ui.styleCard(guide, {
+      areaLabel: areaLabel(guide.area),
+      depthLabel: depthLabel(guide.depth)
+    });
+  }
+
+  function setFilter(key, value) {
+    listState[key] = value;
+    renderResults();
+  }
+
+  function clearFilters() {
+    /* A ordenação não é filtro: zerá-la trocaria o layout de agrupado para
+       plano sem ninguém ter pedido. */
+    listState.text = '';
+    listState.area = 'all';
+    listState.depth = 'all';
+    if (refs.search) refs.search.value = '';
+    renderResults();
+    if (refs.search) refs.search.focus();
+  }
+
+  function activeFilterCount() {
+    return (listState.area === 'all' ? 0 : 1) + (listState.depth === 'all' ? 0 : 1);
+  }
+
+  /** Atualiza os chips no lugar, sem recriar nós, para não roubar o foco. */
+  function syncChips() {
+    if (!refs.filters) return;
+    var lines = refs.filters.querySelectorAll('[data-group]');
+    Array.prototype.forEach.call(lines, function (line) {
+      var group = line.dataset.group;
+      Array.prototype.forEach.call(line.querySelectorAll('.chip'), function (chip) {
+        var pressed = String(listState[group]) === chip.dataset.value;
+        chip.setAttribute('aria-pressed', String(pressed));
+      });
+    });
+  }
+
+  /** Rótulo e estado do botão que recolhe os filtros. */
+  function syncToggle() {
+    if (!refs.toggle) return;
+    var count = activeFilterCount();
+    var label = refs.toggle.querySelector('span');
+    if (label) label.textContent = count ? 'Filtros · ' + count : 'Filtros';
+    refs.toggle.setAttribute('aria-expanded', String(filtersExpanded));
+    if (refs.filters) refs.filters.classList.toggle('is-collapsed', !filtersExpanded);
+  }
+
+  function buildFilters() {
+    var areaOptions = [{ value: 'all', label: 'Todas' }].concat(AREAS.map(function (area) {
+      return { value: area.key, label: area.label };
+    }));
+    var depthOptions = [{ value: 'all', label: 'Qualquer' }].concat(DEPTHS.map(function (depth) {
+      return { value: depth.key, label: depth.label };
+    }));
+
+    var panel = el('div', {
+      class: 'listing__filters' + (filtersExpanded ? '' : ' is-collapsed'),
+      id: 'coding-styles-filters'
+    }, [
+      ui.chipLine('Área', 'area', areaOptions, function (value) {
+        setFilter('area', value);
+      }),
+      ui.chipLine('Profundidade', 'depth', depthOptions, function (value) {
+        setFilter('depth', value);
+      })
+    ]);
+    refs.filters = panel;
+
+    var toggle = el('button', {
+      class: 'btn btn--secondary listing__toggle',
+      type: 'button',
+      'aria-expanded': String(filtersExpanded),
+      'aria-controls': 'coding-styles-filters',
+      onclick: function () {
+        filtersExpanded = !filtersExpanded;
+        syncToggle();
+      }
+    }, [
+      SkillHub.icons.get('sliders'),
+      el('span', null, 'Filtros')
+    ]);
+    refs.toggle = toggle;
+
+    return el('div', { class: 'listing__filter-block' }, [toggle, panel]);
+  }
+
+  function buildGroups(found) {
+    return AREAS.map(function (area) {
+      var inArea = found.filter(function (guide) {
+        return guide.area === area.key;
+      }).sort(byVariant);
+      /* Área sem resultado não vira seção vazia. */
+      if (!inArea.length) return null;
+      return ui.section({
+        title: area.label,
+        body: el('div', { class: 'catalog' }, inArea.map(card))
+      });
+    });
+  }
+
   function renderResults() {
     if (!refs.results) return;
-    var found = guides().filter(function (guide) {
-      return matches(guide, listState.query);
-    });
+    var all = guides();
+    var found = all.filter(matches);
+    var total = all.length;
+
+    syncChips();
+    syncToggle();
+
+    var count = found.length === total
+      ? total + ' ' + SkillHub.util.pluralize(total, 'guia', 'guias')
+      : found.length + ' de ' + total + ' ' + SkillHub.util.pluralize(total, 'guia', 'guias');
+
+    var body;
+    if (!found.length) {
+      body = ui.emptyState({
+        icon: 'search',
+        title: 'Nenhum guia com esses filtros',
+        copy: 'A busca cobre título, stack, tags e o texto inteiro de cada guia. ' +
+          'Combinações de área e profundidade podem não ter guia correspondente.',
+        action: ui.button({
+          label: 'Limpar filtros',
+          variant: 'secondary',
+          onClick: clearFilters
+        })
+      });
+    } else if (listState.sort === 'area') {
+      body = el('div', null, buildGroups(found));
+    } else {
+      body = el('div', { class: 'catalog' }, sortFlat(found).map(card));
+    }
 
     SkillHub.dom.replace(refs.results, [
-      el('p', { class: 'listing__count' },
-        found.length + ' ' + SkillHub.util.pluralize(found.length, 'guia', 'guias')),
-      found.length
-        ? el('div', { class: 'catalog' }, found.map(ui.styleCard))
-        : ui.emptyState({
-            icon: 'search',
-            title: 'Nenhum guia encontrado',
-            copy: 'A busca cobre título, stack, tags e o texto inteiro de cada guia.',
-            action: ui.button({
-              label: 'Limpar busca',
-              variant: 'secondary',
-              onClick: function () {
-                listState.query = '';
-                if (refs.search) refs.search.value = '';
-                renderResults();
-                if (refs.search) refs.search.focus();
-              }
-            })
-          })
+      el('p', { class: 'listing__count' }, count),
+      body
     ]);
   }
 
   function renderCollection() {
     var search = ui.searchField({
       id: 'coding-styles-search',
+      small: true,
       label: 'Buscar guias de estilo',
       placeholder: 'Buscar por stack, regra ou termo do guia...',
-      value: listState.query,
+      value: listState.text,
+      kbd: '/',
       onInput: function (value) {
-        listState.query = value;
+        listState.text = value;
         renderResults();
       }
     });
     refs.search = search.__input;
+
+    var sort = ui.bareSelect({
+      ariaLabel: 'Ordenar os guias',
+      value: listState.sort,
+      options: SORT_OPTIONS,
+      onChange: function (value) {
+        listState.sort = value;
+        renderResults();
+      }
+    });
 
     var results = el('div', { 'aria-live': 'polite' });
     refs.results = results;
@@ -113,17 +348,19 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         eyebrow: 'Convenções',
         title: 'Coding Styles',
         copy: 'Guias de estilo por stack. Cada um define naming, formatação e as ' +
-          'decisões que um agente deve seguir ao escrever código naquela stack.',
+          'decisões que um agente deve seguir ao escrever código naquela stack, em ' +
+          'duas profundidades: o guia completo e o cartão de referência.',
         art: SkillHub.icons.ornament('prompt-engineering')
       }),
       ui.notice({
         icon: 'info',
         strong: 'Os guias moram fora do repositório.',
-        copy: 'A fonte é ~/.claude/coding-styles/, um arquivo por stack. O que está ' +
+        copy: 'A fonte é ~/.claude/coding-styles/, um arquivo por guia. O que está ' +
           'aqui é uma cópia estática gerada dali, porque o navegador não lê aquele ' +
           'caminho e o app não faz fetch.'
       }),
-      el('div', { class: 'toolbar' }, search),
+      el('div', { class: 'toolbar' }, [search, sort]),
+      buildFilters(),
       results
     ]);
 
@@ -200,6 +437,18 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     });
   }
 
+  /** Botão para a outra variante da mesma stack, quando ela existe. */
+  function variantLink(guide) {
+    var other = sibling(guide);
+    if (!other) return null;
+    return ui.button({
+      label: depthLinkLabel(other.depth),
+      variant: 'secondary',
+      icon: other.depth === 'full' ? 'layers' : 'zap',
+      href: '#/coding-styles/' + encodeURIComponent(other.id)
+    });
+  }
+
   function renderGuide(guide) {
     var anchorPrefix = 'cs-' + guide.id;
     var sections = SkillHub.markdown.outline(guide.content, { anchorPrefix: anchorPrefix });
@@ -219,7 +468,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         el('span', null, 'Voltar para Coding Styles')
       ])),
       ui.pageHeader({
-        eyebrow: guide.eyebrow,
+        eyebrow: areaLabel(guide.area) + ' · ' + depthLabel(guide.depth),
         title: guide.title,
         copy: guide.summary
       }),
@@ -245,6 +494,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
             SkillHub.download.textFile(guide.fileName, guide.content);
           }
         }),
+        variantLink(guide),
         el('span', { class: 'doc-actions__source u-faint u-xs' }, guide.source)
       ]),
       el('div', { class: 'split split--doc' }, [buildIndex(sections), article])
@@ -306,7 +556,9 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   }
 
   function teardown() {
-    refs = { results: null, search: null, index: null, empty: null };
+    refs = {
+      results: null, search: null, filters: null, toggle: null, index: null, empty: null
+    };
   }
 
   SkillHub.pages.codingStyles = {

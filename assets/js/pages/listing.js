@@ -32,20 +32,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
 
   /* --- Chips --------------------------------------------------------------- */
 
-  function chipLine(label, group, options, onSelect) {
-    return el('div', { class: 'listing__filter-line', dataset: { group: group } }, [
-      el('span', { class: 'listing__filter-label' }, label),
-      el('div', { class: 'chips', role: 'group', 'aria-label': label }, options.map(function (option) {
-        return el('button', {
-          class: 'chip',
-          type: 'button',
-          'aria-pressed': 'false',
-          dataset: { value: option.value },
-          onclick: function () { onSelect(option.value); }
-        }, option.label);
-      }))
-    ]);
-  }
+  var chipLine = ui.chipLine;
 
   /** Atualiza os chips no lugar, sem recriar nós, para não roubar o foco. */
   function syncChips() {

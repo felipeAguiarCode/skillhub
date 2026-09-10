@@ -277,6 +277,93 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     SkillHub.toast.show(added ? 'Adicionado aos favoritos.' : 'Removido dos favoritos.', 'success');
   }
 
+  /* --- Help de instalação -------------------------------------------------- */
+
+  /**
+   * O passo a passo daquele formato, num diálogo.
+   *
+   * Os passos vêm de SkillHub.formats.installSteps: o procedimento é dado, não
+   * DOM, e mora no mesmo arquivo que os caminhos — um formato novo continua
+   * sendo um arquivo a mexer. Aqui só se decide como ele aparece.
+   */
+  function openInstallHelp(item) {
+    var spec = format(item);
+    var steps = SkillHub.formats.installSteps(item.format, item.id);
+    var docHref = SkillHub.dom.safeHref(spec.docUrl);
+
+    var list = el('ol', { class: 'dialog__steps' }, steps.map(function (step) {
+      return el('li', { class: 'dialog__step' }, [
+        el('p', { class: 'dialog__step-title' }, step.title),
+        el('p', { class: 'u-muted u-sm' }, step.copy),
+        step.code
+          ? ui.codeBox({
+              title: step.codeLabel || entryFile(item),
+              content: step.code,
+              onCopy: function () {
+                SkillHub.clipboard.copy(step.code, (step.codeLabel || 'Conteúdo') + ' copiado.');
+              }
+            })
+          : null
+      ]);
+    }));
+
+    ui.openDialog({
+      title: 'Instalar e usar ' + item.name,
+      copy: 'Em ' + spec.toolLabel + ', na ordem. O Skill Hub não executa nem instala nada — ' +
+        'cada passo é uma ação sua.',
+      wide: true,
+      dismissLabel: 'Fechar',
+      body: [
+        list,
+        el('div', { class: 'u-row u-row--wrap' }, [
+          ui.button({
+            label: 'Copiar o passo a passo',
+            variant: 'secondary',
+            icon: 'copy',
+            onClick: function () {
+              SkillHub.clipboard.copy(
+                SkillHub.formats.installStepsText(item.format, item.id),
+                'Passo a passo copiado.'
+              );
+            }
+          }),
+          docHref
+            ? ui.button({
+                label: 'Documentação oficial',
+                variant: 'ghost',
+                iconAfter: 'external',
+                href: docHref,
+                external: true
+              })
+            : null
+        ])
+      ]
+    });
+  }
+
+  /** A faixa do fim da página: é o que torna o help achável. */
+  function helpBlock(item) {
+    var spec = format(item);
+
+    return el('section', { class: 'detail__help' }, ui.card({
+      body: el('div', { class: 'detail__help-row' }, [
+        el('div', { class: 'card__icon' }, SkillHub.icons.get('info', 'icon--lg')),
+        el('div', { class: 'detail__help-text' }, [
+          el('p', { class: 'card__title' }, 'Primeira vez instalando?'),
+          el('p', { class: 'card__copy' },
+            'O passo a passo de instalar e usar em ' + spec.toolLabel + ', com os caminhos e o ' +
+            'acionamento desta entrada já preenchidos.')
+        ]),
+        ui.button({
+          label: 'Como instalar e usar',
+          variant: 'primary',
+          icon: 'book',
+          onClick: function () { openInstallHelp(item); }
+        })
+      ])
+    }));
+  }
+
   /* --- Página -------------------------------------------------------------- */
 
   function backRoute(item) {
@@ -375,7 +462,13 @@ window.SkillHub.pages = window.SkillHub.pages || {};
       metaCard(item)
     ]);
 
-    return el('div', { class: 'split' }, [main, aside]);
+    /* A faixa de ajuda fica FORA do .split: abaixo de 1180px o split vira uma
+       coluna e o aside cai embaixo do main, então um bloco dentro do main não
+       seria o fim da página no celular. */
+    return el('div', null, [
+      el('div', { class: 'split' }, [main, aside]),
+      helpBlock(item)
+    ]);
   }
 
   function topbar() {
