@@ -69,7 +69,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
           href: '#/what-is-a-skill',
           style: { 'margin-top': 'var(--space-3)' }
         }, [
-          el('span', null, 'O que é uma Skill, em dez slides'),
+          el('span', null, 'O que é uma Skill, em doze slides'),
           SkillHub.icons.get('arrow-right', 'icon--sm')
         ]),
         docHref

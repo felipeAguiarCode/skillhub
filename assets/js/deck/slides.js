@@ -711,7 +711,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
     var item = (ctx && ctx.item) || null;
     var paths = (ctx && ctx.paths) || [];
     return [
-      { id: 'cover', chapter: 'Abertura', caption: 'O que é uma Skill, em dez slides.', builds: 1, layout: 'cover', build: cover },
+      { id: 'cover', chapter: 'Abertura', caption: 'O que é uma Skill, em doze slides.', builds: 1, layout: 'cover', build: cover },
       { id: 'what', chapter: 'A definição', caption: 'Um arquivo de instruções que o Claude passa a seguir sozinho.', builds: 1, build: whatTheyAre },
       { id: 'structure', chapter: 'A estrutura', caption: 'Uma pasta com quatro tipos de conteúdo dentro.', builds: 1, build: structure },
       { id: 'file', chapter: 'A estrutura', caption: 'O SKILL.md por dentro: frontmatter e corpo.', builds: 1, build: function () { return insideFile(item); } },
