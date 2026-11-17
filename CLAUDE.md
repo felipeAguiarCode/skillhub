@@ -753,6 +753,13 @@ em vez de ir para `#/skill/<id>`. Três regras ao mexer nessa lista:
 da Docker (`docker/skills`), uma do ECC, e as duas do catálogo
 (`docker-hardener` e `containerize`), que saíram de DevOps para lá.
 
+**PWA** fica em Stacks, depois de Mobile. Não existe skill oficial de PWA do
+Google nem do Chrome: a seção é de comunidade, com o `Front-End-Checklist`
+(`thedaviddias`) à frente. Duas armadilhas da busca: há cópia quase literal de
+skill circulando com outro autor (fica só a original, que se acha pela data do
+primeiro commit do `SKILL.md`), e há skill de "offline" que é de React Native,
+não de PWA.
+
 **Frontend e Backend têm no mínimo 50 skills do mercado cada**, a pedido —
 muitas delas oficiais dos próprios fornecedores (Angular, Svelte, shadcn,
 Vercel, Stripe, Better Auth, Cloudflare, Netlify, ClickHouse, Sanity, Docker).
@@ -764,7 +771,7 @@ todos os `SKILL.md` de um repositório de uma vez.
 `window.SKILL_HUB_MARKET`): por categoria, a página de Skills lista também
 skills de terceiros — TDD, Backend, Banco de dados, APIs, Dados, Refatoração,
 Node.js, Coding style, Automação, Office, Marketing, Copywriting, Testes, Mobile,
-Segurança e Inicializadores. As seis `node-*-init` do catálogo têm
+PWA, Segurança e Inicializadores. As seis `node-*-init` do catálogo têm
 `category: 'scaffolding'` e ficam em Inicializadores junto com as do mercado. Valem as mesmas três regras acima, e
 mais duas:
 

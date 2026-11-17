@@ -3232,5 +3232,203 @@ window.SKILL_HUB_MARKET = (window.SKILL_HUB_MARKET || []).concat([
     tags: ['git', 'github-actions', 'react-native'],
     description: 'Workflows do GitHub Actions para builds de React Native em simulador iOS e emulador Android, com artefatos para baixar.',
     url: 'https://github.com/callstackincubator/agent-skills/tree/main/skills/github-actions'
+  },
+  {
+    id: 'thedaviddias-pwa-installability',
+    name: 'pwa-installability',
+    author: 'David Dias (thedaviddias)',
+    repo: 'thedaviddias/Front-End-Checklist',
+    categories: ['pwa'],
+    icon: 'download',
+    tags: ['pwa', 'instalação', 'manifest'],
+    description: 'Audita se o app cumpre os critérios de instalação de PWA, acrescenta o convite para instalar e prepara o envio à Microsoft Store e ao Google Play pelo PWA Builder.',
+    url: 'https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/pwa-installability'
+  },
+  {
+    id: 'thedaviddias-offline-fallback',
+    name: 'offline-fallback',
+    author: 'David Dias (thedaviddias)',
+    repo: 'thedaviddias/Front-End-Checklist',
+    categories: ['pwa'],
+    icon: 'file',
+    tags: ['pwa', 'offline', 'service-worker'],
+    description: 'Página de fallback offline: o que o usuário vê quando a rede cai, no lugar da tela de erro do navegador. Confere, corrige, explica e revisa.',
+    url: 'https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/offline-fallback'
+  },
+  {
+    id: 'thedaviddias-service-worker',
+    name: 'service-worker',
+    author: 'David Dias (thedaviddias)',
+    repo: 'thedaviddias/Front-End-Checklist',
+    categories: ['pwa'],
+    icon: 'server',
+    tags: ['pwa', 'service-worker', 'cache'],
+    description: 'Registra um service worker para cache e suporte offline, olhando o desempenho da visita de retorno e a prontidão do app como PWA.',
+    url: 'https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/service-worker'
+  },
+  {
+    id: 'mattiasgeniar-offline-first-pwa',
+    name: 'offline-first-pwa',
+    author: 'Mattias Geniar',
+    repo: 'mattiasgeniar/offline-first-pwa',
+    categories: ['pwa'],
+    icon: 'zap',
+    tags: ['pwa', 'offline', 'ios', 'precache'],
+    description: 'Regras para PWAs offline-first que abrem do cache em menos de um segundo pela tela inicial: service worker, precache, aviso de atualização, comportamento do iOS e layout com safe area.',
+    url: 'https://github.com/mattiasgeniar/offline-first-pwa'
+  },
+  {
+    id: 'jwynia-pwa-development',
+    name: 'pwa-development',
+    author: 'jwynia',
+    repo: 'jwynia/agent-skills',
+    categories: ['pwa'],
+    icon: 'layers',
+    tags: ['pwa', 'react', 'svelte', 'workbox'],
+    description: 'PWA em projetos React e Svelte a partir de um diagnóstico em sete estados (P0 a P6), de sem setup a pronto para produção, com os antipadrões de cache.',
+    url: 'https://github.com/jwynia/agent-skills/tree/main/skills/tech/frontend/pwa/pwa-development'
+  },
+  {
+    id: 'jwynia-react-pwa',
+    name: 'react-pwa',
+    author: 'jwynia',
+    repo: 'jwynia/agent-skills',
+    categories: ['pwa'],
+    icon: 'code',
+    tags: ['pwa', 'react', 'vite', 'workbox'],
+    description: 'PWA com React e Vite pelo vite-plugin-pwa, em fases: manifest, estratégias do service worker, offline, convite de instalação e push.',
+    url: 'https://github.com/jwynia/agent-skills/tree/main/skills/tech/frontend/pwa/react-pwa'
+  },
+  {
+    id: 'alinaqi-pwa-development',
+    name: 'pwa-development',
+    author: 'alinaqi',
+    repo: 'alinaqi/maggy',
+    categories: ['pwa'],
+    icon: 'cloud',
+    tags: ['pwa', 'service-worker', 'workbox', 'cache'],
+    description: 'Manifest com campos obrigatórios e checklist, padrões de service worker, guia para escolher a estratégia de cache (cache first, network first, stale-while-revalidate) e Workbox.',
+    url: 'https://github.com/alinaqi/maggy/tree/main/skills/pwa-development'
+  },
+  {
+    id: 'croakingtoad-pwa-development',
+    name: 'pwa-development',
+    author: 'croakingtoad',
+    repo: 'croakingtoad/pwa-development',
+    categories: ['pwa'],
+    icon: 'package',
+    tags: ['pwa', 'android', 'ios'],
+    description: 'Para transformar um app web existente em PWA. Reúne o diagnóstico P0–P6 do jwynia e os padrões do alinaqi, com orientação própria para Android e iOS.',
+    url: 'https://github.com/croakingtoad/pwa-development/tree/main/skills/pwa-development'
+  },
+  {
+    id: 'adambien-web-pwa',
+    name: 'web-pwa',
+    author: 'Adam Bien',
+    repo: 'AdamBien/airails',
+    categories: ['pwa'],
+    icon: 'terminal',
+    tags: ['pwa', 'vanilla', 'sem-build', 'cache-api'],
+    description: 'Acrescenta offline (service worker escrito à mão sobre a Cache API) e instalação (manifest) a um front existente, sem build, sem código gerado e sem dependência nova.',
+    url: 'https://github.com/AdamBien/airails/tree/main/web/web-pwa'
+  },
+  {
+    id: 'curiositech-pwa-expert',
+    name: 'pwa-expert',
+    author: 'curiositech',
+    repo: 'curiositech/some_claude_skills',
+    categories: ['pwa'],
+    icon: 'sparkle',
+    tags: ['pwa', 'push', 'background-sync'],
+    description: 'Estratégias de cache, convite de instalação, notificações push e background sync. Diz quando não usar: app nativo e desempenho web em geral.',
+    url: 'https://github.com/curiositech/some_claude_skills/tree/main/.claude/skills/pwa-expert'
+  },
+  {
+    id: 'secondsky-progressive-web-app',
+    name: 'progressive-web-app',
+    author: 'secondsky',
+    repo: 'secondsky/claude-skills',
+    categories: ['pwa'],
+    icon: 'check',
+    tags: ['pwa', 'manifest', 'push'],
+    description: 'Manifest, service worker, convite de instalação e push, fechando num checklist de PWA. Também para erros de registro do service worker e de configuração do manifest.',
+    url: 'https://github.com/secondsky/claude-skills/tree/main/plugins/progressive-web-app/skills/progressive-web-app'
+  },
+  {
+    id: 'mindrally-pwa-development',
+    name: 'pwa-development',
+    author: 'Mindrally',
+    repo: 'Mindrally/skills',
+    categories: ['pwa'],
+    icon: 'book',
+    tags: ['pwa', 'diretrizes', 'service-worker'],
+    description: 'Diretrizes de PWA: manifest, registro e implementação do service worker, estratégias de cache, background sync, push, detecção de offline e testes.',
+    url: 'https://github.com/Mindrally/skills/tree/main/pwa-development'
+  },
+  {
+    id: 'tylerkendrick-pwa',
+    name: 'pwa',
+    author: 'Tyler-R-Kendrick',
+    repo: 'Tyler-R-Kendrick/agent-skills',
+    categories: ['pwa'],
+    icon: 'hexagon',
+    tags: ['pwa', 'arquitetura', 'app-shell'],
+    description: 'Arquitetura de PWA de ponta a ponta: service workers, manifest, critérios de instalação, modelo app shell, push, background sync e Workbox.',
+    url: 'https://github.com/Tyler-R-Kendrick/agent-skills/tree/main/skills/dev/frontend/pwa'
+  },
+  {
+    id: 'bovinphang-fec-pwa-implementation',
+    name: 'fec-pwa-implementation',
+    author: 'bovinphang',
+    repo: 'bovinphang/frontend-craft',
+    categories: ['pwa'],
+    icon: 'wand',
+    tags: ['pwa', 'workbox', 'ios', 'revisão'],
+    description: 'Para acrescentar ou revisar PWA: manifest, registro do service worker, cache com Workbox, fallback offline, aviso de atualização, ícones maskable e compatibilidade com iOS.',
+    url: 'https://github.com/bovinphang/frontend-craft/tree/main/skills/fec-pwa-implementation'
+  },
+  {
+    id: 'travisjneuman-pwa-development',
+    name: 'pwa-development',
+    author: 'travisjneuman',
+    repo: 'travisjneuman/.claude',
+    categories: ['pwa'],
+    icon: 'rocket',
+    tags: ['pwa', 'manifest', 'offline'],
+    description: 'Apps web instaláveis e que funcionam offline: capacidades de PWA, manifest e meta tags, com arquivos de referência à parte.',
+    url: 'https://github.com/travisjneuman/.claude/tree/master/skills/pwa-development'
+  },
+  {
+    id: 'travisjneuman-agent-pwa-specialist',
+    name: 'agent-pwa-specialist',
+    author: 'travisjneuman',
+    repo: 'travisjneuman/.claude',
+    categories: ['pwa'],
+    icon: 'users',
+    tags: ['pwa', 'subagente', 'offline-first'],
+    description: 'Subagente especialista em PWA: service workers, arquitetura offline-first, Workbox, notificações push, instalação e testes.',
+    url: 'https://github.com/travisjneuman/.claude/tree/master/skills/agent-pwa-specialist'
+  },
+  {
+    id: 'oguzhan18-angular-pwa',
+    name: 'angular-pwa',
+    author: 'oguzhan18',
+    repo: 'oguzhan18/angular-ecosystem-skills',
+    categories: ['pwa'],
+    icon: 'shield',
+    tags: ['pwa', 'angular', 'service-worker'],
+    description: 'PWA em Angular com @angular/pwa: service worker, offline, manifest e instalação, com as mudanças de API e as boas práticas do pacote.',
+    url: 'https://github.com/oguzhan18/angular-ecosystem-skills/tree/main/skills/angular-pwa'
+  },
+  {
+    id: 'pramoddutta-pwa-testing',
+    name: 'pwa-testing',
+    author: 'Pramod Dutta',
+    repo: 'PramodDutta/qaskills',
+    categories: ['pwa', 'testing'],
+    icon: 'flask',
+    tags: ['pwa', 'testes', 'lighthouse'],
+    description: 'Testes de PWA: ciclo de vida do service worker, estratégia de cache, modo offline, manifest, push, convite de instalação, background sync e auditoria do Lighthouse automatizada.',
+    url: 'https://github.com/PramodDutta/qaskills/tree/main/seed-skills/pwa-testing'
   }
 ]);

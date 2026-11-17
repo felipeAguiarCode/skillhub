@@ -41,6 +41,7 @@
     'git-ci': 'CI e GitHub',
     office: 'Office',
     scaffolding: 'Inicializadores',
+    pwa: 'PWA',
     marketing: 'Marketing',
     copywriting: 'Copywriting',
     node: 'Node.js',
@@ -337,7 +338,7 @@
    */
   var FOLDER_GROUPS = [
     { title: 'Engenharia', keys: ['development', 'tdd', 'testing', 'debugging', 'refactoring', 'coding-style', 'performance', 'architecture', 'git', 'documentation', 'accessibility'] },
-    { title: 'Stacks', keys: ['frontend', 'backend', 'node', 'mobile', 'api', 'database', 'data'] },
+    { title: 'Stacks', keys: ['frontend', 'backend', 'node', 'mobile', 'pwa', 'api', 'database', 'data'] },
     { title: 'Infra e operação', keys: ['docker', 'devops', 'cloud', 'automation', 'security', 'scaffolding'] },
     { title: 'Produto e negócio', keys: ['marketing', 'copywriting', 'office'] }
   ];
