@@ -537,7 +537,7 @@ window.SKILL_HUB_CATALOG = (window.SKILL_HUB_CATALOG || []).concat([
     description: 'Prompt que escreve Dockerfile multi-stage enxuto e mede o resultado.',
     whenToUse: 'Use ao containerizar um serviço ou reduzir uma imagem que ficou grande.',
     icon: 'cloud',
-    category: 'devops',
+    category: 'docker',
     tags: ['docker', 'build', 'prompt'],
     platform: 'codex',
     compatibility: ['Codex'],

@@ -26,6 +26,19 @@
     testing: 'Testes',
     tdd: 'TDD',
     'coding-style': 'Coding style',
+    /* Subseções de Coding style (ver CHILD_CATEGORIES). */
+    'clean-code': 'Clean code',
+    'code-review': 'Code review',
+    conventions: 'Convenções',
+    readability: 'Legibilidade e lint',
+    commits: 'Commits e Git',
+    'code-docs': 'Docs de código',
+    docker: 'Docker',
+    /* Subseções de Git. */
+    'git-commits': 'Commits semânticos',
+    'git-prs': 'Pull requests',
+    'git-branching': 'Branches e fluxo',
+    'git-ci': 'CI e GitHub',
     office: 'Office',
     scaffolding: 'Inicializadores',
     marketing: 'Marketing',
@@ -317,6 +330,57 @@
   }
 
   /**
+   * A árvore da pasta de skills no menu lateral, no padrão do angular.dev:
+   * grupos com título, e uma categoria pode ter subseções. A ordem aqui é a
+   * ordem no menu. Categoria que existe nos dados e não está em grupo nenhum vai
+   * para "Outras" — nada some do menu por esquecimento.
+   */
+  var FOLDER_GROUPS = [
+    { title: 'Engenharia', keys: ['development', 'tdd', 'testing', 'debugging', 'refactoring', 'coding-style', 'performance', 'architecture', 'git', 'documentation', 'accessibility'] },
+    { title: 'Stacks', keys: ['frontend', 'backend', 'node', 'mobile', 'api', 'database', 'data'] },
+    { title: 'Infra e operação', keys: ['docker', 'devops', 'cloud', 'automation', 'security', 'scaffolding'] },
+    { title: 'Produto e negócio', keys: ['marketing', 'copywriting', 'office'] }
+  ];
+  var CHILD_CATEGORIES = {
+    'coding-style': ['clean-code', 'code-review', 'conventions', 'readability', 'commits', 'code-docs'],
+    git: ['git-commits', 'git-prs', 'git-branching', 'git-ci']
+  };
+
+  /** Subseções de uma categoria que têm ao menos um item. */
+  function childCategories(key, type) {
+    var present = folderCategories(type || COLLECTIONS.skills.type);
+    return (CHILD_CATEGORIES[key] || []).filter(function (child) {
+      return present.indexOf(child) !== -1;
+    }).map(function (child) {
+      return { key: child, label: categoryLabel(child) };
+    });
+  }
+
+  function folderTree(type) {
+    var present = folderCategories(type);
+    var placed = Object.create(null);
+    Object.keys(CHILD_CATEGORIES).forEach(function (parent) {
+      CHILD_CATEGORIES[parent].forEach(function (child) { placed[child] = true; });
+    });
+    var groups = FOLDER_GROUPS.map(function (group) {
+      return {
+        title: group.title,
+        items: group.keys.filter(function (key) { return present.indexOf(key) !== -1; }).map(function (key) {
+          placed[key] = true;
+          return { key: key, label: categoryLabel(key), children: childCategories(key, type) };
+        })
+      };
+    }).filter(function (group) { return group.items.length; });
+    var rest = present.filter(function (key) { return !placed[key]; });
+    if (rest.length) {
+      groups.push({ title: 'Outras', items: rest.map(function (key) {
+        return { key: key, label: categoryLabel(key), children: [] };
+      }) });
+    }
+    return groups;
+  }
+
+  /**
    * Categorias da pasta de skills: as do catálogo MAIS as que só existem no
    * mercado (TDD, Node.js), em ordem de rótulo. É a lista do menu lateral e a
    * que valida a categoria da URL.
@@ -366,6 +430,8 @@
     recent: recent,
     marketSkills: marketSkills,
     folderCategories: folderCategories,
+    folderTree: folderTree,
+    childCategories: childCategories,
     collection: collection,
     collections: collections,
     categoryLabel: categoryLabel,

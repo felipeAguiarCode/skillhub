@@ -238,46 +238,128 @@
   visibility: visible;
   transition-delay: 0s;
 }
+/* A árvore da pasta, no padrão do angular.dev: títulos de grupo em negrito e
+   uma linha guia vertical que desce do ícone da pasta aberta. O item atual
+   marca a linha com um trecho no acento.
+
+   A linha é um fundo de 1px, não uma borda: o contêiner tem overflow: hidden
+   para a animação de altura, e overflow corta na borda de dentro — uma borda
+   ficaria de fora, e o trecho do item atual seria cortado por cima dela. A
+   margem põe a linha no eixo do ícone: o recuo do link mais metade do ícone. */
 .nav__sub-inner {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-10);
   min-height: 0;
   overflow: hidden;
+  margin-left: calc(var(--space-10) + var(--space-8) - 1px);
+  background: linear-gradient(var(--line-strong), var(--line-strong)) left top / 1px 100% no-repeat;
 }
-.nav__sub[data-open="true"] .nav__sub-inner { padding: var(--space-2) 0 var(--space-6); }
+.nav__sub[data-open="true"] .nav__sub-inner { padding: var(--space-4) 0 var(--space-8); }
 .app-shell[data-sidebar="collapsed"] .nav__sub,
 .app-shell[data-sidebar="collapsed"] .nav__chevron { display: none; }
+
+.nav__group,
+.nav__tree {
+  display: grid;
+  gap: var(--space-2);
+}
+/* Item de grid não encolhe abaixo do conteúdo: sem isto um rótulo comprido
+   alarga o item, as reticências nunca entram e o texto é cortado seco. */
+.nav__group > *,
+.nav__tree > * { min-width: 0; }
+.nav__group-title {
+  padding: var(--space-6) var(--space-10) var(--space-2) var(--space-14);
+  color: var(--foreground);
+  font-size: var(--text-13);
+  font-weight: 700;
+  line-height: 1.375;
+}
 .nav__sublink {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-10);
-  padding: var(--space-6) var(--space-10) var(--space-6) var(--space-32);
-  border-radius: var(--radius-sm);
+  position: relative;
+  display: block;
+  padding: var(--space-6) var(--space-10) var(--space-6) var(--space-14);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   color: var(--fg-muted);
   font-size: var(--text-13);
   line-height: 1.375;
   transition: background-color var(--duration-fast) var(--ease-standard),
               color var(--duration-fast) var(--ease-standard);
 }
-.nav__sublink:hover,
-.nav__sublink[aria-current] {
-  background: var(--hover);
-  color: var(--foreground);
-}
-.nav__sublink span:last-child {
+.nav__sublink > span {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.nav__subindex {
-  flex: 0 0 auto;
-  min-width: 2ch;
-  color: var(--fg-faint);
-  font-family: var(--font-mono);
-  font-size: var(--text-11);
-  text-align: right;
+/* O trecho da linha guia: 2px sobre a linha de 1px, só no item atual. */
+.nav__sublink::before {
+  content: "";
+  position: absolute;
+  top: var(--space-4);
+  bottom: var(--space-4);
+  left: 0;
+  width: 2px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  transition: background-color var(--duration-fast) var(--ease-standard);
 }
+.nav__sublink:hover {
+  background: var(--hover);
+  color: var(--foreground);
+}
+.nav__sublink[aria-current] { color: var(--foreground); }
+.nav__sublink[aria-current]::before { background: var(--accent-fill); }
+
+/* Item com subseções: o link e, à direita, a seta que abre a subárvore. */
+.nav__branch-head {
+  display: flex;
+  align-items: center;
+}
+.nav__branch-head .nav__sublink {
+  flex: 1;
+  min-width: 0;
+}
+.nav__twisty {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: var(--space-24);
+  height: var(--space-24);
+  margin-right: var(--space-6);
+  border-radius: var(--radius-xs);
+  color: var(--fg-label);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.nav__twisty:hover { background: var(--hover); color: var(--foreground); }
+.nav__twisty .icon {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--duration-normal) var(--ease-standard);
+}
+.nav__twisty[aria-expanded="true"] .icon { transform: rotate(90deg); }
+/* A subárvore abre como a pasta: altura por grid-template-rows, e tem a sua
+   própria linha guia, recuada até o começo do texto do item de cima. */
+.nav__collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows var(--duration-normal) var(--ease-standard),
+              visibility 0s linear var(--duration-normal);
+}
+.nav__collapse[data-open="true"] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.nav__tree--nested {
+  min-height: 0;
+  overflow: hidden;
+  margin-left: var(--space-14);
+  background: linear-gradient(var(--line), var(--line)) left top / 1px 100% no-repeat;
+}
+.nav__collapse[data-open="true"] .nav__tree--nested { padding: var(--space-2) 0 var(--space-4); }
 
 .nav__divider {
   height: 1px;
@@ -342,7 +424,9 @@
 .main::before {
   content: "";
   position: absolute;
-  inset: 0 0 auto 0;
+  top: 0;
+  right: 0;
+  left: 0;
   height: var(--banner-top-height);
   background: var(--gradient-banner-top);
   pointer-events: none;

@@ -3068,7 +3068,7 @@ window.SKILL_HUB_CATALOG = (window.SKILL_HUB_CATALOG || []).concat([
     description: 'Reduz imagem e superfície de ataque, medindo antes e depois.',
     whenToUse: 'Use quando a imagem está grande, roda como root ou carrega o toolchain.',
     icon: 'cloud',
-    category: 'devops',
+    category: 'docker',
     tags: ['docker', 'imagem', 'segurança'],
     platform: 'claude',
     compatibility: ['Claude Code'],

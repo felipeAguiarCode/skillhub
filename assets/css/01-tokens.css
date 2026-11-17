@@ -75,6 +75,10 @@
   --accent-fill-foreground: #191510;
   --accent-text: #d97757;
   --accent-tint: #d9775729;
+  /* Só para os dois banners em degradê. Um pouco acima de tint e wash: a 8% a
+     luz sumia em alguns monitores; a 40% (já testado) ficou forte demais. */
+  --accent-glow: #d9775738;
+  --accent-haze: #d9775714;
   --accent-wash: #d9775714;
   --accent-line: #d9775766;
   --focus-ring: #d97757;
@@ -102,15 +106,15 @@
      - rule: régua que nasce cheia à esquerda e some à direita;
      - rule-center: régua que some nas duas pontas, para divisor solto. */
   --gradient-banner-top:
-    radial-gradient(60% 100% at 85% 0%, var(--accent-tint), transparent 70%),
-    linear-gradient(180deg, var(--accent-wash), transparent);
+    radial-gradient(60% 100% at 82% 0%, var(--accent-glow), transparent 70%),
+    linear-gradient(180deg, var(--accent-haze), transparent);
   --gradient-banner-panel:
-    radial-gradient(90% 140% at 100% 0%, var(--accent-tint), transparent 60%),
-    linear-gradient(120deg, var(--accent-wash), transparent 55%);
+    radial-gradient(90% 140% at 100% 0%, var(--accent-glow), transparent 62%),
+    linear-gradient(120deg, var(--accent-haze), transparent 58%);
   --gradient-rule: linear-gradient(90deg, var(--line-strong), transparent);
   --gradient-rule-center: linear-gradient(90deg, transparent, var(--line-strong), transparent);
   /* Altura da luz do topo e largura do traço de acento que abre uma régua. */
-  --banner-top-height: 360px;
+  --banner-top-height: 420px;
   --rule-tick: 24px;
 
   /* --- Tipografia --------------------------------------------------------- */
@@ -132,6 +136,8 @@
   --text-34: 34px;
   /* Hero: 34px no celular, 52px a partir de ~1040px de largura. */
   --text-display: clamp(34px, 5vw, 52px);
+  /* Só o título do hero da home: três linhas cheias em tela larga. */
+  --text-hero: clamp(38px, 5.2vw, 64px);
 
   --leading-tight: 1.05;
   --leading-snug: 1.2;
@@ -221,6 +227,9 @@
   --topbar-height: 62px;
   --page-max: 1120px;
   --page-pad: var(--space-32);
+  /* Margem lateral da home em tela larga: centra uma coluna de --page-max numa
+     seção que vai de borda a borda. O % é resolvido em quem usa o token. */
+  --home-gutter: max(var(--space-40), calc((100% - var(--page-max)) / 2));
 
   /* Apresentação. As duas barras são finas de propósito: cada pixel de cromo
      sai da altura do slide, e slide que não cabe vira rolagem no meio de uma

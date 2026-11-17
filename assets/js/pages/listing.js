@@ -107,10 +107,36 @@ window.SkillHub.pages = window.SkillHub.pages || {};
       })) : null,
       external.length ? el('p', { class: 'card__label listing__sublabel' },
         'Do mercado · cada linha abre o repositório oficial') : null,
-      external.length ? el('div', { class: 'catalog' }, external.map(function (entry) {
-        return ui.externalCard(entry);
-      })) : null
+      external.length ? externalList(external, state.category) : null
     ]);
+  }
+
+  /**
+   * As do mercado. Numa categoria com subseções (Coding style), uma seção por
+   * subseção, na ordem da árvore; o que não tiver subseção fica em "Outras".
+   */
+  function externalList(entries, category) {
+    var children = active.config.folder ? SkillHub.catalog.childCategories(category) : [];
+    var cards = function (list) {
+      return el('div', { class: 'catalog' }, list.map(function (entry) { return ui.externalCard(entry); }));
+    };
+    if (!children.length) return cards(entries);
+
+    var placed = Object.create(null);
+    var sections = children.map(function (child) {
+      var list = entries.filter(function (entry) { return (entry.categories || []).indexOf(child.key) !== -1; });
+      list.forEach(function (entry) { placed[entry.id] = true; });
+      return list.length ? ui.section({
+        title: child.label,
+        description: list.length + ' ' + SkillHub.util.pluralize(list.length, 'skill', 'skills'),
+        linkHref: '#/' + active.route + '/' + encodeURIComponent(child.key),
+        linkLabel: 'Só ' + child.label,
+        body: cards(list)
+      }) : null;
+    });
+    var rest = entries.filter(function (entry) { return !placed[entry.id]; });
+    if (rest.length) sections.push(ui.section({ title: 'Outras', body: cards(rest) }));
+    return el('div', { class: 'listing__groups' }, sections);
   }
 
   /** Rótulo e estado do botão que recolhe os filtros. */

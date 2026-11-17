@@ -65,6 +65,13 @@ Dois arquivos existem só por causa disso, e removê-los quebra a publicação:
   commitaria CRLF e o diff de qualquer arquivo apareceria inteiro alterado para
   quem clonasse em outro sistema.
 
+**A home tem moldura de landing em tela larga** (`data-home="on"` na shell, posto
+pela home e tirado no teardown, como o `data-deck`): de 1180px para cima o menu
+lateral sai, os links vão para o cabeçalho e as seções vão de borda a borda. A
+sidebar escondida perde também o padding — sem isso sobravam 24px invisíveis por
+cima do conteúdo. Abaixo de 1180px a home mantém a sidebar, que é a navegação do
+celular.
+
 **Toda folha e todo script do `index.html` levam `?v=<data>-<n>`.** É o que fura o
 cache do navegador: sem isso, quem já abriu uma versão anterior continua vendo
 o CSS e o JS antigos — no Pages e também abrindo o arquivo local — e a queixa
@@ -108,6 +115,13 @@ que se capturam erros de console de verdade (`Runtime.exceptionThrown`,
 `Log.entryAdded`).
 
 ### Armadilhas de automação que já custaram tempo
+
+- **Espere as animações antes de medir ou clicar.** A pasta do menu anima a
+  altura e os links mudam de cor em 150ms: medir no meio dá altura parcial e cor
+  com alfa 0,99, e clicar no meio acerta o item errado. O que resolveu foi
+  esperar `document.getAnimations()` (as finitas) terminarem depois de cada
+  navegação e de cada clique — esperar um tempo fixo falhou de forma
+  intermitente conforme a máquina.
 
 - **Screenshot headless:** use um `--user-data-dir` novo a cada captura. O perfil
   persistente **cacheia o CSS** e você fotografa a versão anterior.
@@ -657,6 +671,26 @@ para `#/skills/<categoria>`. Três coisas a saber:
 - **a categoria mora na URL**, em toda listagem. O chip de categoria só troca o
   hash; quem aplica é `onParam` (as listagens são `ownsParam`), então trocar de
   categoria atualiza chips e lista no lugar, sem re-render nem rolagem;
+- **a pasta é uma árvore no padrão do angular.dev**: "Visão geral", depois
+  grupos com título em negrito (Engenharia, Stacks, Infra e operação, Produto e
+  negócio) e uma linha guia vertical que desce do ícone da pasta aberta (o ícone
+  troca para `folder-open`). O item atual marca a linha com um trecho de 2px no
+  acento. A linha é um `background` de 1px, **não borda**: o contêiner tem
+  `overflow: hidden` para animar a altura, e overflow corta na borda de dentro —
+  a borda ficaria de fora e o trecho do item atual seria cortado;
+- **a árvore é dado**: `FOLDER_GROUPS` e `CHILD_CATEGORIES` em `catalog.js`,
+  lidos por `catalog.folderTree()`. Categoria que existe nos dados e não está em
+  grupo nenhum cai em "Outras", para nada sumir do menu. Uma categoria com
+  filhos (hoje Coding style e Git) ganha uma seta que abre a subárvore, com a sua
+  própria linha guia; chegar numa subseção pela URL abre o ramo dela;
+- **subseções**: uma skill numa subseção leva a categoria-mãe junto
+  (`categories: ['coding-style', 'clean-code']`). A página da categoria-mãe é
+  dividida em seções, uma por subseção, e cada subseção tem URL própria
+  (`#/skills/clean-code`). Coding style: Clean code, Code review, Convenções,
+  Legibilidade e lint, Commits e Git, Docs de código. Git: Commits semânticos,
+  Pull requests, Branches e fluxo, CI e GitHub;
+- item de grid na árvore precisa de `min-width: 0`: sem isso um rótulo comprido
+  alarga o item, as reticências não entram e o texto é cortado seco;
 - **a pasta é recolhível**, pelo botão de seta ao lado do item. Entrar na rota
   abre, sair fecha, e dentro dela quem manda é o botão: trocar de categoria não
   reabre uma pasta recém-recolhida. A altura é animada por
@@ -714,6 +748,17 @@ em vez de ir para `#/skill/<id>`. Três regras ao mexer nessa lista:
   repete em rankings e listas da comunidade, e a página diz isso;
 - a descrição sai do README ou da descrição do repositório, e projeto de
   comunidade "baseado em" um autor é identificado como tal.
+
+**Docker** é seção própria e só tem Docker e Docker Compose: as skills oficiais
+da Docker (`docker/skills`), uma do ECC, e as duas do catálogo
+(`docker-hardener` e `containerize`), que saíram de DevOps para lá.
+
+**Frontend e Backend têm no mínimo 50 skills do mercado cada**, a pedido —
+muitas delas oficiais dos próprios fornecedores (Angular, Svelte, shadcn,
+Vercel, Stripe, Better Auth, Cloudflare, Netlify, ClickHouse, Sanity, Docker).
+Ao procurar mais, o diretório `officialskills.sh` aponta para o repositório
+real no HTML da página; a API do GitHub (`git/trees/HEAD?recursive=1`) lista
+todos os `SKILL.md` de um repositório de uma vez.
 
 **Skills do mercado dentro de Skills** (`data/market-skills.js`,
 `window.SKILL_HUB_MARKET`): por categoria, a página de Skills lista também

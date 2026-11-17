@@ -9,6 +9,11 @@
       amostra e um "Comece por /slug";
    4. "O que você quer fazer?": à esquerda a pergunta, à direita as respostas
       em linhas com etiqueta de tipo.
+   Em tela larga a home também troca a moldura: o menu lateral sai e os links
+   vão para o cabeçalho, as seções vão de borda a borda e uma faixa de anúncio
+   abre a página (atributo data-home na shell, posto aqui e tirado no teardown,
+   como o data-deck da apresentação — nenhuma preferência é gravada).
+
    Depois vêm o que é só daqui: a busca global, favoritos, destaques e a
    chamada para o builder.
 
@@ -36,6 +41,16 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   var state = { query: '' };
 
   var refs = { results: null, sections: null, input: null, favorites: null };
+
+  /* Os destinos do cabeçalho da home. Os mesmos da sidebar, na mesma ordem. */
+  var TOP_LINKS = [
+    { label: 'Trendings', href: '#/trending' },
+    { label: 'Skills', href: '#/skills' },
+    { label: 'Prompts', href: '#/prompt-engineering' },
+    { label: 'Coding Styles', href: '#/coding-styles' },
+    { label: 'Agentes', href: '#/agents' },
+    { label: 'Skill Builder', href: '#/skill-builder' }
+  ];
 
   function skills() {
     return SkillHub.catalog.byType(SKILL_TYPES);
@@ -93,6 +108,17 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   function onSearchInput(value) {
     state.query = value;
     renderResults();
+  }
+
+  /* --- Faixa de anúncio --------------------------------------------------------- */
+
+  function announcement() {
+    var market = SkillHub.catalog.marketSkills('all').length;
+    return el('a', { class: 'announce', href: '#/skills' }, [
+      el('span', { class: 'badge badge--accent' }, el('span', null, 'Novo')),
+      el('span', null, market + ' skills do mercado, por categoria, com link oficial.'),
+      SkillHub.icons.get('arrow-right', 'icon--sm announce__arrow')
+    ]);
   }
 
   /* --- 1. Hero ---------------------------------------------------------------- */
@@ -333,7 +359,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   /* --- Página -------------------------------------------------------------- */
 
   function render() {
-    var sections = el('div', null, [
+    var sections = el('div', { class: 'home__sections' }, [
       statement(),
       skillsGrid(),
       intents(),
@@ -347,19 +373,39 @@ window.SkillHub.pages = window.SkillHub.pages || {};
       cta()
     ]);
 
-    var results = el('div', { hidden: true, 'aria-live': 'polite' });
+    var results = el('div', { class: 'home__results', hidden: true, 'aria-live': 'polite' });
 
     refs.sections = sections;
     refs.results = results;
 
-    var page = el('div', null, [hero(), searchBand(), results, sections]);
+    var page = el('div', { class: 'home' }, [announcement(), hero(), searchBand(), results, sections]);
     renderResults();
+
+    /* Só depois de a página existir: se algo acima lançar, a shell não fica
+       presa na moldura da home sem rota nenhuma para desfazer. */
+    var shell = document.querySelector('.app-shell');
+    if (shell) shell.dataset.home = 'on';
     return page;
+  }
+
+  function teardown() {
+    var shell = document.querySelector('.app-shell');
+    if (shell) delete shell.dataset.home;
+    refs = { results: null, sections: null, input: null, favorites: null };
   }
 
   function topbar() {
     return {
-      lead: null,
+      /* Marca e links: aparecem só onde a sidebar saiu (CSS), então em tela
+         estreita a navegação continua sendo a da sidebar. */
+      lead: el('nav', { class: 'topnav', 'aria-label': 'Navegação da home' }, [
+        el('a', { class: 'brand topnav__brand', href: '#/home', 'aria-label': 'Skill Hub, página inicial' }, [
+          el('span', { class: 'brand__mark', 'aria-hidden': 'true' }, '/'),
+          el('span', { 'aria-hidden': 'true' }, 'skill-hub')
+        ])
+      ].concat(TOP_LINKS.map(function (link) {
+        return el('a', { class: 'topnav__link', href: link.href }, link.label);
+      }))),
       actions: [
         ui.iconButton({
           icon: 'search',
@@ -390,6 +436,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     title: 'Home',
     render: render,
     topbar: topbar,
+    teardown: teardown,
     focusSearch: focusSearch
   };
 })(window.SkillHub);

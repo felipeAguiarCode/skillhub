@@ -26,9 +26,9 @@
 /* A largura limita o TÍTULO, não a coluna: mantém o hero em poucas linhas
    cheias sem estreitar o subtítulo e a busca. */
 .hero__title {
-  margin: var(--space-12) 0 var(--space-16);
-  max-width: 14ch;
-  font-size: var(--text-display);
+  margin: 0 0 var(--space-20);
+  max-width: 11ch;
+  font-size: var(--text-hero);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-display);
 }
@@ -65,6 +65,107 @@
 .hero-art__ink { fill: var(--foreground); }
 .hero-art__mid { fill: var(--fg-muted); }
 .hero-art__faint { fill: var(--fg-faint); }
+
+/* --- Home: faixa de anúncio e cabeçalho ------------------------------------ */
+
+/* Barra fina no alto da página: etiqueta, uma frase e seta. Uma só. */
+.announce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-10);
+  min-height: var(--space-32);
+  margin-bottom: var(--space-40);
+  padding: var(--space-6) var(--space-16);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--band);
+  color: var(--foreground);
+  font-size: var(--text-13);
+  font-weight: 500;
+  letter-spacing: -.02em;
+}
+.announce__arrow { transition: transform var(--duration-fast) var(--ease-standard); }
+.announce:hover .announce__arrow { transform: translateX(2px); }
+
+/* Links do cabeçalho da home. Escondidos por padrão: só existem onde a sidebar
+   saiu (bloco de tela larga, abaixo). */
+.topnav { display: none; }
+.topnav__brand { min-height: 0; padding: 0; margin-right: var(--space-12); }
+.topnav__link {
+  color: var(--fg-muted);
+  font-size: var(--text-14);
+  font-weight: 500;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.topnav__link:hover { color: var(--foreground); }
+
+/* A moldura da home em tela larga, como numa landing: o menu lateral sai, os
+   links vão para o cabeçalho e cada seção vai de borda a borda, com o conteúdo
+   centrado numa coluna. Só de 1180px para cima — abaixo disso a sidebar já é a
+   navegação do celular e do tablet, e sem ela não haveria menu.
+
+   O [data-sidebar] a mais no primeiro seletor é a mesma razão do modo
+   apresentação: ganhar da regra de sidebar recolhida sem depender da ordem. */
+@media (min-width: 1180px) {
+  .app-shell[data-home="on"][data-sidebar] { --sidebar-width: 0px; }
+  /* Sem o padding a coluna fica de fato com 0px: com ele, sobravam 24px de
+     sidebar invisível por cima do começo do conteúdo. */
+  .app-shell[data-home="on"] .sidebar {
+    visibility: hidden;
+    padding-inline: 0;
+    border-right-width: 0;
+  }
+  .app-shell[data-home="on"] .topbar__toggle { display: none; }
+  .app-shell[data-home="on"] .topbar { padding-inline: var(--home-gutter); }
+  .app-shell[data-home="on"] .topnav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-20);
+  }
+  .app-shell[data-home="on"] .page {
+    max-width: none;
+    padding: 0 0 var(--space-80);
+  }
+
+  .home > .announce {
+    margin: 0;
+    border-width: 0 0 1px;
+    border-radius: 0;
+  }
+  .home > .hero,
+  .home > .home__searchband,
+  .home__results > *,
+  .home__sections > .section,
+  .home__sections > .home__cta,
+  #home-favorites > .section { padding-inline: var(--home-gutter); }
+
+  .home > .hero {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    align-items: end;
+    padding-top: var(--space-80);
+  }
+  .home .hero__content { padding-bottom: var(--space-64); }
+  /* A arte encosta na linha de baixo do hero, como a foto da referência. */
+  .home .hero__art { align-self: end; }
+  .home .hero-art { display: block; }
+  .home > .home__searchband {
+    margin-top: 0;
+    padding-block: var(--space-24);
+    border-block: 1px solid var(--line);
+    background: var(--band);
+  }
+  /* Borda a borda, a régua de seção vira uma linha inteira: o traço de acento
+     ficaria colado na borda da janela. */
+  .home .section {
+    margin-top: 0;
+    padding-block: var(--space-64);
+    border-top: 1px solid var(--line);
+    background-image: none;
+  }
+  .home__sections > .section:first-child { border-top: 0; }
+  .home .home__cta { margin-top: 0; padding-top: var(--space-64); border-top: 1px solid var(--line); }
+}
 
 /* --- Home: a tese ---------------------------------------------------------- */
 
@@ -212,6 +313,12 @@
 /* Separa as skills hospedadas aqui das do mercado, na mesma lista. */
 .listing__sublabel { margin: var(--space-32) 0 var(--space-12); }
 .listing__sublabel:first-child { margin-top: 0; }
+/* Subseções de uma categoria (Coding style): mais juntas que as seções de página. */
+.listing__groups > .section {
+  margin-top: var(--space-32);
+  padding-top: var(--space-24);
+}
+.listing__groups > .section:first-child { margin-top: 0; }
 .listing__filters {
   display: grid;
   gap: var(--space-10);
