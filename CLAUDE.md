@@ -65,6 +65,12 @@ Dois arquivos existem só por causa disso, e removê-los quebra a publicação:
   commitaria CRLF e o diff de qualquer arquivo apareceria inteiro alterado para
   quem clonasse em outro sistema.
 
+**Toda folha e todo script do `index.html` levam `?v=<data>-<n>`.** É o que fura o
+cache do navegador: sem isso, quem já abriu uma versão anterior continua vendo
+o CSS e o JS antigos — no Pages e também abrindo o arquivo local — e a queixa
+chega como "abri o index e não atualizou". Ao publicar uma mudança visível,
+troque o valor em todas as referências de uma vez.
+
 Como o app usa **só caminhos relativos** e hash routing, ele funciona igual em
 domínio raiz e em subpasta. É por isso que `/skillhub/` no Pages não precisa de
 nenhuma regra de rewrite — e é por isso que introduzir um caminho absoluto
