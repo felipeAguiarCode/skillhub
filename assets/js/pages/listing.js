@@ -2,7 +2,7 @@
    pages/listing.js — SkillHub.pages.listing
 
    As quatro rotas de coleção (Claude, Codex, Prompts, Agentes) compartilham
-   este renderizador; só os dados, o ornamento e o microcopy mudam.
+   este renderizador; só os dados e o microcopy mudam.
 
    Só a lista, a contagem e o estado dos chips são re-renderizados quando um
    filtro muda, para o foco não sair do campo de busca enquanto se digita.
@@ -64,15 +64,31 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     var items = SkillHub.catalog.query(active.config.type, active.state);
     var total = SkillHub.catalog.byType(active.config.type).length;
 
+    /* Na coleção com pasta entram também as skills do mercado daquela
+       categoria: não são hospedadas aqui, então vêm depois das do catálogo, sob
+       um rótulo que diz isso, e cada linha abre o link oficial. Seguem a busca e
+       a categoria. Plataforma, formato, risco, scripts e shell são fatos que só
+       o catálogo declara: com um deles ligado, as do mercado saem da lista em vez
+       de aparecerem como se tivessem passado no filtro. */
+    var state = active.state;
+    var onlyCatalog = state.platform !== 'all' || state.format !== 'all' || state.risk !== 'all' ||
+      state.scripts || state.shell;
+    var external = active.config.folder && !onlyCatalog
+      ? SkillHub.catalog.marketSkills(state.category, state.text)
+      : [];
+    var externalTotal = active.config.folder ? SkillHub.catalog.marketSkills('all').length : 0;
+    var shown = items.length + external.length;
+    var all = total + externalTotal;
+
     if (refs.count) {
-      refs.count.textContent = items.length === total
-        ? total + ' ' + SkillHub.util.pluralize(total, 'item', 'itens')
-        : items.length + ' de ' + total + ' ' + SkillHub.util.pluralize(total, 'item', 'itens');
+      refs.count.textContent = shown === all
+        ? all + ' ' + SkillHub.util.pluralize(all, 'item', 'itens')
+        : shown + ' de ' + all + ' ' + SkillHub.util.pluralize(all, 'item', 'itens');
     }
 
     if (!refs.list) return;
 
-    if (!items.length) {
+    if (!shown) {
       SkillHub.dom.replace(refs.list, ui.emptyState({
         icon: 'search',
         title: 'Nenhum resultado com esses filtros',
@@ -82,9 +98,19 @@ window.SkillHub.pages = window.SkillHub.pages || {};
       return;
     }
 
-    SkillHub.dom.replace(refs.list, el('div', { class: 'catalog' }, items.map(function (item) {
-      return ui.skillCard(item, { categoryLabel: SkillHub.catalog.categoryLabel(item.category) });
-    })));
+    SkillHub.dom.replace(refs.list, [
+      items.length ? el('div', { class: 'catalog' }, items.map(function (item) {
+        return ui.skillCard(item, {
+          categoryLabel: SkillHub.catalog.categoryLabel(item.category),
+          favorite: SkillHub.catalog.isFavorite(item.id)
+        });
+      })) : null,
+      external.length ? el('p', { class: 'card__label listing__sublabel' },
+        'Do mercado · cada linha abre o repositório oficial') : null,
+      external.length ? el('div', { class: 'catalog' }, external.map(function (entry) {
+        return ui.externalCard(entry);
+      })) : null
+    ]);
   }
 
   /** Rótulo e estado do botão que recolhe os filtros. */
@@ -119,14 +145,18 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     var facets = SkillHub.catalog.facets(active.config.type);
 
     var categoryOptions = [{ value: 'all', label: 'Todos' }].concat(
-      facets.categories.map(function (key) {
+      categoryKeys().map(function (key) {
         return { value: key, label: SkillHub.catalog.categoryLabel(key) };
       })
     );
 
     var lines = [
+      /* A categoria mora na URL (#/<rota>/<categoria>): é o que deixa a pasta do
+         menu lateral e os chips da página apontarem para o mesmo lugar, e o
+         voltar do navegador desfazer a escolha. O clique só troca o hash; quem
+         aplica é onParam. */
       chipLine('Categoria', 'category', categoryOptions, function (value) {
-        setFilter('category', value);
+        window.location.hash = '#/' + active.route + (value === 'all' ? '' : '/' + encodeURIComponent(value));
       })
     ];
 
@@ -195,11 +225,34 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     return el('div', { class: 'listing__filter-block' }, [toggle, panel]);
   }
 
+  /** Na coleção com pasta, as categorias incluem as que só existem no mercado. */
+  function categoryKeys() {
+    return active.config.folder
+      ? SkillHub.catalog.folderCategories(active.config.type)
+      : SkillHub.catalog.facets(active.config.type).categories;
+  }
+
+  /** Categoria vinda da URL. Uma que não existe na coleção vale como "todas". */
+  function applyCategory(param) {
+    var known = categoryKeys();
+    active.state.category = param && known.indexOf(param) !== -1 ? param : 'all';
+    if (SkillHub.shell) SkillHub.shell.syncFolder(active.route, active.state.category);
+  }
+
+  /* A rota administra o próprio parâmetro (ownsParam): trocar de categoria
+     atualiza chips e lista no lugar, sem re-renderizar nem rolar para o topo. */
+  function onParam(param) {
+    if (!active.config) return;
+    applyCategory(param);
+    update();
+  }
+
   function render(context) {
     var config = SkillHub.catalog.collection(context.name);
     active.route = context.name;
     active.config = config;
     active.state = SkillHub.catalog.filters(context.name);
+    applyCategory(context.param);
 
     var search = ui.searchField({
       id: 'listing-search',
@@ -222,14 +275,24 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     refs.count = el('p', { class: 'listing__count', 'aria-live': 'polite' });
     refs.list = el('div', null);
 
-    var page = el('div', null, [
-      ui.pageHeader({
-        eyebrow: config.eyebrow,
-        title: config.title,
-        copy: config.copy,
-        art: SkillHub.icons.ornament(context.name, 116)
-      }),
-      el('div', { class: 'toolbar' }, [search, sort]),
+    /* Coleção com pasta no menu (Skills): a categoria se escolhe lá, e a página
+       fica só com a busca — sem ordenação e, em tela larga, sem o bloco de
+       filtros. Abaixo de 1180px a pasta some junto com os rótulos do menu, então
+       o bloco continua disponível atrás do botão "Filtros" (regra no CSS): sem
+       isso não haveria como escolher categoria no celular. */
+    var page = el('div', { class: config.folder ? 'listing--folder' : null }, [
+      /* Sem cabeçalho visível na coleção com pasta, por pedido: o menu já diz
+         onde se está. O h1 continua existindo para leitor de tela — página sem
+         título é página sem ponto de partida. */
+      config.folder
+        ? el('h1', { class: 'u-sr-only' }, config.title)
+        : ui.pageHeader({
+            eyebrow: config.eyebrow,
+            title: config.title,
+            copy: config.copy
+          }),
+      el('div', { class: 'toolbar' + (config.folder ? ' toolbar--single' : '') },
+        config.folder ? [search] : [search, sort]),
       buildFilters(),
       refs.count,
       refs.list
@@ -265,6 +328,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
 
   function teardown() {
     refs = { list: null, count: null, filters: null, input: null, toggle: null };
+    if (SkillHub.shell) SkillHub.shell.syncFolder(null);
   }
 
   /** Uma definição de rota por coleção, todas compartilhando o renderizador. */
@@ -276,6 +340,8 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         render: render,
         topbar: topbar,
         teardown: teardown,
+        ownsParam: true,
+        onParam: onParam,
         focusSearch: focusSearch
       };
     });

@@ -1,0 +1,2488 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Slash Design System</title>
+<meta name="description" content="Tokens, tipografia, componentes e diretrizes do design system Slash.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Slash — tokens. Tema escuro é o padrão; claro via [data-theme="light"] ou preferência do sistema. */
+:root, [data-theme="dark"] {
+  --page-background: #080808;
+  --background: #0b0b0b;
+  --band: #0e0e0d;
+  --card: #100f0e;
+  --popover: #0d0d0c;
+  --muted: #0d0d0c;
+  --accent-panel: #1d1a11;
+  --glass: #0b0b0be6;
+  --foreground: #f4f3f1;
+  --fg-strong: #f4f3f1e6;
+  --fg-body: #f4f3f1b8;
+  --fg-muted: #f4f3f199;
+  --fg-subtle: #f4f3f185;
+  --fg-label: #f4f3f17a;
+  --fg-faint: #f4f3f14d;
+  --line: #ffffff14;
+  --line-strong: #ffffff1f;
+  --line-soft: #ffffff0f;
+  --hover: #ffffff12;
+  --secondary: #ffffff12;
+  --primary: #f5c451;
+  --primary-foreground: #191510;
+  --accent-fill: #f5c451;
+  --accent-fill-hover: #ffd873;
+  --accent-fill-foreground: #191510;
+  --accent-text: #f5c451;
+  --accent-tint: #f5c45124;
+  --accent-wash: #f5c45112;
+  --accent-line: #f5c45159;
+  --ring: #f5c45159;
+  --focus-ring: #f5c451;
+  --destructive: lab(31.1699% 55.5567 47.4694);
+  --destructive-foreground: lab(90.5592% 0.191122 1.51047);
+  --mark-yes: lab(78.7751% -48.9898 21.5753);
+  --mark-gold: var(--accent-fill);
+  --mark-no: lab(65.8493% 53.3364 30.7453);
+  color-scheme: dark;
+}
+[data-theme="light"] {
+  --page-background: #f1f2f5;
+  --background: #fbfbfc;
+  --band: #f1f2f5;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --muted: #f5f6f8;
+  --accent-panel: #ecedef;
+  --glass: #fbfbfce6;
+  --foreground: #14161a;
+  --fg-strong: #14161ae6;
+  --fg-body: #14161acc;
+  --fg-muted: #14161ab3;
+  --fg-subtle: #14161aa3;
+  --fg-label: #14161a99;
+  --fg-faint: #14161a59;
+  --line: #14161a1a;
+  --line-strong: #14161a24;
+  --line-soft: #14161a12;
+  --hover: #14161a0f;
+  --secondary: #14161a0f;
+  --primary: #14161a;
+  --primary-foreground: #fbfbfc;
+  --accent-fill: #f5c451;
+  --accent-fill-hover: #eab534;
+  --accent-fill-foreground: #191510;
+  --accent-text: lab(53.6319% 12.9281 64.513);
+  --accent-tint: #14161a0f;
+  --accent-wash: #14161a0a;
+  --accent-line: #14161a38;
+  --ring: #14161a59;
+  --focus-ring: #14161a;
+  --destructive: lab(50.9656% 54.806 39.6151);
+  --destructive-foreground: lab(99.0272% 0.190765 1.51021);
+  --mark-yes: lab(45.9926% -41.8497 21.6371);
+  --mark-gold: lab(53.6319% 12.9281 64.513);
+  --mark-no: lab(45.9154% 59.7076 40.9321);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+  --page-background: #f1f2f5;
+  --background: #fbfbfc;
+  --band: #f1f2f5;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --muted: #f5f6f8;
+  --accent-panel: #ecedef;
+  --glass: #fbfbfce6;
+  --foreground: #14161a;
+  --fg-strong: #14161ae6;
+  --fg-body: #14161acc;
+  --fg-muted: #14161ab3;
+  --fg-subtle: #14161aa3;
+  --fg-label: #14161a99;
+  --fg-faint: #14161a59;
+  --line: #14161a1a;
+  --line-strong: #14161a24;
+  --line-soft: #14161a12;
+  --hover: #14161a0f;
+  --secondary: #14161a0f;
+  --primary: #14161a;
+  --primary-foreground: #fbfbfc;
+  --accent-fill: #f5c451;
+  --accent-fill-hover: #eab534;
+  --accent-fill-foreground: #191510;
+  --accent-text: lab(53.6319% 12.9281 64.513);
+  --accent-tint: #14161a0f;
+  --accent-wash: #14161a0a;
+  --accent-line: #14161a38;
+  --ring: #14161a59;
+  --focus-ring: #14161a;
+  --destructive: lab(50.9656% 54.806 39.6151);
+  --destructive-foreground: lab(99.0272% 0.190765 1.51021);
+  --mark-yes: lab(45.9926% -41.8497 21.6371);
+  --mark-gold: lab(53.6319% 12.9281 64.513);
+  --mark-no: lab(45.9154% 59.7076 40.9321);
+    color-scheme: light;
+  }
+}
+:root {
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-18: 18px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-nav: 7px;
+  --radius-icon: 8px;
+  --radius: 9px;
+  --radius-lg: 12px;
+  --radius-2xl: 16px;
+  --nav-height: 62px;
+  --container: 960px;
+  --measure-lead: 64ch;
+  --measure-body: 52ch;
+  --control-height: 48px;
+  --button-height: 50px;
+  --icon-button: 36px;
+  --copy-button: 30px;
+  --icon-tile: 40px;
+  --font-sans: Geist, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.text-display-lg { font-family: var(--font-sans); font-size: 52px; line-height: 1.02; font-weight: 700; letter-spacing: -0.036em; }
+.text-display-md { font-family: var(--font-sans); font-size: 44px; line-height: 1.04; font-weight: 700; letter-spacing: -0.032em; }
+.text-display { font-family: var(--font-sans); font-size: 34px; line-height: 1.04; font-weight: 700; letter-spacing: -0.032em; }
+.text-heading-lg { font-family: var(--font-sans); font-size: 34px; line-height: 1.06; font-weight: 700; letter-spacing: -0.03em; }
+.text-heading-md { font-family: var(--font-sans); font-size: 28px; line-height: 1.08; font-weight: 700; letter-spacing: -0.028em; }
+.text-heading { font-family: var(--font-sans); font-size: 24px; line-height: 1.08; font-weight: 700; letter-spacing: -0.028em; }
+.text-title { font-family: var(--font-sans); font-size: 18px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
+.text-title-sm { font-family: var(--font-sans); font-size: 16px; line-height: 1.3; font-weight: 700; letter-spacing: -0.018em; }
+.text-lead { font-family: var(--font-sans); font-size: 20px; line-height: 1.4; font-weight: 500; letter-spacing: -0.018em; }
+.text-body-lg { font-family: var(--font-sans); font-size: 17px; line-height: 1.55; font-weight: 400; }
+.text-body { font-family: var(--font-sans); font-size: 14px; line-height: 1.625; font-weight: 400; }
+.text-item-title { font-family: var(--font-sans); font-size: 16px; line-height: 22px; font-weight: 500; }
+.text-ui { font-family: var(--font-sans); font-size: 14px; line-height: 1.375; font-weight: 500; }
+.text-button { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 700; }
+.text-label { font-family: var(--font-sans); font-size: 14px; line-height: 1; font-weight: 500; }
+.text-small { font-family: var(--font-sans); font-size: 13px; line-height: 1.35; font-weight: 400; }
+.text-banner { font-family: var(--font-sans); font-size: 12.5px; line-height: 1.4; font-weight: 500; letter-spacing: -0.025em; }
+.text-stat { font-family: var(--font-mono); font-size: 20px; line-height: 1.5; font-weight: 500; letter-spacing: -0.02em; }
+.text-mono { font-family: var(--font-mono); font-size: 13px; line-height: 1.35; font-weight: 400; }
+.text-mono-sm { font-family: var(--font-mono); font-size: 12px; line-height: 1.4; font-weight: 400; }
+.text-index { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: -0.03em; }
+.text-code { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; font-weight: 500; }
+.text-eyebrow { font-family: var(--font-mono); font-size: 11px; line-height: 1.4; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+.text-kicker { font-family: var(--font-mono); font-size: 11px; line-height: 1.4; font-weight: 500; }
+.text-stat-label { font-family: var(--font-mono); font-size: 11px; line-height: 1.35; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
+.text-micro { font-family: var(--font-mono); font-size: 9px; line-height: 1; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* Slash — component styles. Every color, radius and size comes from tokens.css. */
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.sl-stage { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12); padding: var(--space-20); }
+.sl-col { display: flex; flex-direction: column; gap: var(--space-16); padding: var(--space-20); max-width: 520px; }
+.sl-ease { transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1), border-color .15s cubic-bezier(.4,0,.2,1), opacity .15s cubic-bezier(.4,0,.2,1), transform .15s cubic-bezier(.4,0,.2,1); }
+.sl-focus:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.sl-ico { display: block; flex: none; }
+.sl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Button */
+.sl-btn { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-8); box-sizing: border-box; font: inherit; font-size: 14px; line-height: 20px; font-weight: 700; border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; text-decoration: none; white-space: nowrap; overflow: hidden; }
+.sl-btn-lg { height: var(--button-height); padding: 0 var(--space-20); }
+.sl-btn-md { height: 40px; padding: 0 var(--space-16); }
+.sl-btn-sm { height: 29px; padding: 0 9px; gap: var(--space-4); font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; border-radius: var(--radius-sm); }
+.sl-btn-block { width: 100%; }
+.sl-btn-primary { background: var(--accent-fill); color: var(--accent-fill-foreground); }
+.sl-btn-primary:hover { background: var(--accent-fill-hover); }
+.sl-btn-accent { background: var(--accent-wash); border-color: var(--accent-line); color: var(--accent-text); }
+.sl-btn-accent:hover { background: var(--accent-tint); }
+.sl-btn-secondary { background: var(--secondary); color: var(--foreground); }
+.sl-btn-secondary:hover { background: var(--line-strong); }
+.sl-btn-ghost { background: transparent; color: var(--fg-muted); }
+.sl-btn-ghost:hover { background: var(--hover); color: var(--foreground); }
+.sl-btn[disabled] { opacity: .5; cursor: not-allowed; }
+.sl-shine { position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: .35; background: linear-gradient(120deg, rgba(255,255,255,0) 40%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 60%); background-size: 250% 100%; animation: sl-shine 3.6s cubic-bezier(.4,0,.2,1) infinite; }
+@keyframes sl-shine { 0% { background-position: 150% 0; } 55%, 100% { background-position: -50% 0; } }
+
+/* IconButton */
+.sl-iconbtn { display: inline-grid; place-items: center; width: var(--icon-button); height: var(--icon-button); padding: 0; border: 0; border-radius: var(--radius-nav); background: transparent; color: var(--foreground); opacity: .7; cursor: pointer; }
+.sl-iconbtn:hover { opacity: 1; background: var(--hover); }
+
+/* Field */
+.sl-field { display: flex; flex-direction: column; gap: var(--space-8); }
+.sl-label { font-size: 14px; line-height: 14px; font-weight: 500; color: var(--foreground); }
+.sl-req { color: var(--fg-label); margin-left: 1px; }
+.sl-input { box-sizing: border-box; width: 100%; height: var(--control-height); padding: var(--space-8) var(--space-14); border: 1px solid var(--line); border-radius: var(--radius); background: var(--background); color: var(--foreground); font: inherit; font-size: 15px; }
+.sl-input::placeholder { color: var(--fg-subtle); }
+.sl-input:hover { border-color: var(--line-strong); }
+.sl-input:focus { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-color: var(--accent-line); }
+.sl-hint { font-size: 13px; line-height: 1.35; color: var(--fg-subtle); margin: 0; }
+
+/* Command */
+.sl-cmdwrap { display: flex; flex-direction: column; gap: var(--space-10); min-width: 0; }
+.sl-cmd { display: flex; align-items: center; gap: var(--space-10); box-sizing: border-box; min-height: 55px; padding: var(--space-12) var(--space-14); background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); font-family: var(--font-mono); }
+.sl-cmd-prompt { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--fg-faint); user-select: none; }
+.sl-cmd-code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font-family: var(--font-mono); font-size: 11.5px; line-height: 17.25px; font-weight: 500; color: var(--fg-strong); }
+.sl-copy { display: grid; place-items: center; flex: none; width: var(--copy-button); height: var(--copy-button); padding: 0; border: 0; border-radius: var(--radius-sm); background: var(--accent-tint); color: var(--accent-text); cursor: pointer; }
+.sl-copy:hover { background: var(--accent-line); }
+.sl-cmd-note { display: flex; justify-content: space-between; align-items: center; gap: var(--space-12); font-family: var(--font-mono); font-size: 12px; line-height: 16.8px; color: var(--fg-muted); }
+.sl-cmd-note code { font-family: inherit; color: var(--fg-body); }
+.sl-cmd-note a { font-family: var(--font-sans); font-size: 12px; color: var(--fg-muted); text-decoration: none; display: inline-flex; gap: var(--space-4); align-items: center; }
+.sl-cmd-note a:hover { color: var(--foreground); }
+
+/* Badge */
+.sl-badge { display: inline-flex; align-items: center; box-sizing: border-box; height: 18px; padding: var(--space-4) var(--space-6); border: 1px solid var(--accent-line); border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 9px; line-height: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-text); }
+.sl-badge-neutral { border-color: var(--line-strong); color: var(--fg-muted); }
+
+/* Chip */
+.sl-chips { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+.sl-chip { display: inline-flex; align-items: center; gap: var(--space-6); padding: var(--space-6) var(--space-10); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--card); font-family: var(--font-mono); font-size: 12px; line-height: 16px; color: var(--fg-body); }
+
+/* Stat */
+.sl-stat { display: grid; grid-template-columns: auto auto; column-gap: var(--space-10); align-items: center; justify-content: start; margin: 0; }
+.sl-stat-icon { grid-row: span 2; color: var(--accent-fill); }
+.sl-stat-value { margin: 0; font-family: var(--font-mono); font-size: 20px; line-height: 30px; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--foreground); }
+.sl-stat-label { margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 14.85px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-muted); }
+@media (min-width: 640px) { .sl-stat-value { font-size: 26px; line-height: 34px; } }
+
+/* SkillRow (list row) */
+.sl-list { display: flex; flex-direction: column; }
+.sl-row { display: flex; align-items: center; gap: var(--space-16); padding: var(--space-12) var(--space-16); border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
+.sl-row:hover { background: var(--hover); }
+.sl-row:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.sl-row-icon { flex: none; width: var(--icon-tile); height: var(--icon-tile); border-radius: var(--radius-icon); object-fit: cover; }
+.sl-tile { display: grid; place-items: center; box-sizing: border-box; background: var(--accent-panel); border: 1px solid var(--accent-line); color: var(--accent-text); font-family: var(--font-mono); font-size: 15px; font-weight: 600; }
+.sl-row-body { display: flex; flex-direction: column; gap: var(--space-2); flex: 1; min-width: 0; }
+.sl-row-slug { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--fg-body); }
+.sl-row-title { font-size: 16px; line-height: 22px; font-weight: 500; color: var(--foreground); }
+.sl-row-desc { font-size: 14px; line-height: 20px; color: var(--fg-muted); }
+.sl-row-arrow { flex: none; color: var(--fg-label); }
+.sl-row:hover .sl-row-arrow { color: var(--foreground); transform: translateX(2px); }
+
+/* SectionHeading */
+.sl-sec { display: flex; flex-direction: column; gap: var(--space-8); }
+.sl-sec-top { display: flex; align-items: baseline; gap: var(--space-8); }
+.sl-sec-index { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: -.03em; color: var(--fg-faint); }
+.sl-sec-title { margin: 0; font-size: 18px; line-height: 1.2; font-weight: 700; letter-spacing: -.02em; color: var(--foreground); text-wrap: balance; }
+.sl-sec-desc { margin: 0; font-size: 14px; line-height: 1.625; color: var(--fg-muted); }
+.sl-sec-start { margin: var(--space-4) 0 0; font-family: var(--font-mono); font-size: 12px; line-height: 16.8px; color: var(--fg-muted); }
+.sl-sec-start strong { color: var(--foreground); font-weight: 600; }
+@media (min-width: 640px) { .sl-sec-title { font-size: 20px; } }
+
+/* Panels */
+.sl-panels { border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background: var(--background); }
+.sl-panel { display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-20); }
+.sl-panel + .sl-panel { border-top: 1px solid var(--line); }
+.sl-panel-kicker { margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 15.4px; font-weight: 500; color: var(--accent-text); }
+.sl-panel-body { margin: 0; font-size: 14px; line-height: 1.625; color: var(--fg-muted); }
+
+/* Eyebrow */
+.sl-eyebrow { margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 15.4px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-muted); }
+
+/* ChangelogEntry */
+.sl-log { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-20) 0; border-bottom: 1px solid var(--line); }
+.sl-log-version { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--accent-text); }
+.sl-log-date { font-family: var(--font-mono); font-size: 12px; line-height: 16.8px; color: var(--fg-label); }
+.sl-log-title { margin: var(--space-4) 0 0; font-size: 18px; line-height: 1.2; font-weight: 700; letter-spacing: -.02em; color: var(--foreground); text-wrap: balance; }
+.sl-log-title a { color: inherit; text-decoration: none; }
+.sl-log-title a:hover { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.sl-log-summary { margin: var(--space-4) 0 0; font-size: 14px; line-height: 1.625; color: var(--fg-muted); }
+
+/* Announcement */
+.sl-announce { display: flex; align-items: center; justify-content: center; gap: var(--space-10); min-height: 34px; padding: 0 var(--space-16); background: var(--band); border-bottom: 1px solid var(--line); color: var(--foreground); text-decoration: none; font-size: 12.5px; line-height: 17.5px; font-weight: 500; letter-spacing: -.025em; }
+.sl-announce:hover .sl-announce-arrow { transform: translateX(2px); }
+
+/* SiteHeader */
+.sl-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: var(--space-20); box-sizing: border-box; height: var(--nav-height); padding: 0 var(--space-18); background: var(--glass); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.sl-header-nav { display: flex; gap: var(--space-20); flex: 1; min-width: 0; }
+.sl-header-nav a { font-size: 14px; line-height: 19.25px; font-weight: 500; color: var(--fg-muted); text-decoration: none; }
+.sl-header-nav a:hover, .sl-header-nav a[aria-current] { color: var(--foreground); }
+.sl-header-actions { display: flex; gap: var(--space-4); margin-left: auto; }
+.sl-wordmark { display: inline-flex; align-items: baseline; color: var(--foreground); text-decoration: none; font-size: 15.5px; line-height: 15.5px; font-weight: 700; letter-spacing: -.01em; border-radius: var(--radius-nav); }
+.sl-wordmark-mono { font-family: var(--font-mono); }
+
+/* RepoCard */
+.sl-repo { display: flex; align-items: center; gap: var(--space-10); box-sizing: border-box; padding: var(--space-12) var(--space-16); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--background); min-width: 0; }
+.sl-repo-star { color: var(--accent-fill); }
+.sl-repo-count { font-family: var(--font-mono); font-size: 13px; line-height: 17.55px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--foreground); }
+.sl-repo-name { font-family: var(--font-mono); font-size: 13px; line-height: 17.55px; color: var(--fg-label); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sl-repo-link { margin-left: auto; font-size: 14px; line-height: 19.25px; font-weight: 500; color: var(--fg-muted); text-decoration: none; white-space: nowrap; }
+.sl-repo-link:hover { color: var(--foreground); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sl-shine { animation: none; display: none; }
+  .sl-ease { transition: none; }
+  .sl-row:hover .sl-row-arrow, .sl-announce:hover .sl-announce-arrow { transform: none; }
+}
+
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--page-background); font-size: 14px; line-height: 1.625; }
+a { color: inherit; }
+code, pre { font-family: var(--font-mono); }
+.topbar { position: sticky; top: 0; z-index: 60; display: flex; align-items: center; gap: var(--space-16); height: var(--nav-height); padding: 0 max(var(--space-18), env(safe-area-inset-right, 0px)) 0 max(var(--space-18), env(safe-area-inset-left, 0px)); background: var(--glass); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.topbar .sl-wordmark { font-size: 15.5px; }
+.topbar-tag { font-family: var(--font-mono); font-size: 12px; color: var(--fg-label); }
+.theme { margin-left: auto; display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--background); }
+.theme button { font: 500 12px/16px var(--font-mono); color: var(--fg-muted); background: transparent; border: 0; padding: 6px 10px; border-radius: var(--radius-sm); cursor: pointer; }
+.theme button:hover { color: var(--foreground); }
+.theme button[aria-pressed="true"] { background: var(--secondary); color: var(--foreground); }
+.theme button:focus-visible, .nav a:focus-visible, .sw-name:focus-visible, .code-copy:focus-visible, .src summary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); max-width: 1240px; margin: 0 auto; }
+.nav { position: sticky; top: var(--nav-height); align-self: start; height: calc(100vh - var(--nav-height)); overflow-y: auto; padding: var(--space-24) var(--space-16) var(--space-48) max(var(--space-18), env(safe-area-inset-left, 0px)); border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
+.nav a { display: block; text-decoration: none; padding: 6px 10px; border-radius: var(--radius-sm); font-size: 14px; line-height: 19px; font-weight: 500; color: var(--fg-muted); }
+.nav a:hover { background: var(--hover); color: var(--foreground); }
+.nav a.on { color: var(--foreground); background: var(--hover); }
+.nav .nav-sub { font-family: var(--font-mono); font-size: 12px; font-weight: 400; padding: 4px 10px 4px 22px; }
+.nav-label { font: 500 11px/15px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-label); padding: var(--space-16) 10px var(--space-6); }
+main { min-width: 0; background: var(--background); }
+.sec { padding: var(--space-48) max(var(--space-16), env(safe-area-inset-right, 0px)) var(--space-48) max(var(--space-16), env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); }
+@media (min-width: 640px) { .sec { padding-left: var(--space-40); padding-right: var(--space-40); } }
+.sec > .inner { max-width: var(--container); }
+.sec-eyebrow { margin: 0 0 var(--space-10); }
+.sec-title { margin: 0 0 var(--space-12); text-wrap: balance; }
+.sec-lead { margin: 0 0 var(--space-24); color: var(--fg-muted); max-width: var(--measure-body); }
+.sub { margin: var(--space-40) 0 var(--space-16); font: 700 18px/1.2 var(--font-sans); letter-spacing: -.02em; display: flex; align-items: baseline; gap: var(--space-10); }
+.sub .fam { font: 400 12px/16px var(--font-mono); color: var(--fg-label); letter-spacing: 0; }
+.note { color: var(--fg-muted); margin: 0 0 var(--space-16); max-width: 70ch; }
+
+/* cover */
+.cover { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: var(--space-24); padding: var(--space-24); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--background); overflow: hidden; min-height: 288px; }
+.cover-name { margin: 0; font: 700 clamp(72px, 12vw, 120px)/.92 var(--font-sans); letter-spacing: -.036em; }
+.cover-tag { margin: var(--space-10) 0 0 4px; color: var(--fg-muted); }
+.cover svg { display: block; width: 100%; height: auto; margin: calc(-1 * var(--space-24)) calc(-1 * var(--space-24)) 0 0; align-self: stretch; }
+.cv-gold { fill: var(--accent-fill); } .cv-ink { fill: var(--foreground); } .cv-mid { fill: var(--fg-muted); } .cv-faint { fill: var(--fg-faint); } .cv-cut { fill: var(--background); }
+@media (max-width: 720px) { .cover { grid-template-columns: 1fr; } .cover svg { order: -1; margin: calc(-1 * var(--space-24)) calc(-1 * var(--space-24)) 0; width: calc(100% + 2 * var(--space-24)); } }
+.intro { font: 500 20px/1.4 var(--font-sans); letter-spacing: -.018em; margin: var(--space-24) 0 0; max-width: var(--measure-lead); text-wrap: pretty; }
+@media (min-width: 640px) { .intro { font-size: 22px; } }
+.guide { max-width: 72ch; }
+.guide h2 { font: 700 20px/1.2 var(--font-sans); letter-spacing: -.02em; margin: var(--space-40) 0 var(--space-12); }
+.guide ul, .guide ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: var(--space-6); color: var(--fg-body); }
+.guide strong { color: var(--foreground); }
+.guide code, .comp-guide code, .sw-usage code { font-size: .88em; padding: 1px 5px; border: 1px solid var(--line); border-radius: var(--radius-xs); background: var(--card); color: var(--fg-strong); }
+
+/* swatches */
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: var(--space-12); }
+.sw { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--background); display: flex; flex-direction: column; }
+.sw-chip { height: 72px; border-bottom: 1px solid var(--line); }
+.sw-meta { padding: var(--space-12) var(--space-14) var(--space-14); display: flex; flex-direction: column; gap: var(--space-8); }
+.sw-name { all: unset; cursor: pointer; font: 500 13px/1.35 var(--font-mono); color: var(--foreground); border-radius: var(--radius-xs); align-self: start; }
+.sw-name:hover { color: var(--accent-text); }
+.sw-vals { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+.sw-vals dt { font: 500 10px/14px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-label); }
+.sw-vals dd { margin: 0; font: 400 11.5px/1.4 var(--font-mono); color: var(--fg-body); word-break: break-all; }
+.sw-usage { margin: 0; font-size: 13px; line-height: 1.5; color: var(--fg-muted); }
+.ratios { display: flex; gap: var(--space-6); flex-wrap: wrap; }
+.ratio { font: 500 11px/16px var(--font-mono); padding: 1px 6px; border-radius: var(--radius-xs); border: 1px solid var(--line-strong); color: var(--fg-body); }
+.ratio::before { margin-right: 4px; }
+.ratio.pass::before { content: "✓"; color: var(--mark-yes); }
+.ratio.mid::before { content: "~"; color: var(--mark-gold); }
+.ratio.fail::before { content: "✕"; color: var(--mark-no); }
+
+/* type */
+.ts-list { border-top: 1px solid var(--line); }
+.ts { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--space-24); padding: var(--space-20) 0; border-bottom: 1px solid var(--line); align-items: center; }
+.ts-meta { display: flex; flex-direction: column; gap: 2px; }
+.ts-name { font-size: 12.5px; font-weight: 500; color: var(--foreground); }
+.ts-spec { font: 400 12px/1.4 var(--font-mono); color: var(--fg-label); }
+.ts-usage { font-size: 12.5px; line-height: 1.45; color: var(--fg-muted); margin-top: 4px; }
+.ts-sample { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 720px) { .ts { grid-template-columns: 1fr; gap: var(--space-10); } }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; font: 500 11px/15px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-label); padding: var(--space-10) var(--space-14); border-bottom: 1px solid var(--line); background: var(--card); }
+td { padding: var(--space-10) var(--space-14); border-bottom: 1px solid var(--line-soft); color: var(--fg-muted); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td code { font-size: 12.5px; color: var(--foreground); white-space: nowrap; }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--fg-body); white-space: nowrap; }
+td.vis { width: 120px; }
+.bar { display: block; height: 10px; background: var(--accent-fill); border-radius: 2px; min-width: 2px; }
+.rbox { display: block; width: 44px; height: 44px; border: 1.5px solid var(--accent-fill); background: var(--accent-wash); }
+
+/* components */
+.comp { padding: var(--space-24) 0 var(--space-40); border-top: 1px solid var(--line); }
+.comp-head { display: flex; flex-direction: column; gap: var(--space-4); margin-bottom: var(--space-16); }
+.comp-name { margin: 0; font: 600 15px/1.3 var(--font-mono); color: var(--foreground); }
+.comp-sum { margin: 0; color: var(--fg-muted); max-width: 70ch; }
+.ex { border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background-color: var(--background); background-image: radial-gradient(var(--line-strong) 1px, transparent 1px); background-size: 16px 16px; }
+.ex .sl-col { max-width: 520px; }
+.ex-flush { position: relative; }
+.ex .sl-header { position: relative; }
+.comp-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-24); margin-top: var(--space-20); align-items: start; }
+@media (max-width: 960px) { .comp-body { grid-template-columns: 1fr; } }
+.comp-guide { color: var(--fg-body); }
+.comp-guide p { margin: 0 0 var(--space-12); }
+.comp-guide ul { margin: 0 0 var(--space-12); padding-left: 20px; display: flex; flex-direction: column; gap: var(--space-4); }
+.comp-guide strong { color: var(--foreground); }
+.comp-code, .src { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); overflow: hidden; min-width: 0; }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: var(--space-8) var(--space-12); border-bottom: 1px solid var(--line); font: 500 11px/15px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-label); }
+.code-copy { font: 500 11px/15px var(--font-mono); letter-spacing: 0; text-transform: none; color: var(--accent-text); background: var(--accent-wash); border: 1px solid var(--accent-line); border-radius: var(--radius-sm); padding: 3px 8px; cursor: pointer; }
+.code-copy:hover { background: var(--accent-tint); }
+pre { margin: 0; padding: var(--space-14); overflow: auto; font-size: 12px; line-height: 1.6; color: var(--fg-strong); max-height: 480px; }
+
+/* icons */
+.icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.ic { display: flex; flex-direction: column; align-items: center; gap: var(--space-10); padding: var(--space-20) var(--space-8); background: var(--background); }
+.ic code { font-size: 11.5px; color: var(--fg-muted); }
+
+/* source */
+.src { margin-bottom: var(--space-12); }
+.src summary { display: flex; justify-content: space-between; gap: var(--space-12); padding: var(--space-14) var(--space-16); cursor: pointer; font: 500 13px/1.3 var(--font-mono); color: var(--foreground); list-style: none; }
+.src summary::-webkit-details-marker { display: none; }
+.src summary::before { content: "›"; margin-right: var(--space-10); color: var(--fg-label); transition: transform .15s cubic-bezier(.4,0,.2,1); display: inline-block; }
+.src[open] summary::before { transform: rotate(90deg); }
+.src summary span:first-child { flex: 1; }
+.src-lang { color: var(--fg-label); font-weight: 400; font-size: 12px; }
+.src[open] summary { border-bottom: 1px solid var(--line); }
+.src .code-head { border-top: 0; }
+.steps { margin: 0 0 var(--space-24); padding-left: 20px; display: flex; flex-direction: column; gap: var(--space-8); color: var(--fg-body); max-width: 72ch; }
+.steps code { font-size: .88em; padding: 1px 5px; border: 1px solid var(--line); border-radius: var(--radius-xs); background: var(--card); color: var(--fg-strong); }
+
+.toast { position: fixed; left: 50%; bottom: max(var(--space-24), env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 12px); opacity: 0; pointer-events: none; font: 500 12px/16px var(--font-mono); padding: 8px 12px; border-radius: var(--radius); background: var(--foreground); color: var(--background); transition: opacity .15s, transform .15s; z-index: 80; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .nav { position: sticky; top: var(--nav-height); z-index: 40; height: auto; flex-direction: row; overflow-x: auto; padding: var(--space-8) max(var(--space-16), env(safe-area-inset-right, 0px)) var(--space-8) max(var(--space-16), env(safe-area-inset-left, 0px)); border-right: 0; border-bottom: 1px solid var(--line); background: var(--glass); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .nav a { white-space: nowrap; }
+  .nav .nav-sub, .nav-label { display: none; }
+  html { scroll-padding-top: 120px; }
+  .topbar-tag { display: none; }
+}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="sl-wordmark sl-focus" href="#visao-geral"><span class="sl-wordmark-mono">/</span>slash</a>
+  <span class="topbar-tag">design system · v1</span>
+  <div class="theme" role="group" aria-label="Tema">
+    <button type="button" data-mode="system" aria-pressed="true">Sistema</button>
+    <button type="button" data-mode="dark" aria-pressed="false">Escuro</button>
+    <button type="button" data-mode="light" aria-pressed="false">Claro</button>
+  </div>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Seções">
+  <a href="#visao-geral">Visão geral</a>
+  <a href="#cores">Cores</a>
+  <a href="#tipografia">Tipografia</a>
+  <a href="#espaco">Espaço e forma</a>
+  <a href="#icones">Ícones</a>
+  <a href="#componentes">Componentes</a>
+  <div class="nav-label">Componentes</div>
+  <a href="#c-Button" class="nav-sub">Button</a><a href="#c-IconButton" class="nav-sub">IconButton</a><a href="#c-Field" class="nav-sub">Field</a><a href="#c-Command" class="nav-sub">Command</a><a href="#c-Badge" class="nav-sub">Badge</a><a href="#c-Chip" class="nav-sub">Chip</a><a href="#c-Stat" class="nav-sub">Stat</a><a href="#c-RepoCard" class="nav-sub">RepoCard</a><a href="#c-SkillRow" class="nav-sub">SkillRow</a><a href="#c-SectionHeading" class="nav-sub">SectionHeading</a><a href="#c-Panels" class="nav-sub">Panels</a><a href="#c-ChangelogEntry" class="nav-sub">ChangelogEntry</a><a href="#c-Announcement" class="nav-sub">Announcement</a><a href="#c-SiteHeader" class="nav-sub">SiteHeader</a>
+  <a href="#codigo">Usar no código</a>
+</nav>
+<main>
+<section class="sec" id="visao-geral"><div class="inner">
+  <div class="cover">
+    <div><h1 class="cover-name">Slash</h1><p class="cover-tag">Escuro, preciso, um dourado só. Mono para o que se digita.</p></div>
+    <svg viewBox="0 0 480 288" aria-hidden="true" preserveAspectRatio="xMaxYMax meet">
+<defs><clipPath id="slab"><rect x="0" y="-12" width="176" height="252" rx="9"/></clipPath></defs>
+<rect class="cv-gold" x="0" y="-12" width="176" height="252" rx="9"/>
+<polygon class="cv-cut" clip-path="url(#slab)" points="36,252 82,252 150,-12 104,-12"/>
+<rect class="cv-gold" x="192" y="80" width="48" height="18" rx="4"/>
+<rect class="cv-ink" x="192" y="112" width="96" height="128" rx="9"/>
+<rect class="cv-mid" x="304" y="64" width="80" height="176" rx="9"/>
+<rect class="cv-faint" x="400" y="24" width="96" height="216" rx="9"/>
+</svg>
+  </div>
+  <p class="intro">Slash é um sistema escuro, preciso e de um acento só, feito para produtos que engenheiros usam: catálogos de ferramentas, páginas de instalação, docs, changelogs e cursos. Superfícies quase pretas, texto branco quente em camadas de opacidade, Geist para ler e Geist Mono para tudo que se digita, e um dourado reservado para a ação que importa.</p>
+  <div class="guide"><h2>Princípios</h2>
+<ul>
+<li><strong>Linhas, não sombras.</strong> Seções, listas e painéis se separam por hairlines de 1px (<code>line</code>) e por leves mudanças de superfície. Não há sombras no sistema.</li>
+<li><strong>Um dourado por tela.</strong> <code>accent-fill</code> é o CTA principal e a estrela da prova social. O resto do acento aparece só como texto pequeno (<code>accent-text</code>) ou contorno (<code>accent-line</code>).</li>
+<li><strong>Mono significa "isto é técnico".</strong> Comandos, slugs, versões, datas, contagens e sobretítulos vão em <code>mono</code>. Prosa vai em <code>sans</code>.</li>
+<li><strong>Hierarquia por opacidade.</strong> Um único tom de texto (<code>foreground</code>) descendo em degraus: <code>fg-strong</code> → <code>fg-body</code> → <code>fg-muted</code> → <code>fg-subtle</code> → <code>fg-label</code> → <code>fg-faint</code>.</li>
+</ul>
+<h2>Conteúdo e voz</h2>
+<ul>
+<li>Escreva para um engenheiro sênior cético: frases curtas, voz ativa, segunda pessoa ("você"), sem superlativos, sem pontos de exclamação, sem emoji.</li>
+<li>Títulos em caixa de frase. Caixa alta só em <code>eyebrow</code>, <code>stat-label</code> e <code>micro</code>, sempre em mono e com tracking.</li>
+<li>Comece descrições com verbo e diga o resultado: "Transforma uma conversa acordada em especificação escrita." — uma frase por item.</li>
+<li>Nomeie comandos exatamente como são digitados, em mono: <code>/to-spec</code>, <code>npx skills update</code>.</li>
+<li>Agrupe por momento de uso, não por categoria técnica ("Configuração inicial", "O fluxo principal", "Referência"), e diga onde começar: "Comece com <code>/setup</code>".</li>
+<li>Prova social com números reais e formatados; nunca invente métricas.</li>
+<li>Notas de confiança curtas sob formulários: "Sem spam. Cancele quando quiser."</li>
+</ul>
+<h2>Cor</h2>
+<ul>
+<li>Fundo da página em <code>page-background</code>; seções em <code>background</code>; faixas de largura total em <code>band</code>; blocos elevados (comando, chips) em <code>card</code>.</li>
+<li>Texto principal e títulos em <code>foreground</code>. Texto corrido em <code>fg-body</code>; subtítulos, descrições e lead do hero em <code>fg-muted</code>; notas e placeholders em <code>fg-subtle</code>; datas e metadados em <code>fg-label</code>.</li>
+<li><code>fg-faint</code> é decorativo (índices "01", prompt <code>$</code>) e não passa 4.5:1: nunca carregue informação nele.</li>
+<li>Bordas: <code>line</code> por padrão, <code>line-strong</code> em controles que precisam se destacar (chips, card de repositório), <code>line-soft</code> dentro de painéis.</li>
+<li>Hover de linhas e botões fantasma em <code>hover</code>.</li>
+<li>CTA principal em <code>accent-fill</code> com texto <code>accent-fill-foreground</code>; hover em <code>accent-fill-hover</code>.</li>
+<li>Dourado como texto em <code>accent-text</code>. No tema claro ele dá ≈3.8:1: use só em mono 11–12px peso 500 (kickers, versões) ou troque por <code>foreground</code>.</li>
+<li>Foco: <code>focus-ring</code> sólido, 2px, offset 2px. O <code>ring</code> original (35%) fica no sistema por fidelidade, mas não passa 3:1.</li>
+<li>Tabelas comparativas: <code>mark-yes</code>, <code>mark-gold</code>, <code>mark-no</code>, sempre acompanhados de ✓ / ~ / ✕ ou palavra.</li>
+<li>O tema escuro é o principal. O claro troca o dourado do <code>primary</code> por tinta (<code>#14161a</code>) e mantém <code>accent-fill</code> só no CTA.</li>
+</ul>
+<h2>Tipografia</h2>
+<ul>
+<li>Duas famílias: <code>sans</code> (Geist) e <code>mono</code> (Geist Mono), ambas do Google Fonts. Pesos 400, 500, 700 (sans) e 400, 500 (mono).</li>
+<li>Hero: <code>display</code> (34px) no celular, <code>display-md</code> (44px) a partir de 640px, <code>display-lg</code> (52px) a partir de 1024px. Máx. 22ch, <code>text-wrap: balance</code>.</li>
+<li>Subtítulo do hero em <code>body-lg</code> com <code>fg-muted</code>, máx. 52ch (<code>measure-body</code>).</li>
+<li>H2 de seção: <code>heading</code> → <code>heading-md</code> → <code>heading-lg</code>, mesmos breakpoints.</li>
+<li>Parágrafo de manifesto em <code>lead</code> (20 → 22 → 24px), máx. 64ch (<code>measure-lead</code>).</li>
+<li>Títulos de grupo, card e changelog em <code>title</code>; itens de lista em <code>item-title</code>; texto de apoio em <code>body</code>.</li>
+<li>Títulos grandes levam tracking negativo (−0.02 a −0.036em). Rótulos mono em caixa alta levam tracking positivo (0.1 a 0.16em).</li>
+<li>Números em <code>stat</code> com <code>font-variant-numeric: tabular-nums</code>.</li>
+</ul>
+<h2>Espaço, layout e forma</h2>
+<ul>
+<li>Conteúdo centralizado com largura máxima <code>container</code> (960px). Gutter lateral mínimo de 16px; header com 18px.</li>
+<li>Seções empilhadas e separadas por <code>line</code>, com <code>space-48</code> de padding vertical. Dentro de uma seção, blocos a <code>space-24</code>.</li>
+<li>Listas: 12px de padding vertical por linha, 16px entre tile e texto.</li>
+<li>Raios pequenos: <code>radius</code> (9px) para inputs, botões e blocos; <code>radius-sm</code> (6px) para chips e botões pequenos; <code>radius-xs</code> (4px) para badges; <code>radius-lg</code> (12px) para grupos de painéis; <code>radius-icon</code> (8px) para tiles de ícone.</li>
+<li>Controles: input 48px (<code>control-height</code>), botão primário 50px (<code>button-height</code>), icon button 36px, botão de copiar 30px.</li>
+<li>Header fixo de 62px (<code>nav-height</code>) com fundo <code>glass</code> e blur de 12px.</li>
+</ul>
+<h2>Movimento</h2>
+<ul>
+<li>Toda transição dura 150ms com <code>cubic-bezier(.4, 0, .2, 1)</code> e anima só cor, fundo, borda, opacidade ou um deslocamento de 2px.</li>
+<li>Setas deslizam 2px para a direita no hover de linhas e do anúncio.</li>
+<li>O CTA primário pode ter <code>shine</code>: um brilho diagonal (gradiente a 120°) passando a cada ~3,6s.</li>
+<li>Com <code>prefers-reduced-motion</code>, o brilho some e as transições param.</li>
+</ul>
+<h2>Iconografia</h2>
+<ul>
+<li>Ícones de linha, traço 2px, terminações arredondadas, grade de 24px, em <code>currentColor</code> (o componente <code>Icon</code>).</li>
+<li>Tamanhos: 12, 14, 16, 20 e 22px.</li>
+<li>A estrela é a única preenchida, sempre em <code>accent-fill</code>.</li>
+<li>Os caminhos são do Lucide (licença ISC), o equivalente mais próximo dos ícones da referência; troque por outro conjunto de traço 2px se precisar.</li>
+<li>Ícones de item de catálogo são imagens 40×40 com <code>radius-icon</code>, fornecidas pelo produto. Sem imagem, <code>SkillRow</code> desenha um tile <code>accent-panel</code> com um glifo mono.</li>
+<li>Não há logotipo no sistema: o wordmark é tipográfico (parte mono + parte sans, 15.5px peso 700). Coloque o seu no <code>SiteHeader</code>.</li>
+</ul>
+<h2>Anatomia de uma página</h2>
+<ol>
+<li><code>Announcement</code> (opcional) → <code>SiteHeader</code>.</li>
+<li>Hero: <code>display</code>, subtítulo <code>body-lg</code>, uma ou duas <code>Stat</code> e um <code>Button</code> secundário.</li>
+<li>Captura: <code>Field</code> + <code>Button</code> primário com <code>shine</code>.</li>
+<li>Instalação: <code>Command</code> com nota e link.</li>
+<li>Catálogo: grupos com <code>SectionHeading</code> numerado + listas de <code>SkillRow</code>.</li>
+<li>Explicação: <code>eyebrow</code>, parágrafo <code>lead</code>, <code>Panels</code>; compatibilidade em <code>Chip</code>.</li>
+<li><code>ChangelogEntry</code> em sequência.</li>
+<li>CTA final com <code>RepoCard</code> e <code>Command</code> repetido.</li>
+</ol></div>
+</div></section>
+
+<section class="sec" id="cores"><div class="inner">
+  <p class="sec-eyebrow sl-eyebrow">Fundamentos</p>
+  <h2 class="sec-title text-heading-md">Cores</h2>
+  <p class="sec-lead">36 tokens em dois temas. Os cartões mostram o tema ativo; troque no topo da página. Clique no nome para copiar a variável. Em Texto, o contraste é medido sobre <code>--background</code>.</p>
+  <h3 class="sub">Superfícies</h3><div class="sw-grid"><article class="sw">
+  <div class="sw-chip" style="background: var(--page-background)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--page-background)" title="Copiar var(--page-background)">--page-background</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#080808</dd></div><div><dt>Claro</dt><dd>#f1f2f5</dd></div></dl>
+    
+    <p class="sw-usage">Fundo do documento, atrás das seções. Quase igual a <code>background</code>: a separação vem das linhas, não do contraste.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--background)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--background)" title="Copiar var(--background)">--background</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#0b0b0b</dd></div><div><dt>Claro</dt><dd>#fbfbfc</dd></div></dl>
+    
+    <p class="sw-usage">Superfície padrão das seções, inputs e do header. Base de contraste de todos os tokens <code>fg-*</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--band)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--band)" title="Copiar var(--band)">--band</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#0e0e0d</dd></div><div><dt>Claro</dt><dd>#f1f2f5</dd></div></dl>
+    
+    <p class="sw-usage">Faixas de largura total: barra de anúncio, rodapé, blocos alternados.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--card)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--card)" title="Copiar var(--card)">--card</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#100f0e</dd></div><div><dt>Claro</dt><dd>#ffffff</dd></div></dl>
+    
+    <p class="sw-usage">Painéis elevados por cor, não por sombra: bloco de comando, chips.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--popover)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--popover)" title="Copiar var(--popover)">--popover</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#0d0d0c</dd></div><div><dt>Claro</dt><dd>#ffffff</dd></div></dl>
+    
+    <p class="sw-usage">Menus, busca e popovers.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--muted)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--muted)" title="Copiar var(--muted)">--muted</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#0d0d0c</dd></div><div><dt>Claro</dt><dd>#f5f6f8</dd></div></dl>
+    
+    <p class="sw-usage">Sidebar e áreas de apoio.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-panel)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-panel)" title="Copiar var(--accent-panel)">--accent-panel</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#1d1a11</dd></div><div><dt>Claro</dt><dd>#ecedef</dd></div></dl>
+    
+    <p class="sw-usage">Fundo de tile com tom do acento (ícones placeholder, destaques). No escuro é um dourado queimado.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--glass)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--glass)" title="Copiar var(--glass)">--glass</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#0b0b0be6</dd></div><div><dt>Claro</dt><dd>#fbfbfce6</dd></div></dl>
+    
+    <p class="sw-usage">Header fixo: <code>background</code> a 90% + backdrop-filter blur(12px).</p>
+  </div>
+</article></div><h3 class="sub">Texto</h3><div class="sw-grid"><article class="sw">
+  <div class="sw-chip" style="background: var(--foreground)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--foreground)" title="Copiar var(--foreground)">--foreground</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f4f3f1</dd></div><div><dt>Claro</dt><dd>#14161a</dd></div></dl>
+    <div class="ratios"><span class="ratio pass" title="Contraste sobre background no tema escuro">Escuro 17.7:1</span><span class="ratio pass" title="Contraste sobre background no tema claro">Claro 17.5:1</span></div>
+    <p class="sw-usage">Texto principal e títulos sobre <code>background</code>, <code>card</code>, <code>band</code>. Branco quente, nunca #fff puro.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--fg-strong)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--fg-strong)" title="Copiar var(--fg-strong)">--fg-strong</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f4f3f1e6</dd></div><div><dt>Claro</dt><dd>#14161ae6</dd></div></dl>
+    <div class="ratios"><span class="ratio pass" title="Contraste sobre background no tema escuro">Escuro 14.4:1</span><span class="ratio pass" title="Contraste sobre background no tema claro">Claro 13.4:1</span></div>
+    <p class="sw-usage">Código e comandos dentro do bloco de comando (<code>card</code>).</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--fg-body)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--fg-body)" title="Copiar var(--fg-body)">--fg-body</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f4f3f1b8</dd></div><div><dt>Claro</dt><dd>#14161acc</dd></div></dl>
+    <div class="ratios"><span class="ratio pass" title="Contraste sobre background no tema escuro">Escuro 9.3:1</span><span class="ratio pass" title="Contraste sobre background no tema claro">Claro 9.5:1</span></div>
+    <p class="sw-usage">Texto corrido longo e slugs de comando em listas, sobre <code>background</code> e <code>card</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--fg-muted)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--fg-muted)" title="Copiar var(--fg-muted)">--fg-muted</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f4f3f199</dd></div><div><dt>Claro</dt><dd>#14161ab3</dd></div></dl>
+    <div class="ratios"><span class="ratio pass" title="Contraste sobre background no tema escuro">Escuro 6.7:1</span><span class="ratio pass" title="Contraste sobre background no tema claro">Claro 6.7:1</span></div>
+    <p class="sw-usage">Parágrafos de apoio, descrições, lead do hero, links de navegação em repouso. Sobre <code>background</code> e <code>card</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--fg-subtle)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--fg-subtle)" title="Copiar var(--fg-subtle)">--fg-subtle</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f4f3f185</dd></div><div><dt>Claro</dt><dd>#14161aa3</dd></div></dl>
+    <div class="ratios"><span class="ratio pass" title="Contraste sobre background no tema escuro">Escuro 5.3:1</span><span class="ratio pass" title="Contraste sobre background no tema claro">Claro 5.3:1</span></div>
+    <p class="sw-usage">Notas legais curtas ("Sem spam"), placeholders, links secundários.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--fg-label)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--fg-label)" title="Copiar var(--fg-label)">--fg-label</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f4f3f17a</dd></div><div><dt>Claro</dt><dd>#14161a99</dd></div></dl>
+    <div class="ratios"><span class="ratio pass" title="Contraste sobre background no tema escuro">Escuro 4.6:1</span><span class="ratio pass" title="Contraste sobre background no tema claro">Claro 4.7:1</span></div>
+    <p class="sw-usage">Datas, nomes de repositório, setas de linha em repouso.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--fg-faint)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--fg-faint)" title="Copiar var(--fg-faint)">--fg-faint</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f4f3f14d</dd></div><div><dt>Claro</dt><dd>#14161a59</dd></div></dl>
+    <div class="ratios"><span class="ratio fail" title="Contraste sobre background no tema escuro">Escuro 2.5:1</span><span class="ratio fail" title="Contraste sobre background no tema claro">Claro 2.2:1</span></div>
+    <p class="sw-usage">Somente decoração: índices "01", o prompt <code>$</code>. Não passa 4.5:1 em nenhum tema (≈2.5:1): nunca use para informação.</p>
+  </div>
+</article></div><h3 class="sub">Linhas e estados</h3><div class="sw-grid"><article class="sw">
+  <div class="sw-chip" style="background: var(--line)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--line)" title="Copiar var(--line)">--line</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#ffffff14</dd></div><div><dt>Claro</dt><dd>#14161a1a</dd></div></dl>
+    
+    <p class="sw-usage">Hairline padrão de 1px: separadores de seção, linhas de lista, borda de input e de painéis.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--line-strong)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--line-strong)" title="Copiar var(--line-strong)">--line-strong</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#ffffff1f</dd></div><div><dt>Claro</dt><dd>#14161a24</dd></div></dl>
+    
+    <p class="sw-usage">Borda de controles destacados: chips, card de repositório.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--line-soft)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--line-soft)" title="Copiar var(--line-soft)">--line-soft</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#ffffff0f</dd></div><div><dt>Claro</dt><dd>#14161a12</dd></div></dl>
+    
+    <p class="sw-usage">Divisores internos discretos dentro de um painel.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--hover)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--hover)" title="Copiar var(--hover)">--hover</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#ffffff12</dd></div><div><dt>Claro</dt><dd>#14161a0f</dd></div></dl>
+    
+    <p class="sw-usage">Fundo de hover de linhas de lista, botões fantasma e icon buttons.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--secondary)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--secondary)" title="Copiar var(--secondary)">--secondary</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#ffffff12</dd></div><div><dt>Claro</dt><dd>#14161a0f</dd></div></dl>
+    
+    <p class="sw-usage">Fundo do botão secundário.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--ring)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--ring)" title="Copiar var(--ring)">--ring</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c45159</dd></div><div><dt>Claro</dt><dd>#14161a59</dd></div></dl>
+    
+    <p class="sw-usage">Anel de foco original da fonte (35%). Fica abaixo de 3:1 sobre <code>background</code>; mantido por fidelidade. Para novos componentes use <code>focus-ring</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--focus-ring)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--focus-ring)" title="Copiar var(--focus-ring)">--focus-ring</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c451</dd></div><div><dt>Claro</dt><dd>#14161a</dd></div></dl>
+    
+    <p class="sw-usage">Adicionado: anel de foco sólido de 2px com offset de 2px, ≥3:1 em todas as superfícies.</p>
+  </div>
+</article></div><h3 class="sub">Acento</h3><div class="sw-grid"><article class="sw">
+  <div class="sw-chip" style="background: var(--primary)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--primary)" title="Copiar var(--primary)">--primary</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c451</dd></div><div><dt>Claro</dt><dd>#14161a</dd></div></dl>
+    
+    <p class="sw-usage">Cor primária do tema: dourado no escuro, tinta no claro. Use <code>accent-fill</code> quando quiser o dourado nos dois temas.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--primary-foreground)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--primary-foreground)" title="Copiar var(--primary-foreground)">--primary-foreground</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#191510</dd></div><div><dt>Claro</dt><dd>#fbfbfc</dd></div></dl>
+    
+    <p class="sw-usage">Texto sobre <code>primary</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-fill)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-fill)" title="Copiar var(--accent-fill)">--accent-fill</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c451</dd></div><div><dt>Claro</dt><dd>#f5c451</dd></div></dl>
+    
+    <p class="sw-usage">O único acento: CTA principal, estrela de contagem. Um por tela. Texto sobre ele é sempre <code>accent-fill-foreground</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-fill-hover)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-fill-hover)" title="Copiar var(--accent-fill-hover)">--accent-fill-hover</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#ffd873</dd></div><div><dt>Claro</dt><dd>#eab534</dd></div></dl>
+    
+    <p class="sw-usage">Hover do CTA dourado.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-fill-foreground)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-fill-foreground)" title="Copiar var(--accent-fill-foreground)">--accent-fill-foreground</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#191510</dd></div><div><dt>Claro</dt><dd>#191510</dd></div></dl>
+    
+    <p class="sw-usage">Texto e ícones sobre <code>accent-fill</code> (≈11:1).</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-text)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-text)" title="Copiar var(--accent-text)">--accent-text</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c451</dd></div><div><dt>Claro</dt><dd>lab(53.6319% 12.9281 64.513)</dd></div></dl>
+    
+    <p class="sw-usage">Acento como texto: kickers mono, versão no changelog, badge NEW, link Install. No claro é o <code>mark-gold</code> da fonte e dá ≈3.8:1 sobre <code>background</code>: limite a 11–12px mono em peso 500 ou troque por <code>foreground</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-tint)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-tint)" title="Copiar var(--accent-tint)">--accent-tint</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c45124</dd></div><div><dt>Claro</dt><dd>#14161a0f</dd></div></dl>
+    
+    <p class="sw-usage">Fundo do botão de copiar no bloco de comando (dourado a 14%).</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-wash)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-wash)" title="Copiar var(--accent-wash)">--accent-wash</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c45112</dd></div><div><dt>Claro</dt><dd>#14161a0a</dd></div></dl>
+    
+    <p class="sw-usage">Fundo do botão de acento contornado ("Install ↓").</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--accent-line)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--accent-line)" title="Copiar var(--accent-line)">--accent-line</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>#f5c45159</dd></div><div><dt>Claro</dt><dd>#14161a38</dd></div></dl>
+    
+    <p class="sw-usage">Borda do botão de acento e do badge NEW.</p>
+  </div>
+</article></div><h3 class="sub">Semânticas</h3><div class="sw-grid"><article class="sw">
+  <div class="sw-chip" style="background: var(--destructive)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--destructive)" title="Copiar var(--destructive)">--destructive</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>lab(31.1699% 55.5567 47.4694)</dd></div><div><dt>Claro</dt><dd>lab(50.9656% 54.806 39.6151)</dd></div></dl>
+    
+    <p class="sw-usage">Preenchimento de ações destrutivas. No escuro é um vermelho escuro: use como fundo com <code>destructive-foreground</code>, não como texto.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--destructive-foreground)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--destructive-foreground)" title="Copiar var(--destructive-foreground)">--destructive-foreground</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>lab(90.5592% 0.191122 1.51047)</dd></div><div><dt>Claro</dt><dd>lab(99.0272% 0.190765 1.51021)</dd></div></dl>
+    
+    <p class="sw-usage">Texto sobre <code>destructive</code>.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--mark-yes)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--mark-yes)" title="Copiar var(--mark-yes)">--mark-yes</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>lab(78.7751% -48.9898 21.5753)</dd></div><div><dt>Claro</dt><dd>lab(45.9926% -41.8497 21.6371)</dd></div></dl>
+    
+    <p class="sw-usage">Marca de "sim/suportado" em tabelas comparativas. Sempre com ícone ✓ ou palavra: verde e vermelho só por matiz não bastam.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--mark-gold)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--mark-gold)" title="Copiar var(--mark-gold)">--mark-gold</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>{accent-fill}</dd></div><div><dt>Claro</dt><dd>lab(53.6319% 12.9281 64.513)</dd></div></dl>
+    
+    <p class="sw-usage">Marca de destaque/parcial em tabelas comparativas.</p>
+  </div>
+</article><article class="sw">
+  <div class="sw-chip" style="background: var(--mark-no)"></div>
+  <div class="sw-meta">
+    <button class="sw-name" type="button" data-copy="var(--mark-no)" title="Copiar var(--mark-no)">--mark-no</button>
+    <dl class="sw-vals"><div><dt>Escuro</dt><dd>lab(65.8493% 53.3364 30.7453)</dd></div><div><dt>Claro</dt><dd>lab(45.9154% 59.7076 40.9321)</dd></div></dl>
+    
+    <p class="sw-usage">Marca de "não" em tabelas comparativas. Sempre com ícone ✕ ou palavra.</p>
+  </div>
+</article></div>
+</div></section>
+
+<section class="sec" id="tipografia"><div class="inner">
+  <p class="sec-eyebrow sl-eyebrow">Fundamentos</p>
+  <h2 class="sec-title text-heading-md">Tipografia</h2>
+  <p class="sec-lead">Geist para ler, Geist Mono para o que é técnico. Cada estilo vira uma classe <code>.text-*</code>.</p>
+  <h3 class="sub">Display <span class="fam">Geist</span></h3><div class="ts-list"><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-display-lg</code><span class="ts-spec">52px / 1.02 · 700 · -0.036em</span><span class="ts-usage">H1 do hero a partir de 1024px. Máx. 22ch, text-wrap: balance.</span></div>
+  <div class="ts-sample text-display-lg">Skills para engenheiros de verdade</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-display-md</code><span class="ts-spec">44px / 1.04 · 700 · -0.032em</span><span class="ts-usage">H1 do hero entre 640 e 1023px.</span></div>
+  <div class="ts-sample text-display-md">Skills para engenheiros de verdade</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-display</code><span class="ts-spec">34px / 1.04 · 700 · -0.032em</span><span class="ts-usage">H1 do hero no celular.</span></div>
+  <div class="ts-sample text-display">Skills para engenheiros de verdade</div>
+</div></div><h3 class="sub">Headings <span class="fam">Geist</span></h3><div class="ts-list"><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-heading-lg</code><span class="ts-spec">34px / 1.06 · 700 · -0.03em</span><span class="ts-usage">H2 de seção a partir de 1024px.</span></div>
+  <div class="ts-sample text-heading-lg">O que mudou recentemente</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-heading-md</code><span class="ts-spec">28px / 1.08 · 700 · -0.028em</span><span class="ts-usage">H2 de seção entre 640 e 1023px.</span></div>
+  <div class="ts-sample text-heading-md">O que mudou recentemente</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-heading</code><span class="ts-spec">24px / 1.08 · 700 · -0.028em</span><span class="ts-usage">H2 de seção no celular.</span></div>
+  <div class="ts-sample text-heading">O que mudou recentemente</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-title</code><span class="ts-spec">18px / 1.2 · 700 · -0.02em</span><span class="ts-usage">Títulos de grupo numerado, de card e de changelog (20px a partir de 640px).</span></div>
+  <div class="ts-sample text-title">O que mudou recentemente</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-title-sm</code><span class="ts-spec">16px / 1.3 · 700 · -0.018em</span><span class="ts-usage">Títulos de bloco pequeno (&quot;Install the skills&quot;).</span></div>
+  <div class="ts-sample text-title-sm">O que mudou recentemente</div>
+</div></div><h3 class="sub">Text <span class="fam">Geist</span></h3><div class="ts-list"><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-lead</code><span class="ts-spec">20px / 1.4 · 500 · -0.018em</span><span class="ts-usage">Parágrafo de manifesto (22px em 640px, 24px em 1024px). Máx. 64ch.</span></div>
+  <div class="ts-sample text-lead">Instruções pequenas e afiadas que você entrega ao seu agente para ele trabalhar como um engenheiro sênior.</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-body-lg</code><span class="ts-spec">17px / 1.55 · 400</span><span class="ts-usage">Subtítulo do hero em `fg-muted` (18.5px em 640px). Máx. 52ch.</span></div>
+  <div class="ts-sample text-body-lg">Instruções pequenas e afiadas que você entrega ao seu agente para ele trabalhar como um engenheiro sênior.</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-body</code><span class="ts-spec">14px / 1.625 · 400</span><span class="ts-usage">Texto corrido de apoio, descrições de card, resumos.</span></div>
+  <div class="ts-sample text-body">Instruções pequenas e afiadas que você entrega ao seu agente para ele trabalhar como um engenheiro sênior.</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-item-title</code><span class="ts-spec">16px / 22px · 500</span><span class="ts-usage">Título de item de lista (SkillRow).</span></div>
+  <div class="ts-sample text-item-title">Instruções pequenas e afiadas que você entrega ao seu agente para ele trabalhar como um engenheiro sênior.</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-ui</code><span class="ts-spec">14px / 1.375 · 500</span><span class="ts-usage">Links de navegação e links inline.</span></div>
+  <div class="ts-sample text-ui">Instruções pequenas e afiadas que você entrega ao seu agente para ele trabalhar como um engenheiro sênior.</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-button</code><span class="ts-spec">14px / 20px · 700</span><span class="ts-usage">Rótulo de botão primário.</span></div>
+  <div class="ts-sample text-button">Começar o curso por e-mail</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-label</code><span class="ts-spec">14px / 1 · 500</span><span class="ts-usage">Rótulo de campo de formulário.</span></div>
+  <div class="ts-sample text-label">E-mail</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-small</code><span class="ts-spec">13px / 1.35 · 400</span><span class="ts-usage">Notas sob formulários.</span></div>
+  <div class="ts-sample text-small">Sem spam. Cancele quando quiser.</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-banner</code><span class="ts-spec">12.5px / 1.4 · 500 · -0.025em</span><span class="ts-usage">Texto da barra de anúncio.</span></div>
+  <div class="ts-sample text-banner">O curso de programação com IA saiu.</div>
+</div></div><h3 class="sub">Mono <span class="fam">Geist Mono</span></h3><div class="ts-list"><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-stat</code><span class="ts-spec">20px / 1.5 · 500 · -0.02em</span><span class="ts-usage">Números de destaque (até 27px em containers largos). tabular-nums.</span></div>
+  <div class="ts-sample text-stat">326.388</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-mono</code><span class="ts-spec">13px / 1.35 · 400</span><span class="ts-usage">Nome de repositório, links técnicos do rodapé.</span></div>
+  <div class="ts-sample text-mono">npx skills@latest add sua-org/skills</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-mono-sm</code><span class="ts-spec">12px / 1.4 · 400</span><span class="ts-usage">Notas técnicas sob comandos, datas, &quot;Start with /comando&quot;.</span></div>
+  <div class="ts-sample text-mono-sm">npx skills@latest add sua-org/skills</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-index</code><span class="ts-spec">12px / 16px · 500 · -0.03em</span><span class="ts-usage">Índice de grupo &quot;01&quot; em `fg-faint`.</span></div>
+  <div class="ts-sample text-index">01</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-code</code><span class="ts-spec">11.5px / 1.5 · 500</span><span class="ts-usage">Comando dentro do bloco de comando.</span></div>
+  <div class="ts-sample text-code">npx skills update</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-eyebrow</code><span class="ts-spec">11px / 1.4 · 500 · 0.16em</span><span class="ts-usage">Sobretítulo em CAIXA ALTA (&quot;WHAT IS A SKILL?&quot;).</span></div>
+  <div class="ts-sample text-eyebrow">O que é uma skill?</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-kicker</code><span class="ts-spec">11px / 1.4 · 500</span><span class="ts-usage">Título de painel em `accent-text` (&quot;The problem&quot;). Caixa de frase.</span></div>
+  <div class="ts-sample text-kicker">O problema</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-stat-label</code><span class="ts-spec">11px / 1.35 · 500 · 0.12em</span><span class="ts-usage">Rótulo de estatística em CAIXA ALTA (&quot;GITHUB STARS&quot;).</span></div>
+  <div class="ts-sample text-stat-label">Estrelas no GitHub</div>
+</div><div class="ts">
+  <div class="ts-meta"><code class="ts-name">.text-micro</code><span class="ts-spec">9px / 1 · 500 · 0.1em</span><span class="ts-usage">Badge NEW em CAIXA ALTA.</span></div>
+  <div class="ts-sample text-micro">Novo</div>
+</div></div>
+</div></section>
+
+<section class="sec" id="espaco"><div class="inner">
+  <p class="sec-eyebrow sl-eyebrow">Fundamentos</p>
+  <h2 class="sec-title text-heading-md">Espaço e forma</h2>
+  <p class="sec-lead">Sem sombras: a profundidade vem de linhas de 1px e de pequenas mudanças de superfície.</p>
+  <h3 class="sub">Espaçamento</h3><p class="note">Escala de 4px do Tailwind; o número do nome é o valor em px. Os passos de 2, 6, 10, 14 e 18 existem na fonte e ficam como estão.</p><div class="tbl"><table><thead><tr><th>Token</th><th>Valor</th><th></th><th>Uso</th></tr></thead><tbody><tr><td><code>--space-2</code></td><td class="num">2px</td><td class="vis"><span class="bar" style="width: var(--space-2)"></span></td><td>Gap entre slug, título e descrição numa linha de lista.</td></tr><tr><td><code>--space-4</code></td><td class="num">4px</td><td class="vis"><span class="bar" style="width: var(--space-4)"></span></td><td>Gap mínimo entre ícone e texto em botões mono.</td></tr><tr><td><code>--space-6</code></td><td class="num">6px</td><td class="vis"><span class="bar" style="width: var(--space-6)"></span></td><td>Gap entre chips; padding vertical de chip.</td></tr><tr><td><code>--space-8</code></td><td class="num">8px</td><td class="vis"><span class="bar" style="width: var(--space-8)"></span></td><td>Gap entre rótulo e input; padding vertical do input.</td></tr><tr><td><code>--space-10</code></td><td class="num">10px</td><td class="vis"><span class="bar" style="width: var(--space-10)"></span></td><td>Gap no bloco de comando e na linha de repositório.</td></tr><tr><td><code>--space-12</code></td><td class="num">12px</td><td class="vis"><span class="bar" style="width: var(--space-12)"></span></td><td>Padding vertical de linha de lista e do bloco de comando.</td></tr><tr><td><code>--space-14</code></td><td class="num">14px</td><td class="vis"><span class="bar" style="width: var(--space-14)"></span></td><td>Padding horizontal de input e de bloco de comando.</td></tr><tr><td><code>--space-16</code></td><td class="num">16px</td><td class="vis"><span class="bar" style="width: var(--space-16)"></span></td><td>Gap padrão entre ícone e texto em listas; padding horizontal de cards.</td></tr><tr><td><code>--space-18</code></td><td class="num">18px</td><td class="vis"><span class="bar" style="width: var(--space-18)"></span></td><td>Padding lateral do header.</td></tr><tr><td><code>--space-20</code></td><td class="num">20px</td><td class="vis"><span class="bar" style="width: var(--space-20)"></span></td><td>Gap do header; padding interno de painel; padding dos botões grandes.</td></tr><tr><td><code>--space-24</code></td><td class="num">24px</td><td class="vis"><span class="bar" style="width: var(--space-24)"></span></td><td>Respiro entre blocos dentro de uma seção.</td></tr><tr><td><code>--space-40</code></td><td class="num">40px</td><td class="vis"><span class="bar" style="width: var(--space-40)"></span></td><td>Gap entre colunas no desktop.</td></tr><tr><td><code>--space-48</code></td><td class="num">48px</td><td class="vis"><span class="bar" style="width: var(--space-48)"></span></td><td>Padding vertical de seção.</td></tr></tbody></table></div>
+  <h3 class="sub">Raio</h3><p class="note">Raios pequenos e quase quadrados. 9px é o raio base (`--radius` na fonte).</p><div class="tbl"><table><thead><tr><th>Token</th><th>Valor</th><th></th><th>Uso</th></tr></thead><tbody><tr><td><code>--radius-xs</code></td><td class="num">4px</td><td class="vis"><span class="rbox" style="border-radius: var(--radius-xs)"></span></td><td>Badge NEW.</td></tr><tr><td><code>--radius-sm</code></td><td class="num">6px</td><td class="vis"><span class="rbox" style="border-radius: var(--radius-sm)"></span></td><td>Chips, botão de acento pequeno, botão de copiar.</td></tr><tr><td><code>--radius-nav</code></td><td class="num">7px</td><td class="vis"><span class="rbox" style="border-radius: var(--radius-nav)"></span></td><td>Icon buttons e link do logotipo no header.</td></tr><tr><td><code>--radius-icon</code></td><td class="num">8px</td><td class="vis"><span class="rbox" style="border-radius: var(--radius-icon)"></span></td><td>Tiles de ícone 40×40 nas listas.</td></tr><tr><td><code>--radius</code></td><td class="num">9px</td><td class="vis"><span class="rbox" style="border-radius: var(--radius)"></span></td><td>Inputs, botões, bloco de comando, card de repositório.</td></tr><tr><td><code>--radius-lg</code></td><td class="num">12px</td><td class="vis"><span class="rbox" style="border-radius: var(--radius-lg)"></span></td><td>Grupos de painéis empilhados.</td></tr><tr><td><code>--radius-2xl</code></td><td class="num">16px</td><td class="vis"><span class="rbox" style="border-radius: var(--radius-2xl)"></span></td><td>Containers grandes e modais.</td></tr></tbody></table></div>
+  <h3 class="sub">Medidas</h3><p class="note">Medidas fixas de layout e controles.</p><div class="tbl"><table><thead><tr><th>Token</th><th>Valor</th><th></th><th>Uso</th></tr></thead><tbody><tr><td><code>--nav-height</code></td><td class="num">62px</td><td class="vis"></td><td>Altura do header fixo.</td></tr><tr><td><code>--container</code></td><td class="num">960px</td><td class="vis"></td><td>Largura máxima do conteúdo.</td></tr><tr><td><code>--measure-lead</code></td><td class="num">64ch</td><td class="vis"></td><td>Largura máxima do parágrafo `lead`.</td></tr><tr><td><code>--measure-body</code></td><td class="num">52ch</td><td class="vis"></td><td>Largura máxima do subtítulo `body-lg`.</td></tr><tr><td><code>--control-height</code></td><td class="num">48px</td><td class="vis"></td><td>Altura de input.</td></tr><tr><td><code>--button-height</code></td><td class="num">50px</td><td class="vis"></td><td>Altura do botão primário grande.</td></tr><tr><td><code>--icon-button</code></td><td class="num">36px</td><td class="vis"></td><td>Icon button do header.</td></tr><tr><td><code>--copy-button</code></td><td class="num">30px</td><td class="vis"></td><td>Botão de copiar no bloco de comando.</td></tr><tr><td><code>--icon-tile</code></td><td class="num">40px</td><td class="vis"></td><td>Tile de ícone de linha de lista.</td></tr></tbody></table></div>
+</div></section>
+
+<section class="sec" id="icones"><div class="inner">
+  <p class="sec-eyebrow sl-eyebrow">Fundamentos</p>
+  <h2 class="sec-title text-heading-md">Ícones</h2>
+  <p class="sec-lead">Linha de 2px em grade de 24px, desenhados em <code>currentColor</code>. A estrela é a única preenchida e sempre dourada.</p>
+  <div class="icons"><div class="ic"><span title="arrow-right" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span><code>arrow-right</code></div><div class="ic"><span title="arrow-up-right" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></span><code>arrow-up-right</code></div><div class="ic"><span title="arrow-down" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></span><code>arrow-down</code></div><div class="ic"><span title="copy" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="14" height="14" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></span><code>copy</code></div><div class="ic"><span title="check" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><code>check</code></div><div class="ic"><span title="search" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span><code>search</code></div><div class="ic"><span title="menu" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg></span><code>menu</code></div><div class="ic"><span title="book" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></span><code>book</code></div><div class="ic"><span title="rss" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></span><code>rss</code></div><div class="ic"><span title="terminal" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6"></path><path d="M12 19h8"></path></svg></span><code>terminal</code></div><div class="ic"><span title="sun-moon" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span><code>sun-moon</code></div><div class="ic"><span title="github" style="color: var(--fg-body);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg></span><code>github</code></div><div class="ic"><span title="star" style="color: var(--accent-fill);"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><code>star</code></div></div>
+</div></section>
+
+<section class="sec" id="componentes"><div class="inner">
+  <p class="sec-eyebrow sl-eyebrow">Biblioteca</p>
+  <h2 class="sec-title text-heading-md">Componentes</h2>
+  <p class="sec-lead">15 componentes React expostos em <code>window.Slash</code>. Os exemplos abaixo são o HTML real que eles geram, com as mesmas classes <code>.sl-*</code>.</p>
+  <h3 class="sub">Ações</h3><article class="comp" id="c-Button">
+  <header class="comp-head"><h3 class="comp-name">Button</h3><p class="comp-sum">O botão primário dourado é a ação principal da tela; as outras variantes ficam em volta dele sem competir.</p></header>
+  <div class="ex"><div class="sl-stage"><button type="button" class="sl-btn sl-ease sl-focus sl-btn-primary sl-btn-lg"><span class="sl-shine" aria-hidden="true"></span><span>Começar o curso por e-mail</span></button><button type="button" class="sl-btn sl-ease sl-focus sl-btn-accent sl-btn-sm"><span>Instalar</span><svg width="12" height="12" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></button><button type="button" class="sl-btn sl-ease sl-focus sl-btn-secondary sl-btn-md"><span>Ver exemplos</span></button><button type="button" class="sl-btn sl-ease sl-focus sl-btn-ghost sl-btn-md"><span>Cancelar</span></button></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p><strong>Variantes</strong></p>
+<ul>
+<li><code>primary</code> — preenchimento <code>accent-fill</code>, texto <code>accent-fill-foreground</code>, 50px de altura (<code>button-height</code>), <code>radius</code>, peso 700. Use <strong>um por tela</strong>: assinar, instalar, começar. <code>shine</code> adiciona o brilho diagonal que a referência usa no CTA do formulário.</li>
+<li><code>accent</code> — contorno dourado (<code>accent-wash</code> + <code>accent-line</code>, texto <code>accent-text</code>), mono 12px, <code>radius-sm</code>, 29px. Para ações secundárias que ainda pertencem ao acento: "Instalar ↓", âncoras para a seção de instalação.</li>
+<li><code>secondary</code> — fundo <code>secondary</code>, para ações neutras ao lado do primário.</li>
+<li><code>ghost</code> — só texto em <code>fg-muted</code>, fundo <code>hover</code> no hover. Cancelar, voltar.</li>
+</ul>
+<p><strong>O consumidor fornece:</strong> <code>children</code> (o rótulo, verbo + objeto, em caixa de frase), <code>onClick</code> ou <code>href</code>, opcionalmente <code>icon</code> à direita.</p>
+<p><strong>Faça:</strong> rótulos que dizem o que acontece ("Começar o curso por e-mail"). Use <code>block</code> no celular para o CTA de formulário.
+<strong>Não faça:</strong> dois primários lado a lado; ícone sem rótulo (use IconButton); dourado em ações destrutivas.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;Button shine&gt;Começar o curso por e-mail&lt;/Button&gt;
+&lt;Button variant=&quot;accent&quot; icon=&quot;arrow-down&quot;&gt;Instalar&lt;/Button&gt;
+&lt;Button variant=&quot;secondary&quot; size=&quot;md&quot;&gt;Ver exemplos&lt;/Button&gt;
+&lt;Button variant=&quot;ghost&quot; size=&quot;md&quot;&gt;Cancelar&lt;/Button&gt;</code></pre></div>
+  </div>
+</article><article class="comp" id="c-IconButton">
+  <header class="comp-head"><h3 class="comp-name">IconButton</h3><p class="comp-sum">Botão quadrado de 36px só com ícone, usado no header: buscar, biblioteca, menu.</p></header>
+  <div class="ex"><div class="sl-stage"><button type="button" class="sl-iconbtn sl-ease sl-focus" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></button><button type="button" class="sl-iconbtn sl-ease sl-focus" aria-label="Cursos" title="Cursos"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></button><button type="button" class="sl-iconbtn sl-ease sl-focus" aria-label="Menu" title="Menu"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg></button><button type="button" class="sl-iconbtn sl-ease sl-focus" aria-label="Tema" title="Tema"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></button></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Ícone de 20px em <code>foreground</code> a 70% de opacidade; no hover vai a 100% com fundo <code>hover</code>. Raio <code>radius-nav</code> (7px).</p>
+<p><strong>O consumidor fornece:</strong> <code>icon</code> (nome do conjunto Icon) e <code>label</code> obrigatório — vira <code>aria-label</code> e tooltip.</p>
+<p><strong>Não faça:</strong> usar fora de barras de navegação ou toolbars; colorir o ícone com o acento.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;IconButton icon=&quot;search&quot; label=&quot;Buscar&quot; /&gt;
+&lt;IconButton icon=&quot;menu&quot; label=&quot;Menu&quot; /&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Formulários</h3><article class="comp" id="c-Field">
+  <header class="comp-head"><h3 class="comp-name">Field</h3><p class="comp-sum">Rótulo + input de 48px para formulários curtos (inscrição, captura de e-mail).</p></header>
+  <div class="ex"><div class="sl-col"><form style="display: flex; flex-direction: column; gap: var(--space-16);"><div class="sl-field"><label class="sl-label" for="sl-field-1">Nome</label><input id="sl-field-1" class="sl-input sl-ease" placeholder="Seu nome"></div><div class="sl-field"><label class="sl-label" for="sl-field-2">E-mail<span class="sl-req" aria-hidden="true">*</span></label><input id="sl-field-2" class="sl-input sl-ease" required="" type="email" placeholder="voce@exemplo.com"><p class="sl-hint">Sem spam. Cancele quando quiser.</p></div></form></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Input em <code>background</code> com borda <code>line</code> de 1px, <code>radius</code>, padding 8px 14px; placeholder em <code>fg-subtle</code>. No foco, borda <code>accent-line</code> e anel <code>focus-ring</code>. Rótulo 14px peso 500 com 8px de gap; campo obrigatório leva <code>*</code>.</p>
+<p><strong>O consumidor fornece:</strong> <code>label</code>, qualquer atributo de <code>&lt;input&gt;</code> (<code>type</code>, <code>name</code>, <code>placeholder</code>, <code>required</code>), <code>hint</code> opcional para a nota abaixo (13px, <code>fg-subtle</code>).</p>
+<p><strong>Faça:</strong> empilhar campos com 16px de gap e terminar com <code>Button</code> primário <code>block</code>.
+<strong>Não faça:</strong> placeholder no lugar do rótulo; mais de 3 campos num formulário de captura.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;Field label=&quot;Nome&quot; placeholder=&quot;Seu nome&quot; /&gt;
+&lt;Field label=&quot;E-mail&quot; type=&quot;email&quot; required
+  placeholder=&quot;voce@exemplo.com&quot; hint=&quot;Sem spam. Cancele quando quiser.&quot; /&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Código</h3><article class="comp" id="c-Command">
+  <header class="comp-head"><h3 class="comp-name">Command</h3><p class="comp-sum">Bloco de comando de terminal com prompt <code>$</code> e botão de copiar: o coração de qualquer página de instalação.</p></header>
+  <div class="ex"><div class="sl-col"><div class="sl-cmdwrap"><div class="sl-cmd"><span class="sl-cmd-prompt" aria-hidden="true">$</span><code class="sl-cmd-code">npx skills@latest add sua-org/skills</code><button type="button" class="sl-copy sl-ease sl-focus" aria-label="Copiar comando"><svg width="14" height="14" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="14" height="14" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></div><div class="sl-cmd-note"><span>Atualize com <code>npx skills update</code></span><a href="#" class="sl-focus">Docs<svg width="12" height="12" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></div></div></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Painel <code>card</code> com borda <code>line</code>, <code>radius</code>, padding 12px 14px. Prompt em <code>fg-faint</code> (decorativo), comando mono 11.5px peso 500 em <code>fg-strong</code>, rolagem horizontal se não couber. Botão de copiar 30px, <code>radius-sm</code>, fundo <code>accent-tint</code>, ícone <code>accent-text</code>; troca para ✓ por 1,6s após copiar. Se a área de transferência for negada, o comando fica selecionado.</p>
+<p><strong>O consumidor fornece:</strong> <code>command</code> (texto exato que será copiado), <code>note</code> opcional (linha mono 12px abaixo, use <code>&lt;code&gt;</code> para destacar o segundo comando) e <code>link</code> opcional à direita.</p>
+<p><strong>Não faça:</strong> colocar mais de um comando por bloco; usar <code>$</code> em comandos que não são de shell (passe <code>prompt=""</code>).</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;Command
+  command=&quot;npx skills@latest add sua-org/skills&quot;
+  note={&lt;&gt;Atualize com &lt;code&gt;npx skills update&lt;/code&gt;&lt;/&gt;}
+  link={{ label: &quot;Docs&quot;, href: &quot;/docs&quot; }}
+/&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Status</h3><article class="comp" id="c-Badge">
+  <header class="comp-head"><h3 class="comp-name">Badge</h3><p class="comp-sum">Micro rótulo mono de 9px em caixa alta, com contorno, para marcar novidade.</p></header>
+  <div class="ex"><div class="sl-stage"><span class="sl-badge">Novo</span><span class="sl-badge sl-badge-neutral">Beta</span><span class="sl-badge">v1.3</span></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p><code>accent</code> (padrão): borda <code>accent-line</code>, texto <code>accent-text</code>. <code>neutral</code>: borda <code>line-strong</code>, texto <code>fg-muted</code>. Raio <code>radius-xs</code>, 18px de altura, tracking 0.1em.</p>
+<p><strong>O consumidor fornece:</strong> uma palavra (<code>children</code>).</p>
+<p><strong>Não faça:</strong> usar como botão; mais de um badge de acento por bloco.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;Badge&gt;Novo&lt;/Badge&gt;
+&lt;Badge tone=&quot;neutral&quot;&gt;Beta&lt;/Badge&gt;</code></pre></div>
+  </div>
+</article><article class="comp" id="c-Chip">
+  <header class="comp-head"><h3 class="comp-name">Chip</h3><p class="comp-sum">Etiqueta mono estática para listar compatibilidades: ferramentas, agentes, linguagens.</p></header>
+  <div class="ex"><div class="sl-stage"><div class="sl-chips"><span class="sl-chip">Claude Code</span><span class="sl-chip">Cursor</span><span class="sl-chip">Codex</span><span class="sl-chip">Amp</span><span class="sl-chip">Copilot</span></div></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Fundo <code>card</code>, borda <code>line-strong</code>, <code>radius-sm</code>, padding 6px 10px, mono 12px em <code>fg-body</code>. Em grupo, use o wrapper <code>.sl-chips</code> (gap 6px, quebra de linha).</p>
+<p><strong>O consumidor fornece:</strong> o nome (<code>children</code>).</p>
+<p><strong>Não faça:</strong> tornar clicável; usar cor de acento.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;div className=&quot;sl-chips&quot;&gt;
+  &lt;Chip&gt;Claude Code&lt;/Chip&gt;
+  &lt;Chip&gt;Cursor&lt;/Chip&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Dados</h3><article class="comp" id="c-Stat">
+  <header class="comp-head"><h3 class="comp-name">Stat</h3><p class="comp-sum">Número de prova social com rótulo mono em caixa alta, usado logo abaixo do hero.</p></header>
+  <div class="ex"><div class="sl-stage"><dl class="sl-stat"><span class="sl-stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><dd class="sl-stat-value">326.388</dd><dt class="sl-stat-label">Estrelas no GitHub</dt></dl><dl class="sl-stat"><span class="sl-stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6"></path><path d="M12 19h8"></path></svg></span><dd class="sl-stat-value">27</dd><dt class="sl-stat-label">Skills</dt></dl></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Valor mono 20px peso 500 (26px a partir de 640px), tracking −0.02em, <code>tabular-nums</code>, <code>foreground</code>. Rótulo mono 11px, tracking 0.12em, <code>fg-muted</code>. Ícone de 22px à esquerda; <code>star</code> em <code>accent-fill</code> por padrão.</p>
+<p><strong>O consumidor fornece:</strong> <code>value</code> já formatado (separador de milhar do idioma), <code>label</code>, <code>icon</code> opcional ou <code>false</code>.</p>
+<p><strong>Não faça:</strong> inventar números; mais de duas estatísticas lado a lado.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;Stat value=&quot;326.388&quot; label=&quot;Estrelas no GitHub&quot; /&gt;
+&lt;Stat value=&quot;27&quot; label=&quot;Skills&quot; icon=&quot;terminal&quot; /&gt;</code></pre></div>
+  </div>
+</article><article class="comp" id="c-RepoCard">
+  <header class="comp-head"><h3 class="comp-name">RepoCard</h3><p class="comp-sum">Linha compacta de repositório: estrela dourada, contagem, nome mono e link à direita.</p></header>
+  <div class="ex"><div class="sl-col"><div class="sl-repo"><svg width="14" height="14" viewBox="0 0 24 24" class="sl-ico sl-repo-star" aria-hidden="true" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><span class="sl-repo-count">326.388</span><span class="sl-repo-name">sua-org/skills</span><a href="#" class="sl-repo-link sl-ease sl-focus">Ver no GitHub →</a></div></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Borda <code>line-strong</code>, <code>radius</code>, padding 12px 16px. Contagem mono 13px peso 500 <code>foreground</code>; nome mono 13px <code>fg-label</code> (corta com reticências); link 14px peso 500 <code>fg-muted</code>.</p>
+<p><strong>O consumidor fornece:</strong> <code>stars</code> formatado, <code>repo</code> (<code>dono/nome</code>), <code>href</code>, <code>cta</code> opcional.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;RepoCard stars=&quot;326.388&quot; repo=&quot;sua-org/skills&quot; href=&quot;https://github.com/sua-org/skills&quot; /&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Listas</h3><article class="comp" id="c-SkillRow">
+  <header class="comp-head"><h3 class="comp-name">SkillRow</h3><p class="comp-sum">Linha de catálogo: tile de 40px, slug mono, título, descrição curta e seta. É o item de lista padrão do sistema.</p></header>
+  <div class="ex"><div class="sl-col"><div class="sl-list"><a href="#" class="sl-row sl-ease"><img class="sl-row-icon" src="/" alt="" width="40" height="40"><span class="sl-row-body"><span class="sl-row-slug">/to-spec</span><span class="sl-row-title">A skill /to-spec</span><span class="sl-row-desc">Transforma uma conversa acordada em especificação escrita.</span></span><svg width="16" height="16" viewBox="0 0 24 24" class="sl-ico sl-row-arrow sl-ease" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a><a href="#" class="sl-row sl-ease"><img class="sl-row-icon" src="#" alt="" width="40" height="40"><span class="sl-row-body"><span class="sl-row-slug">/to-tickets</span><span class="sl-row-title">A skill /to-tickets</span><span class="sl-row-desc">Quebra uma especificação em tickets pequenos.</span></span><svg width="16" height="16" viewBox="0 0 24 24" class="sl-ico sl-row-arrow sl-ease" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a><a href="#" class="sl-row sl-ease"><img class="sl-row-icon" src="&gt;" alt="" width="40" height="40"><span class="sl-row-body"><span class="sl-row-slug">/implement</span><span class="sl-row-title">A skill /implement</span><span class="sl-row-desc">Constrói a especificação em código, test-first.</span></span><svg width="16" height="16" viewBox="0 0 24 24" class="sl-ico sl-row-arrow sl-ease" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Padding 12px 16px, divisor inferior <code>line</code>, hover <code>hover</code> com a seta deslizando 2px e indo de <code>fg-label</code> para <code>foreground</code>. Slug mono 12px <code>fg-body</code>; título 16px/22 peso 500; descrição 14px <code>fg-muted</code>; gap de 2px entre as três linhas e 16px até o tile.</p>
+<p><strong>O consumidor fornece:</strong> <code>icon</code> (URL de imagem 40×40, ou um glifo curto para o tile placeholder em <code>accent-panel</code>), <code>slug</code>, <code>title</code>, <code>description</code> (uma frase, começa com verbo), <code>href</code>.</p>
+<p><strong>Faça:</strong> agrupar linhas sob um <code>SectionHeading</code> numerado.
+<strong>Não faça:</strong> descrições de duas frases; misturar linhas com e sem ícone na mesma lista.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;div className=&quot;sl-list&quot;&gt;
+  &lt;SkillRow icon=&quot;/&quot; slug=&quot;/to-spec&quot; title=&quot;A skill /to-spec&quot;
+    description=&quot;Transforma uma conversa acordada em especificação escrita.&quot; href=&quot;/skills/to-spec&quot; /&gt;
+&lt;/div&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Layout</h3><article class="comp" id="c-SectionHeading">
+  <header class="comp-head"><h3 class="comp-name">SectionHeading</h3><p class="comp-sum">Cabeçalho de grupo numerado: índice mono, título, uma linha de descrição e o ponto de partida recomendado.</p></header>
+  <div class="ex"><div class="sl-col"><div class="sl-sec"><div class="sl-sec-top"><span class="sl-sec-index">02</span><h2 class="sl-sec-title">O fluxo principal</h2></div><p class="sl-sec-desc">Da ideia ao deploy, em ordem.</p><p class="sl-sec-start">Comece com <strong>/grill-with-docs</strong></p></div></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Índice mono 12px em <code>fg-faint</code> (decorativo), título <code>title</code> (18px → 20px), descrição 14px <code>fg-muted</code>, linha "Comece com" mono 12px com o comando em <code>foreground</code> peso 600.</p>
+<p>Use números só quando os grupos formam uma sequência real (onboarding → fluxo → avançado).</p>
+<p><strong>O consumidor fornece:</strong> <code>index</code> ("01"…), <code>title</code>, <code>description</code>, <code>start</code> (comando), <code>startLabel</code> para trocar "Comece com ".</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;SectionHeading index=&quot;02&quot; title=&quot;O fluxo principal&quot;
+  description=&quot;Da ideia ao deploy, em ordem.&quot; start=&quot;/grill-with-docs&quot; /&gt;</code></pre></div>
+  </div>
+</article><article class="comp" id="c-Panels">
+  <header class="comp-head"><h3 class="comp-name">Panels</h3><p class="comp-sum">Painéis empilhados dentro de uma única borda, cada um com kicker mono dourado e um parágrafo. Para explicar um conceito em 2–4 partes.</p></header>
+  <div class="ex"><div class="sl-col"><div class="sl-panels"><section class="sl-panel"><h3 class="sl-panel-kicker">O problema</h3><p class="sl-panel-body">Um agente é tão bom quanto o processo que você dá a ele. Sem processo, ele escreve código plausível que apodrece a base.</p></section><section class="sl-panel"><h3 class="sl-panel-kicker">A solução</h3><p class="sl-panel-body">Uma skill codifica um bom hábito, e o agente o executa do mesmo jeito toda vez.</p></section><section class="sl-panel"><h3 class="sl-panel-kicker">Por que se acumula</h3><p class="sl-panel-body">A saída de uma skill é a entrada da próxima: melhorar um passo melhora o fluxo todo.</p></section></div></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Container com borda <code>line</code>, <code>radius-lg</code>, fundo <code>background</code>; painéis com padding 20px separados por <code>line</code>. Kicker mono 11px peso 500 em <code>accent-text</code>, caixa de frase; corpo 14px/1.625 <code>fg-muted</code>.</p>
+<p><strong>O consumidor fornece:</strong> <code>items</code>, cada um com <code>kicker</code> (2–4 palavras) e <code>body</code> (uma ou duas frases).</p>
+<p><strong>Não faça:</strong> colocar botões dentro; mais de 4 painéis; borda colorida à esquerda.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;Panels items={[
+  { kicker: &quot;O problema&quot;, body: &quot;…&quot; },
+  { kicker: &quot;A solução&quot;, body: &quot;…&quot; },
+]} /&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Conteúdo</h3><article class="comp" id="c-ChangelogEntry">
+  <header class="comp-head"><h3 class="comp-name">ChangelogEntry</h3><p class="comp-sum">Entrada de histórico de versões: versão em dourado, data mono, título linkado e resumo.</p></header>
+  <div class="ex"><div class="sl-col"><div><article class="sl-log"><span class="sl-log-version">v1.3</span><time class="sl-log-date">5 out 2026</time><h3 class="sl-log-title"><a href="#" class="sl-focus">/implement-spec, /pr, /retro e GLOSSARY.md</a></h3><p class="sl-log-summary">/implement-spec constrói uma especificação inteira; /pr escreve descrições revisáveis.</p></article><article class="sl-log"><time class="sl-log-date">11 mai 2026</time><h3 class="sl-log-title"><a href="#" class="sl-focus">Changelog: /handoff e /prototype</a></h3><p class="sl-log-summary">Duas skills novas para passar contexto entre agentes e testar decisões de design.</p></article></div></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Versão mono 12px <code>accent-text</code>; data mono 12px <code>fg-label</code>; título <code>title</code> com sublinhado <code>line-strong</code> no hover; resumo 14px <code>fg-muted</code>. Padding vertical 20px e divisor <code>line</code>.</p>
+<p><strong>O consumidor fornece:</strong> <code>version</code> (opcional — entradas sem versão ficam só com data), <code>date</code> legível e <code>dateTime</code> ISO, <code>title</code>, <code>summary</code> (uma ou duas frases), <code>href</code>.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;ChangelogEntry version=&quot;v1.3&quot; date=&quot;5 out 2026&quot; dateTime=&quot;2026-10-05&quot;
+  title=&quot;/implement-spec, /pr, /retro e GLOSSARY.md&quot; summary=&quot;…&quot; href=&quot;/changelog/v1-3&quot; /&gt;</code></pre></div>
+  </div>
+</article><h3 class="sub">Navegação</h3><article class="comp" id="c-Announcement">
+  <header class="comp-head"><h3 class="comp-name">Announcement</h3><p class="comp-sum">Barra fina de anúncio no topo da página, acima do header: badge NEW, uma frase e seta.</p></header>
+  <div class="ex"><div class="ex-flush"><a href="#" class="sl-announce sl-focus"><span class="sl-badge">Novo</span><span>O curso de programação com IA saiu.</span><svg width="14" height="14" viewBox="0 0 24 24" class="sl-ico sl-announce-arrow sl-ease" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Altura mínima 34px, fundo <code>band</code>, divisor <code>line</code>, texto 12.5px peso 500 tracking −0.025em em <code>foreground</code>; a seta desliza 2px no hover.</p>
+<p><strong>O consumidor fornece:</strong> a frase (<code>children</code>, ≤ 50 caracteres, sem ponto de exclamação), <code>href</code>, <code>badge</code> (texto ou <code>false</code>).</p>
+<p><strong>Não faça:</strong> mais de uma barra; texto que não cabe numa linha no celular.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;Announcement href=&quot;/curso&quot;&gt;O curso de programação com IA saiu.&lt;/Announcement&gt;</code></pre></div>
+  </div>
+</article><article class="comp" id="c-SiteHeader">
+  <header class="comp-head"><h3 class="comp-name">SiteHeader</h3><p class="comp-sum">Header fixo de 62px (<code>nav-height</code>) com wordmark, links e icon buttons.</p></header>
+  <div class="ex"><div class="ex-flush"><header class="sl-header"><a href="#" class="sl-wordmark sl-focus"><span class="sl-wordmark-mono">/</span>slash</a><nav class="sl-header-nav" aria-label="Principal"><a href="#" class="sl-ease sl-focus">Cursos</a><a href="#" class="sl-ease sl-focus" aria-current="page">Skills</a><a href="#" class="sl-ease sl-focus">Changelog</a></nav><div class="sl-header-actions"><button type="button" class="sl-iconbtn sl-ease sl-focus" aria-label="Buscar" title="Buscar"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></button><button type="button" class="sl-iconbtn sl-ease sl-focus" aria-label="Biblioteca" title="Biblioteca"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></button><button type="button" class="sl-iconbtn sl-ease sl-focus" aria-label="Menu" title="Menu"><svg width="20" height="20" viewBox="0 0 24 24" class="sl-ico" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg></button></div></header></div></div>
+  <div class="comp-body">
+    <div class="comp-guide"><p>Fundo <code>glass</code> com blur de 12px, divisor <code>line</code>, padding lateral 18px, gap 20px. Links 14px peso 500 em <code>fg-muted</code>, <code>foreground</code> no hover e na página atual. Wordmark 15.5px peso 700, parte mono + parte sans.</p>
+<p><strong>O consumidor fornece:</strong> <code>brand</code> (<code>mono</code> + <code>text</code>, ou o seu logotipo), <code>links</code> (esconda no celular e leve para o menu), <code>actions</code> (até 3 IconButton).</p>
+<p><strong>Não faça:</strong> CTA dourado no header — o dourado pertence ao conteúdo.</p></div>
+    <div class="comp-code"><div class="code-head"><span>React</span><button class="code-copy" type="button">Copiar</button></div><pre><code>&lt;SiteHeader
+  brand={{ mono: &quot;/&quot;, text: &quot;slash&quot; }}
+  links={[{ label: &quot;Cursos&quot; }, { label: &quot;Skills&quot;, current: true }]}
+  actions={[{ icon: &quot;search&quot;, label: &quot;Buscar&quot; }, { icon: &quot;menu&quot;, label: &quot;Menu&quot; }]}
+/&gt;</code></pre></div>
+  </div>
+</article>
+</div></section>
+
+<section class="sec" id="codigo"><div class="inner">
+  <p class="sec-eyebrow sl-eyebrow">Implementação</p>
+  <h2 class="sec-title text-heading-md">Usar no código</h2>
+  <ol class="steps">
+    <li>Carregue as fontes Geist e Geist Mono do Google Fonts.</li>
+    <li>Cole <code>tokens.css</code> e <code>components.css</code> no seu CSS global. O tema escuro é o padrão; <code>data-theme="light"</code> no <code>&lt;html&gt;</code> força o claro.</li>
+    <li>Com React 18 na página, carregue <code>slash.js</code> e use <code>window.Slash.Button</code> etc. Sem React, use só as classes <code>.sl-*</code> com a marcação dos exemplos.</li>
+  </ol>
+  <details class="src" open><summary><span>tokens.css</span><span class="src-lang">CSS · 179 linhas</span></summary>
+<div class="code-head"><span>tokens.css</span><button class="code-copy" type="button">Copiar</button></div><pre><code>/* Slash — tokens. Tema escuro é o padrão; claro via [data-theme=&quot;light&quot;] ou preferência do sistema. */
+:root, [data-theme=&quot;dark&quot;] {
+  --page-background: #080808;
+  --background: #0b0b0b;
+  --band: #0e0e0d;
+  --card: #100f0e;
+  --popover: #0d0d0c;
+  --muted: #0d0d0c;
+  --accent-panel: #1d1a11;
+  --glass: #0b0b0be6;
+  --foreground: #f4f3f1;
+  --fg-strong: #f4f3f1e6;
+  --fg-body: #f4f3f1b8;
+  --fg-muted: #f4f3f199;
+  --fg-subtle: #f4f3f185;
+  --fg-label: #f4f3f17a;
+  --fg-faint: #f4f3f14d;
+  --line: #ffffff14;
+  --line-strong: #ffffff1f;
+  --line-soft: #ffffff0f;
+  --hover: #ffffff12;
+  --secondary: #ffffff12;
+  --primary: #f5c451;
+  --primary-foreground: #191510;
+  --accent-fill: #f5c451;
+  --accent-fill-hover: #ffd873;
+  --accent-fill-foreground: #191510;
+  --accent-text: #f5c451;
+  --accent-tint: #f5c45124;
+  --accent-wash: #f5c45112;
+  --accent-line: #f5c45159;
+  --ring: #f5c45159;
+  --focus-ring: #f5c451;
+  --destructive: lab(31.1699% 55.5567 47.4694);
+  --destructive-foreground: lab(90.5592% 0.191122 1.51047);
+  --mark-yes: lab(78.7751% -48.9898 21.5753);
+  --mark-gold: var(--accent-fill);
+  --mark-no: lab(65.8493% 53.3364 30.7453);
+  color-scheme: dark;
+}
+[data-theme=&quot;light&quot;] {
+  --page-background: #f1f2f5;
+  --background: #fbfbfc;
+  --band: #f1f2f5;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --muted: #f5f6f8;
+  --accent-panel: #ecedef;
+  --glass: #fbfbfce6;
+  --foreground: #14161a;
+  --fg-strong: #14161ae6;
+  --fg-body: #14161acc;
+  --fg-muted: #14161ab3;
+  --fg-subtle: #14161aa3;
+  --fg-label: #14161a99;
+  --fg-faint: #14161a59;
+  --line: #14161a1a;
+  --line-strong: #14161a24;
+  --line-soft: #14161a12;
+  --hover: #14161a0f;
+  --secondary: #14161a0f;
+  --primary: #14161a;
+  --primary-foreground: #fbfbfc;
+  --accent-fill: #f5c451;
+  --accent-fill-hover: #eab534;
+  --accent-fill-foreground: #191510;
+  --accent-text: lab(53.6319% 12.9281 64.513);
+  --accent-tint: #14161a0f;
+  --accent-wash: #14161a0a;
+  --accent-line: #14161a38;
+  --ring: #14161a59;
+  --focus-ring: #14161a;
+  --destructive: lab(50.9656% 54.806 39.6151);
+  --destructive-foreground: lab(99.0272% 0.190765 1.51021);
+  --mark-yes: lab(45.9926% -41.8497 21.6371);
+  --mark-gold: lab(53.6319% 12.9281 64.513);
+  --mark-no: lab(45.9154% 59.7076 40.9321);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+  --page-background: #f1f2f5;
+  --background: #fbfbfc;
+  --band: #f1f2f5;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --muted: #f5f6f8;
+  --accent-panel: #ecedef;
+  --glass: #fbfbfce6;
+  --foreground: #14161a;
+  --fg-strong: #14161ae6;
+  --fg-body: #14161acc;
+  --fg-muted: #14161ab3;
+  --fg-subtle: #14161aa3;
+  --fg-label: #14161a99;
+  --fg-faint: #14161a59;
+  --line: #14161a1a;
+  --line-strong: #14161a24;
+  --line-soft: #14161a12;
+  --hover: #14161a0f;
+  --secondary: #14161a0f;
+  --primary: #14161a;
+  --primary-foreground: #fbfbfc;
+  --accent-fill: #f5c451;
+  --accent-fill-hover: #eab534;
+  --accent-fill-foreground: #191510;
+  --accent-text: lab(53.6319% 12.9281 64.513);
+  --accent-tint: #14161a0f;
+  --accent-wash: #14161a0a;
+  --accent-line: #14161a38;
+  --ring: #14161a59;
+  --focus-ring: #14161a;
+  --destructive: lab(50.9656% 54.806 39.6151);
+  --destructive-foreground: lab(99.0272% 0.190765 1.51021);
+  --mark-yes: lab(45.9926% -41.8497 21.6371);
+  --mark-gold: lab(53.6319% 12.9281 64.513);
+  --mark-no: lab(45.9154% 59.7076 40.9321);
+    color-scheme: light;
+  }
+}
+:root {
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-18: 18px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-nav: 7px;
+  --radius-icon: 8px;
+  --radius: 9px;
+  --radius-lg: 12px;
+  --radius-2xl: 16px;
+  --nav-height: 62px;
+  --container: 960px;
+  --measure-lead: 64ch;
+  --measure-body: 52ch;
+  --control-height: 48px;
+  --button-height: 50px;
+  --icon-button: 36px;
+  --copy-button: 30px;
+  --icon-tile: 40px;
+  --font-sans: Geist, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: &quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.text-display-lg { font-family: var(--font-sans); font-size: 52px; line-height: 1.02; font-weight: 700; letter-spacing: -0.036em; }
+.text-display-md { font-family: var(--font-sans); font-size: 44px; line-height: 1.04; font-weight: 700; letter-spacing: -0.032em; }
+.text-display { font-family: var(--font-sans); font-size: 34px; line-height: 1.04; font-weight: 700; letter-spacing: -0.032em; }
+.text-heading-lg { font-family: var(--font-sans); font-size: 34px; line-height: 1.06; font-weight: 700; letter-spacing: -0.03em; }
+.text-heading-md { font-family: var(--font-sans); font-size: 28px; line-height: 1.08; font-weight: 700; letter-spacing: -0.028em; }
+.text-heading { font-family: var(--font-sans); font-size: 24px; line-height: 1.08; font-weight: 700; letter-spacing: -0.028em; }
+.text-title { font-family: var(--font-sans); font-size: 18px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
+.text-title-sm { font-family: var(--font-sans); font-size: 16px; line-height: 1.3; font-weight: 700; letter-spacing: -0.018em; }
+.text-lead { font-family: var(--font-sans); font-size: 20px; line-height: 1.4; font-weight: 500; letter-spacing: -0.018em; }
+.text-body-lg { font-family: var(--font-sans); font-size: 17px; line-height: 1.55; font-weight: 400; }
+.text-body { font-family: var(--font-sans); font-size: 14px; line-height: 1.625; font-weight: 400; }
+.text-item-title { font-family: var(--font-sans); font-size: 16px; line-height: 22px; font-weight: 500; }
+.text-ui { font-family: var(--font-sans); font-size: 14px; line-height: 1.375; font-weight: 500; }
+.text-button { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 700; }
+.text-label { font-family: var(--font-sans); font-size: 14px; line-height: 1; font-weight: 500; }
+.text-small { font-family: var(--font-sans); font-size: 13px; line-height: 1.35; font-weight: 400; }
+.text-banner { font-family: var(--font-sans); font-size: 12.5px; line-height: 1.4; font-weight: 500; letter-spacing: -0.025em; }
+.text-stat { font-family: var(--font-mono); font-size: 20px; line-height: 1.5; font-weight: 500; letter-spacing: -0.02em; }
+.text-mono { font-family: var(--font-mono); font-size: 13px; line-height: 1.35; font-weight: 400; }
+.text-mono-sm { font-family: var(--font-mono); font-size: 12px; line-height: 1.4; font-weight: 400; }
+.text-index { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: -0.03em; }
+.text-code { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; font-weight: 500; }
+.text-eyebrow { font-family: var(--font-mono); font-size: 11px; line-height: 1.4; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+.text-kicker { font-family: var(--font-mono); font-size: 11px; line-height: 1.4; font-weight: 500; }
+.text-stat-label { font-family: var(--font-mono); font-size: 11px; line-height: 1.35; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
+.text-micro { font-family: var(--font-mono); font-size: 9px; line-height: 1; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+</code></pre></details>
+  <details class="src"><summary><span>components.css</span><span class="src-lang">CSS · 139 linhas</span></summary>
+<div class="code-head"><span>components.css</span><button class="code-copy" type="button">Copiar</button></div><pre><code>@import url(&#x27;https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap&#x27;);
+
+/* Slash — component styles. Every color, radius and size comes from tokens.css. */
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.sl-stage { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12); padding: var(--space-20); }
+.sl-col { display: flex; flex-direction: column; gap: var(--space-16); padding: var(--space-20); max-width: 520px; }
+.sl-ease { transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1), border-color .15s cubic-bezier(.4,0,.2,1), opacity .15s cubic-bezier(.4,0,.2,1), transform .15s cubic-bezier(.4,0,.2,1); }
+.sl-focus:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.sl-ico { display: block; flex: none; }
+.sl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Button */
+.sl-btn { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-8); box-sizing: border-box; font: inherit; font-size: 14px; line-height: 20px; font-weight: 700; border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; text-decoration: none; white-space: nowrap; overflow: hidden; }
+.sl-btn-lg { height: var(--button-height); padding: 0 var(--space-20); }
+.sl-btn-md { height: 40px; padding: 0 var(--space-16); }
+.sl-btn-sm { height: 29px; padding: 0 9px; gap: var(--space-4); font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; border-radius: var(--radius-sm); }
+.sl-btn-block { width: 100%; }
+.sl-btn-primary { background: var(--accent-fill); color: var(--accent-fill-foreground); }
+.sl-btn-primary:hover { background: var(--accent-fill-hover); }
+.sl-btn-accent { background: var(--accent-wash); border-color: var(--accent-line); color: var(--accent-text); }
+.sl-btn-accent:hover { background: var(--accent-tint); }
+.sl-btn-secondary { background: var(--secondary); color: var(--foreground); }
+.sl-btn-secondary:hover { background: var(--line-strong); }
+.sl-btn-ghost { background: transparent; color: var(--fg-muted); }
+.sl-btn-ghost:hover { background: var(--hover); color: var(--foreground); }
+.sl-btn[disabled] { opacity: .5; cursor: not-allowed; }
+.sl-shine { position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: .35; background: linear-gradient(120deg, rgba(255,255,255,0) 40%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 60%); background-size: 250% 100%; animation: sl-shine 3.6s cubic-bezier(.4,0,.2,1) infinite; }
+@keyframes sl-shine { 0% { background-position: 150% 0; } 55%, 100% { background-position: -50% 0; } }
+
+/* IconButton */
+.sl-iconbtn { display: inline-grid; place-items: center; width: var(--icon-button); height: var(--icon-button); padding: 0; border: 0; border-radius: var(--radius-nav); background: transparent; color: var(--foreground); opacity: .7; cursor: pointer; }
+.sl-iconbtn:hover { opacity: 1; background: var(--hover); }
+
+/* Field */
+.sl-field { display: flex; flex-direction: column; gap: var(--space-8); }
+.sl-label { font-size: 14px; line-height: 14px; font-weight: 500; color: var(--foreground); }
+.sl-req { color: var(--fg-label); margin-left: 1px; }
+.sl-input { box-sizing: border-box; width: 100%; height: var(--control-height); padding: var(--space-8) var(--space-14); border: 1px solid var(--line); border-radius: var(--radius); background: var(--background); color: var(--foreground); font: inherit; font-size: 15px; }
+.sl-input::placeholder { color: var(--fg-subtle); }
+.sl-input:hover { border-color: var(--line-strong); }
+.sl-input:focus { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-color: var(--accent-line); }
+.sl-hint { font-size: 13px; line-height: 1.35; color: var(--fg-subtle); margin: 0; }
+
+/* Command */
+.sl-cmdwrap { display: flex; flex-direction: column; gap: var(--space-10); min-width: 0; }
+.sl-cmd { display: flex; align-items: center; gap: var(--space-10); box-sizing: border-box; min-height: 55px; padding: var(--space-12) var(--space-14); background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); font-family: var(--font-mono); }
+.sl-cmd-prompt { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--fg-faint); user-select: none; }
+.sl-cmd-code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font-family: var(--font-mono); font-size: 11.5px; line-height: 17.25px; font-weight: 500; color: var(--fg-strong); }
+.sl-copy { display: grid; place-items: center; flex: none; width: var(--copy-button); height: var(--copy-button); padding: 0; border: 0; border-radius: var(--radius-sm); background: var(--accent-tint); color: var(--accent-text); cursor: pointer; }
+.sl-copy:hover { background: var(--accent-line); }
+.sl-cmd-note { display: flex; justify-content: space-between; align-items: center; gap: var(--space-12); font-family: var(--font-mono); font-size: 12px; line-height: 16.8px; color: var(--fg-muted); }
+.sl-cmd-note code { font-family: inherit; color: var(--fg-body); }
+.sl-cmd-note a { font-family: var(--font-sans); font-size: 12px; color: var(--fg-muted); text-decoration: none; display: inline-flex; gap: var(--space-4); align-items: center; }
+.sl-cmd-note a:hover { color: var(--foreground); }
+
+/* Badge */
+.sl-badge { display: inline-flex; align-items: center; box-sizing: border-box; height: 18px; padding: var(--space-4) var(--space-6); border: 1px solid var(--accent-line); border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 9px; line-height: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-text); }
+.sl-badge-neutral { border-color: var(--line-strong); color: var(--fg-muted); }
+
+/* Chip */
+.sl-chips { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+.sl-chip { display: inline-flex; align-items: center; gap: var(--space-6); padding: var(--space-6) var(--space-10); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--card); font-family: var(--font-mono); font-size: 12px; line-height: 16px; color: var(--fg-body); }
+
+/* Stat */
+.sl-stat { display: grid; grid-template-columns: auto auto; column-gap: var(--space-10); align-items: center; justify-content: start; margin: 0; }
+.sl-stat-icon { grid-row: span 2; color: var(--accent-fill); }
+.sl-stat-value { margin: 0; font-family: var(--font-mono); font-size: 20px; line-height: 30px; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--foreground); }
+.sl-stat-label { margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 14.85px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-muted); }
+@media (min-width: 640px) { .sl-stat-value { font-size: 26px; line-height: 34px; } }
+
+/* SkillRow (list row) */
+.sl-list { display: flex; flex-direction: column; }
+.sl-row { display: flex; align-items: center; gap: var(--space-16); padding: var(--space-12) var(--space-16); border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
+.sl-row:hover { background: var(--hover); }
+.sl-row:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.sl-row-icon { flex: none; width: var(--icon-tile); height: var(--icon-tile); border-radius: var(--radius-icon); object-fit: cover; }
+.sl-tile { display: grid; place-items: center; box-sizing: border-box; background: var(--accent-panel); border: 1px solid var(--accent-line); color: var(--accent-text); font-family: var(--font-mono); font-size: 15px; font-weight: 600; }
+.sl-row-body { display: flex; flex-direction: column; gap: var(--space-2); flex: 1; min-width: 0; }
+.sl-row-slug { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--fg-body); }
+.sl-row-title { font-size: 16px; line-height: 22px; font-weight: 500; color: var(--foreground); }
+.sl-row-desc { font-size: 14px; line-height: 20px; color: var(--fg-muted); }
+.sl-row-arrow { flex: none; color: var(--fg-label); }
+.sl-row:hover .sl-row-arrow { color: var(--foreground); transform: translateX(2px); }
+
+/* SectionHeading */
+.sl-sec { display: flex; flex-direction: column; gap: var(--space-8); }
+.sl-sec-top { display: flex; align-items: baseline; gap: var(--space-8); }
+.sl-sec-index { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: -.03em; color: var(--fg-faint); }
+.sl-sec-title { margin: 0; font-size: 18px; line-height: 1.2; font-weight: 700; letter-spacing: -.02em; color: var(--foreground); text-wrap: balance; }
+.sl-sec-desc { margin: 0; font-size: 14px; line-height: 1.625; color: var(--fg-muted); }
+.sl-sec-start { margin: var(--space-4) 0 0; font-family: var(--font-mono); font-size: 12px; line-height: 16.8px; color: var(--fg-muted); }
+.sl-sec-start strong { color: var(--foreground); font-weight: 600; }
+@media (min-width: 640px) { .sl-sec-title { font-size: 20px; } }
+
+/* Panels */
+.sl-panels { border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background: var(--background); }
+.sl-panel { display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-20); }
+.sl-panel + .sl-panel { border-top: 1px solid var(--line); }
+.sl-panel-kicker { margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 15.4px; font-weight: 500; color: var(--accent-text); }
+.sl-panel-body { margin: 0; font-size: 14px; line-height: 1.625; color: var(--fg-muted); }
+
+/* Eyebrow */
+.sl-eyebrow { margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 15.4px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-muted); }
+
+/* ChangelogEntry */
+.sl-log { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-20) 0; border-bottom: 1px solid var(--line); }
+.sl-log-version { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--accent-text); }
+.sl-log-date { font-family: var(--font-mono); font-size: 12px; line-height: 16.8px; color: var(--fg-label); }
+.sl-log-title { margin: var(--space-4) 0 0; font-size: 18px; line-height: 1.2; font-weight: 700; letter-spacing: -.02em; color: var(--foreground); text-wrap: balance; }
+.sl-log-title a { color: inherit; text-decoration: none; }
+.sl-log-title a:hover { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.sl-log-summary { margin: var(--space-4) 0 0; font-size: 14px; line-height: 1.625; color: var(--fg-muted); }
+
+/* Announcement */
+.sl-announce { display: flex; align-items: center; justify-content: center; gap: var(--space-10); min-height: 34px; padding: 0 var(--space-16); background: var(--band); border-bottom: 1px solid var(--line); color: var(--foreground); text-decoration: none; font-size: 12.5px; line-height: 17.5px; font-weight: 500; letter-spacing: -.025em; }
+.sl-announce:hover .sl-announce-arrow { transform: translateX(2px); }
+
+/* SiteHeader */
+.sl-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: var(--space-20); box-sizing: border-box; height: var(--nav-height); padding: 0 var(--space-18); background: var(--glass); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.sl-header-nav { display: flex; gap: var(--space-20); flex: 1; min-width: 0; }
+.sl-header-nav a { font-size: 14px; line-height: 19.25px; font-weight: 500; color: var(--fg-muted); text-decoration: none; }
+.sl-header-nav a:hover, .sl-header-nav a[aria-current] { color: var(--foreground); }
+.sl-header-actions { display: flex; gap: var(--space-4); margin-left: auto; }
+.sl-wordmark { display: inline-flex; align-items: baseline; color: var(--foreground); text-decoration: none; font-size: 15.5px; line-height: 15.5px; font-weight: 700; letter-spacing: -.01em; border-radius: var(--radius-nav); }
+.sl-wordmark-mono { font-family: var(--font-mono); }
+
+/* RepoCard */
+.sl-repo { display: flex; align-items: center; gap: var(--space-10); box-sizing: border-box; padding: var(--space-12) var(--space-16); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--background); min-width: 0; }
+.sl-repo-star { color: var(--accent-fill); }
+.sl-repo-count { font-family: var(--font-mono); font-size: 13px; line-height: 17.55px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--foreground); }
+.sl-repo-name { font-family: var(--font-mono); font-size: 13px; line-height: 17.55px; color: var(--fg-label); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sl-repo-link { margin-left: auto; font-size: 14px; line-height: 19.25px; font-weight: 500; color: var(--fg-muted); text-decoration: none; white-space: nowrap; }
+.sl-repo-link:hover { color: var(--foreground); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sl-shine { animation: none; display: none; }
+  .sl-ease { transition: none; }
+  .sl-row:hover .sl-row-arrow, .sl-announce:hover .sl-announce-arrow { transform: none; }
+}
+</code></pre></details>
+  <details class="src"><summary><span>slash.js</span><span class="src-lang">JS · React 18 · 166 linhas</span></summary>
+<div class="code-head"><span>slash.js</span><button class="code-copy" type="button">Copiar</button></div><pre><code>/* @ds-bundle: {&quot;format&quot;:4,&quot;namespace&quot;:&quot;Slash&quot;,&quot;components&quot;:[{&quot;name&quot;:&quot;Button&quot;},{&quot;name&quot;:&quot;IconButton&quot;},{&quot;name&quot;:&quot;Icon&quot;},{&quot;name&quot;:&quot;Field&quot;},{&quot;name&quot;:&quot;Command&quot;},{&quot;name&quot;:&quot;Badge&quot;},{&quot;name&quot;:&quot;Chip&quot;},{&quot;name&quot;:&quot;Stat&quot;},{&quot;name&quot;:&quot;SkillRow&quot;},{&quot;name&quot;:&quot;SectionHeading&quot;},{&quot;name&quot;:&quot;Panels&quot;},{&quot;name&quot;:&quot;ChangelogEntry&quot;},{&quot;name&quot;:&quot;Announcement&quot;},{&quot;name&quot;:&quot;SiteHeader&quot;},{&quot;name&quot;:&quot;RepoCard&quot;}]} */
+(function () {
+  var React = window.React;
+  var h = React.createElement;
+  function cx() { return Array.prototype.filter.call(arguments, Boolean).join(&#x27; &#x27;); }
+  function omit(o, keys) { var r = {}; for (var k in o) if (keys.indexOf(k) &lt; 0) r[k] = o[k]; return r; }
+
+  /* Line icons, 24 grid, 2px stroke (Lucide paths, ISC). */
+  var PATHS = {
+    &#x27;arrow-right&#x27;: [[&#x27;path&#x27;, { d: &#x27;M5 12h14&#x27; }], [&#x27;path&#x27;, { d: &#x27;m12 5 7 7-7 7&#x27; }]],
+    &#x27;arrow-up-right&#x27;: [[&#x27;path&#x27;, { d: &#x27;M7 7h10v10&#x27; }], [&#x27;path&#x27;, { d: &#x27;M7 17 17 7&#x27; }]],
+    &#x27;arrow-down&#x27;: [[&#x27;path&#x27;, { d: &#x27;M12 5v14&#x27; }], [&#x27;path&#x27;, { d: &#x27;m19 12-7 7-7-7&#x27; }]],
+    &#x27;copy&#x27;: [[&#x27;rect&#x27;, { x: 8, y: 8, width: 14, height: 14, rx: 2 }], [&#x27;path&#x27;, { d: &#x27;M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2&#x27; }]],
+    &#x27;check&#x27;: [[&#x27;path&#x27;, { d: &#x27;M20 6 9 17l-5-5&#x27; }]],
+    &#x27;search&#x27;: [[&#x27;circle&#x27;, { cx: 11, cy: 11, r: 8 }], [&#x27;path&#x27;, { d: &#x27;m21 21-4.3-4.3&#x27; }]],
+    &#x27;menu&#x27;: [[&#x27;path&#x27;, { d: &#x27;M4 6h16&#x27; }], [&#x27;path&#x27;, { d: &#x27;M4 12h16&#x27; }], [&#x27;path&#x27;, { d: &#x27;M4 18h16&#x27; }]],
+    &#x27;book&#x27;: [[&#x27;path&#x27;, { d: &#x27;M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20&#x27; }]],
+    &#x27;rss&#x27;: [[&#x27;path&#x27;, { d: &#x27;M4 11a9 9 0 0 1 9 9&#x27; }], [&#x27;path&#x27;, { d: &#x27;M4 4a16 16 0 0 1 16 16&#x27; }], [&#x27;circle&#x27;, { cx: 5, cy: 19, r: 1 }]],
+    &#x27;terminal&#x27;: [[&#x27;path&#x27;, { d: &#x27;m4 17 6-6-6-6&#x27; }], [&#x27;path&#x27;, { d: &#x27;M12 19h8&#x27; }]],
+    &#x27;sun-moon&#x27;: [[&#x27;path&#x27;, { d: &#x27;M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z&#x27; }]],
+    &#x27;github&#x27;: [[&#x27;path&#x27;, { d: &#x27;M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4&#x27; }], [&#x27;path&#x27;, { d: &#x27;M9 18c-4.51 2-5-2-7-2&#x27; }]]
+  };
+  var STAR = &#x27;M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z&#x27;;
+
+  function Icon(p) {
+    var size = p.size || 16, name = p.name;
+    var common = { width: size, height: size, viewBox: &#x27;0 0 24 24&#x27;, className: cx(&#x27;sl-ico&#x27;, p.className), &#x27;aria-hidden&#x27;: p.label ? undefined : &#x27;true&#x27;, role: p.label ? &#x27;img&#x27; : undefined, &#x27;aria-label&#x27;: p.label };
+    if (name === &#x27;star&#x27;) return h(&#x27;svg&#x27;, Object.assign(common, { fill: &#x27;currentColor&#x27; }), h(&#x27;path&#x27;, { d: STAR }));
+    var parts = PATHS[name] || PATHS[&#x27;arrow-right&#x27;];
+    return h(&#x27;svg&#x27;, Object.assign(common, { fill: &#x27;none&#x27;, stroke: &#x27;currentColor&#x27;, strokeWidth: 2, strokeLinecap: &#x27;round&#x27;, strokeLinejoin: &#x27;round&#x27; }),
+      parts.map(function (pt, i) { return h(pt[0], Object.assign({ key: i }, pt[1])); }));
+  }
+
+  function Button(p) {
+    var variant = p.variant || &#x27;primary&#x27;, size = p.size || (variant === &#x27;accent&#x27; ? &#x27;sm&#x27; : &#x27;lg&#x27;);
+    var rest = omit(p, [&#x27;variant&#x27;, &#x27;size&#x27;, &#x27;shine&#x27;, &#x27;block&#x27;, &#x27;className&#x27;, &#x27;children&#x27;, &#x27;href&#x27;, &#x27;icon&#x27;]);
+    var cls = cx(&#x27;sl-btn&#x27;, &#x27;sl-ease&#x27;, &#x27;sl-focus&#x27;, &#x27;sl-btn-&#x27; + variant, &#x27;sl-btn-&#x27; + size, p.block &amp;&amp; &#x27;sl-btn-block&#x27;, p.className);
+    var kids = [p.shine &amp;&amp; variant === &#x27;primary&#x27; ? h(&#x27;span&#x27;, { key: &#x27;s&#x27;, className: &#x27;sl-shine&#x27;, &#x27;aria-hidden&#x27;: &#x27;true&#x27; }) : null, h(&#x27;span&#x27;, { key: &#x27;c&#x27; }, p.children), p.icon ? h(Icon, { key: &#x27;i&#x27;, name: p.icon, size: size === &#x27;sm&#x27; ? 12 : 16 }) : null];
+    if (p.href) return h(&#x27;a&#x27;, Object.assign({ href: p.href, className: cls }, rest), kids);
+    return h(&#x27;button&#x27;, Object.assign({ type: &#x27;button&#x27;, className: cls }, rest), kids);
+  }
+
+  function IconButton(p) {
+    var rest = omit(p, [&#x27;icon&#x27;, &#x27;label&#x27;, &#x27;className&#x27;, &#x27;href&#x27;]);
+    var props = Object.assign({ className: cx(&#x27;sl-iconbtn&#x27;, &#x27;sl-ease&#x27;, &#x27;sl-focus&#x27;, p.className), &#x27;aria-label&#x27;: p.label, title: p.label }, rest);
+    var icon = h(Icon, { name: p.icon || &#x27;menu&#x27;, size: 20 });
+    return p.href ? h(&#x27;a&#x27;, Object.assign({ href: p.href }, props), icon) : h(&#x27;button&#x27;, Object.assign({ type: &#x27;button&#x27; }, props), icon);
+  }
+
+  var fieldSeq = 0;
+  function Field(p) {
+    var idRef = React.useRef(null);
+    if (!idRef.current) idRef.current = p.id || &#x27;sl-field-&#x27; + (++fieldSeq);
+    var rest = omit(p, [&#x27;label&#x27;, &#x27;required&#x27;, &#x27;hint&#x27;, &#x27;className&#x27;, &#x27;id&#x27;]);
+    return h(&#x27;div&#x27;, { className: cx(&#x27;sl-field&#x27;, p.className) },
+      h(&#x27;label&#x27;, { className: &#x27;sl-label&#x27;, htmlFor: idRef.current }, p.label, p.required ? h(&#x27;span&#x27;, { className: &#x27;sl-req&#x27;, &#x27;aria-hidden&#x27;: &#x27;true&#x27; }, &#x27;*&#x27;) : null),
+      h(&#x27;input&#x27;, Object.assign({ id: idRef.current, className: &#x27;sl-input sl-ease&#x27;, required: p.required }, rest)),
+      p.hint ? h(&#x27;p&#x27;, { className: &#x27;sl-hint&#x27; }, p.hint) : null);
+  }
+
+  function Command(p) {
+    var st = React.useState(false), copied = st[0], setCopied = st[1];
+    var codeRef = React.useRef(null);
+    function copy() {
+      function selectIt() { try { var r = document.createRange(); r.selectNodeContents(codeRef.current); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+      try {
+        navigator.clipboard.writeText(p.command).then(function () { setCopied(true); setTimeout(function () { setCopied(false); }, 1600); }, selectIt);
+      } catch (e) { selectIt(); }
+    }
+    return h(&#x27;div&#x27;, { className: cx(&#x27;sl-cmdwrap&#x27;, p.className) },
+      h(&#x27;div&#x27;, { className: &#x27;sl-cmd&#x27; },
+        h(&#x27;span&#x27;, { className: &#x27;sl-cmd-prompt&#x27;, &#x27;aria-hidden&#x27;: &#x27;true&#x27; }, p.prompt == null ? &#x27;$&#x27; : p.prompt),
+        h(&#x27;code&#x27;, { className: &#x27;sl-cmd-code&#x27;, ref: codeRef }, p.command),
+        h(&#x27;button&#x27;, { type: &#x27;button&#x27;, className: &#x27;sl-copy sl-ease sl-focus&#x27;, onClick: copy, &#x27;aria-label&#x27;: copied ? &#x27;Copiado&#x27; : &#x27;Copiar comando&#x27; }, h(Icon, { name: copied ? &#x27;check&#x27; : &#x27;copy&#x27;, size: 14 }))),
+      (p.note || p.link) ? h(&#x27;div&#x27;, { className: &#x27;sl-cmd-note&#x27; },
+        h(&#x27;span&#x27;, null, p.note),
+        p.link ? h(&#x27;a&#x27;, { href: p.link.href, className: &#x27;sl-focus&#x27; }, p.link.label, h(Icon, { name: &#x27;arrow-up-right&#x27;, size: 12 })) : null) : null);
+  }
+
+  function Badge(p) { return h(&#x27;span&#x27;, { className: cx(&#x27;sl-badge&#x27;, p.tone === &#x27;neutral&#x27; &amp;&amp; &#x27;sl-badge-neutral&#x27;, p.className) }, p.children); }
+
+  function Chip(p) { return h(&#x27;span&#x27;, { className: cx(&#x27;sl-chip&#x27;, p.className) }, p.children); }
+
+  function Stat(p) {
+    return h(&#x27;dl&#x27;, { className: cx(&#x27;sl-stat&#x27;, p.className) },
+      p.icon === false ? null : h(&#x27;span&#x27;, { className: &#x27;sl-stat-icon&#x27; }, h(Icon, { name: p.icon || &#x27;star&#x27;, size: 22 })),
+      h(&#x27;dd&#x27;, { className: &#x27;sl-stat-value&#x27; }, p.value),
+      h(&#x27;dt&#x27;, { className: &#x27;sl-stat-label&#x27; }, p.label));
+  }
+
+  function SkillRow(p) {
+    var icon = typeof p.icon === &#x27;string&#x27;
+      ? h(&#x27;img&#x27;, { className: &#x27;sl-row-icon&#x27;, src: p.icon, alt: &#x27;&#x27;, width: 40, height: 40 })
+      : h(&#x27;span&#x27;, { className: &#x27;sl-row-icon sl-tile&#x27;, &#x27;aria-hidden&#x27;: &#x27;true&#x27; }, p.icon || &#x27;/&#x27;);
+    return h(&#x27;a&#x27;, { href: p.href || &#x27;#&#x27;, className: cx(&#x27;sl-row&#x27;, &#x27;sl-ease&#x27;, p.className) },
+      icon,
+      h(&#x27;span&#x27;, { className: &#x27;sl-row-body&#x27; },
+        p.slug ? h(&#x27;span&#x27;, { className: &#x27;sl-row-slug&#x27; }, p.slug) : null,
+        h(&#x27;span&#x27;, { className: &#x27;sl-row-title&#x27; }, p.title),
+        p.description ? h(&#x27;span&#x27;, { className: &#x27;sl-row-desc&#x27; }, p.description) : null),
+      h(Icon, { name: &#x27;arrow-right&#x27;, size: 16, className: &#x27;sl-row-arrow sl-ease&#x27; }));
+  }
+
+  function SectionHeading(p) {
+    var Tag = p.as || &#x27;h2&#x27;;
+    return h(&#x27;div&#x27;, { className: cx(&#x27;sl-sec&#x27;, p.className) },
+      h(&#x27;div&#x27;, { className: &#x27;sl-sec-top&#x27; },
+        p.index ? h(&#x27;span&#x27;, { className: &#x27;sl-sec-index&#x27; }, p.index) : null,
+        h(Tag, { className: &#x27;sl-sec-title&#x27; }, p.title)),
+      p.description ? h(&#x27;p&#x27;, { className: &#x27;sl-sec-desc&#x27; }, p.description) : null,
+      p.start ? h(&#x27;p&#x27;, { className: &#x27;sl-sec-start&#x27; }, p.startLabel || &#x27;Comece com &#x27;, h(&#x27;strong&#x27;, null, p.start)) : null);
+  }
+
+  function Panels(p) {
+    return h(&#x27;div&#x27;, { className: cx(&#x27;sl-panels&#x27;, p.className) }, (p.items || []).map(function (it, i) {
+      return h(&#x27;section&#x27;, { key: i, className: &#x27;sl-panel&#x27; },
+        h(&#x27;h3&#x27;, { className: &#x27;sl-panel-kicker&#x27; }, it.kicker),
+        h(&#x27;p&#x27;, { className: &#x27;sl-panel-body&#x27; }, it.body));
+    }));
+  }
+
+  function ChangelogEntry(p) {
+    return h(&#x27;article&#x27;, { className: cx(&#x27;sl-log&#x27;, p.className) },
+      p.version ? h(&#x27;span&#x27;, { className: &#x27;sl-log-version&#x27; }, p.version) : null,
+      p.date ? h(&#x27;time&#x27;, { className: &#x27;sl-log-date&#x27;, dateTime: p.dateTime }, p.date) : null,
+      h(&#x27;h3&#x27;, { className: &#x27;sl-log-title&#x27; }, p.href ? h(&#x27;a&#x27;, { href: p.href, className: &#x27;sl-focus&#x27; }, p.title) : p.title),
+      p.summary ? h(&#x27;p&#x27;, { className: &#x27;sl-log-summary&#x27; }, p.summary) : null);
+  }
+
+  function Announcement(p) {
+    return h(&#x27;a&#x27;, { href: p.href || &#x27;#&#x27;, className: cx(&#x27;sl-announce&#x27;, &#x27;sl-focus&#x27;, p.className) },
+      p.badge === false ? null : h(Badge, null, p.badge || &#x27;Novo&#x27;),
+      h(&#x27;span&#x27;, null, p.children),
+      h(Icon, { name: &#x27;arrow-right&#x27;, size: 14, className: &#x27;sl-announce-arrow sl-ease&#x27; }));
+  }
+
+  function Wordmark(p) {
+    return h(&#x27;a&#x27;, { href: p.href || &#x27;#&#x27;, className: &#x27;sl-wordmark sl-focus&#x27; },
+      p.mono ? h(&#x27;span&#x27;, { className: &#x27;sl-wordmark-mono&#x27; }, p.mono) : null, p.text);
+  }
+
+  function SiteHeader(p) {
+    return h(&#x27;header&#x27;, { className: cx(&#x27;sl-header&#x27;, p.className) },
+      h(Wordmark, p.brand || { mono: &#x27;/&#x27;, text: &#x27;slash&#x27; }),
+      p.links &amp;&amp; p.links.length ? h(&#x27;nav&#x27;, { className: &#x27;sl-header-nav&#x27;, &#x27;aria-label&#x27;: &#x27;Principal&#x27; }, p.links.map(function (l, i) {
+        return h(&#x27;a&#x27;, { key: i, href: l.href || &#x27;#&#x27;, className: &#x27;sl-ease sl-focus&#x27;, &#x27;aria-current&#x27;: l.current ? &#x27;page&#x27; : undefined }, l.label);
+      })) : null,
+      h(&#x27;div&#x27;, { className: &#x27;sl-header-actions&#x27; }, (p.actions || [{ icon: &#x27;search&#x27;, label: &#x27;Buscar&#x27; }, { icon: &#x27;menu&#x27;, label: &#x27;Menu&#x27; }]).map(function (a, i) {
+        return h(IconButton, Object.assign({ key: i }, a));
+      })));
+  }
+
+  function RepoCard(p) {
+    return h(&#x27;div&#x27;, { className: cx(&#x27;sl-repo&#x27;, p.className) },
+      h(Icon, { name: &#x27;star&#x27;, size: 14, className: &#x27;sl-repo-star&#x27; }),
+      h(&#x27;span&#x27;, { className: &#x27;sl-repo-count&#x27; }, p.stars),
+      h(&#x27;span&#x27;, { className: &#x27;sl-repo-name&#x27; }, p.repo),
+      p.href ? h(&#x27;a&#x27;, { href: p.href, className: &#x27;sl-repo-link sl-ease sl-focus&#x27; }, p.cta || &#x27;Ver no GitHub →&#x27;) : null);
+  }
+
+  window.Slash = Object.assign(window.Slash || {}, {
+    Button: Button, IconButton: IconButton, Icon: Icon, Field: Field, Command: Command, Badge: Badge, Chip: Chip, Stat: Stat,
+    SkillRow: SkillRow, SectionHeading: SectionHeading, Panels: Panels, ChangelogEntry: ChangelogEntry,
+    Announcement: Announcement, SiteHeader: SiteHeader, RepoCard: RepoCard
+  });
+})();
+</code></pre></details>
+  <details class="src"><summary><span>index.d.ts</span><span class="src-lang">TypeScript · 89 linhas</span></summary>
+<div class="code-head"><span>index.d.ts</span><button class="code-copy" type="button">Copiar</button></div><pre><code>import type * as React from &#x27;react&#x27;;
+
+export type IconName = &#x27;arrow-right&#x27; | &#x27;arrow-up-right&#x27; | &#x27;arrow-down&#x27; | &#x27;copy&#x27; | &#x27;check&#x27; | &#x27;search&#x27; | &#x27;menu&#x27; | &#x27;book&#x27; | &#x27;rss&#x27; | &#x27;terminal&#x27; | &#x27;sun-moon&#x27; | &#x27;github&#x27; | &#x27;star&#x27;;
+
+export interface IconProps { name: IconName; size?: 12 | 14 | 16 | 20 | 22 | number; label?: string; className?: string }
+export declare function Icon(props: IconProps): React.ReactElement;
+
+export interface ButtonProps extends Omit&lt;React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;, &#x27;type&#x27;&gt; {
+  /** primary = gold fill (one per screen); accent = gold outline, mono; secondary = soft fill; ghost = text only */
+  variant?: &#x27;primary&#x27; | &#x27;accent&#x27; | &#x27;secondary&#x27; | &#x27;ghost&#x27;;
+  /** lg = 50px, md = 40px, sm = 29px mono. Default: lg, or sm for accent */
+  size?: &#x27;lg&#x27; | &#x27;md&#x27; | &#x27;sm&#x27;;
+  /** Diagonal light sweep on the primary CTA. Turned off under prefers-reduced-motion. */
+  shine?: boolean;
+  block?: boolean;
+  icon?: IconName;
+  href?: string;
+  children?: React.ReactNode;
+}
+export declare function Button(props: ButtonProps): React.ReactElement;
+
+export interface IconButtonProps extends React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt; { icon: IconName; label: string; href?: string }
+export declare function IconButton(props: IconButtonProps): React.ReactElement;
+
+export interface FieldProps extends React.InputHTMLAttributes&lt;HTMLInputElement&gt; { label: string; hint?: string }
+export declare function Field(props: FieldProps): React.ReactElement;
+
+export interface CommandProps {
+  command: string;
+  /** Glyph before the command. Default &quot;$&quot;. */
+  prompt?: string;
+  note?: React.ReactNode;
+  link?: { label: string; href: string };
+  className?: string;
+}
+export declare function Command(props: CommandProps): React.ReactElement;
+
+export interface BadgeProps { tone?: &#x27;accent&#x27; | &#x27;neutral&#x27;; children?: React.ReactNode; className?: string }
+export declare function Badge(props: BadgeProps): React.ReactElement;
+
+export interface ChipProps { children?: React.ReactNode; className?: string }
+export declare function Chip(props: ChipProps): React.ReactElement;
+
+export interface StatProps { value: React.ReactNode; label: React.ReactNode; icon?: IconName | false; className?: string }
+export declare function Stat(props: StatProps): React.ReactElement;
+
+export interface SkillRowProps {
+  /** Image URL (40×40, radius-icon) or a short glyph for the placeholder tile. */
+  icon?: string | React.ReactNode;
+  slug?: string;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  href?: string;
+  className?: string;
+}
+export declare function SkillRow(props: SkillRowProps): React.ReactElement;
+
+export interface SectionHeadingProps { index?: string; title: React.ReactNode; description?: React.ReactNode; start?: string; startLabel?: string; as?: &#x27;h2&#x27; | &#x27;h3&#x27;; className?: string }
+export declare function SectionHeading(props: SectionHeadingProps): React.ReactElement;
+
+export interface PanelsProps { items: { kicker: React.ReactNode; body: React.ReactNode }[]; className?: string }
+export declare function Panels(props: PanelsProps): React.ReactElement;
+
+export interface ChangelogEntryProps { version?: string; date?: string; dateTime?: string; title: React.ReactNode; summary?: React.ReactNode; href?: string; className?: string }
+export declare function ChangelogEntry(props: ChangelogEntryProps): React.ReactElement;
+
+export interface AnnouncementProps { badge?: string | false; href?: string; children?: React.ReactNode; className?: string }
+export declare function Announcement(props: AnnouncementProps): React.ReactElement;
+
+export interface SiteHeaderProps {
+  brand?: { mono?: string; text: string; href?: string };
+  links?: { label: string; href?: string; current?: boolean }[];
+  actions?: IconButtonProps[];
+  className?: string;
+}
+export declare function SiteHeader(props: SiteHeaderProps): React.ReactElement;
+
+export interface RepoCardProps { stars: React.ReactNode; repo: string; href?: string; cta?: string; className?: string }
+export declare function RepoCard(props: RepoCardProps): React.ReactElement;
+
+declare global {
+  interface Window {
+    Slash: {
+      Button: typeof Button; IconButton: typeof IconButton; Icon: typeof Icon; Field: typeof Field; Command: typeof Command;
+      Badge: typeof Badge; Chip: typeof Chip; Stat: typeof Stat; SkillRow: typeof SkillRow; SectionHeading: typeof SectionHeading;
+      Panels: typeof Panels; ChangelogEntry: typeof ChangelogEntry; Announcement: typeof Announcement; SiteHeader: typeof SiteHeader; RepoCard: typeof RepoCard;
+    };
+  }
+}
+</code></pre></details>
+  <details class="src"><summary><span>tokens.json</span><span class="src-lang">JSON · 705 linhas</span></summary>
+<div class="code-head"><span>tokens.json</span><button class="code-copy" type="button">Copiar</button></div><pre><code>{
+  &quot;name&quot;: &quot;Slash&quot;,
+  &quot;version&quot;: 1,
+  &quot;meta&quot;: {
+    &quot;source&quot;: &quot;Medido de uma landing page de referência (tema escuro, viewport de 534px, classes Tailwind lidas para os breakpoints).&quot;
+  },
+  &quot;color&quot;: {
+    &quot;themes&quot;: [
+      {
+        &quot;id&quot;: &quot;dark&quot;,
+        &quot;name&quot;: &quot;Escuro&quot;
+      },
+      {
+        &quot;id&quot;: &quot;light&quot;,
+        &quot;name&quot;: &quot;Claro&quot;
+      }
+    ],
+    &quot;tokens&quot;: [
+      {
+        &quot;name&quot;: &quot;page-background&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#080808&quot;,
+          &quot;light&quot;: &quot;#f1f2f5&quot;
+        },
+        &quot;usage&quot;: &quot;Fundo do documento, atrás das seções. Quase igual a `background`: a separação vem das linhas, não do contraste.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;background&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#0b0b0b&quot;,
+          &quot;light&quot;: &quot;#fbfbfc&quot;
+        },
+        &quot;usage&quot;: &quot;Superfície padrão das seções, inputs e do header. Base de contraste de todos os tokens `fg-*`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;band&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#0e0e0d&quot;,
+          &quot;light&quot;: &quot;#f1f2f5&quot;
+        },
+        &quot;usage&quot;: &quot;Faixas de largura total: barra de anúncio, rodapé, blocos alternados.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;card&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#100f0e&quot;,
+          &quot;light&quot;: &quot;#ffffff&quot;
+        },
+        &quot;usage&quot;: &quot;Painéis elevados por cor, não por sombra: bloco de comando, chips.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;popover&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#0d0d0c&quot;,
+          &quot;light&quot;: &quot;#ffffff&quot;
+        },
+        &quot;usage&quot;: &quot;Menus, busca e popovers.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;muted&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#0d0d0c&quot;,
+          &quot;light&quot;: &quot;#f5f6f8&quot;
+        },
+        &quot;usage&quot;: &quot;Sidebar e áreas de apoio.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-panel&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#1d1a11&quot;,
+          &quot;light&quot;: &quot;#ecedef&quot;
+        },
+        &quot;usage&quot;: &quot;Fundo de tile com tom do acento (ícones placeholder, destaques). No escuro é um dourado queimado.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;glass&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#0b0b0be6&quot;,
+          &quot;light&quot;: &quot;#fbfbfce6&quot;
+        },
+        &quot;usage&quot;: &quot;Header fixo: `background` a 90% + backdrop-filter blur(12px).&quot;
+      },
+      {
+        &quot;name&quot;: &quot;foreground&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f4f3f1&quot;,
+          &quot;light&quot;: &quot;#14161a&quot;
+        },
+        &quot;usage&quot;: &quot;Texto principal e títulos sobre `background`, `card`, `band`. Branco quente, nunca #fff puro.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;fg-strong&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f4f3f1e6&quot;,
+          &quot;light&quot;: &quot;#14161ae6&quot;
+        },
+        &quot;usage&quot;: &quot;Código e comandos dentro do bloco de comando (`card`).&quot;
+      },
+      {
+        &quot;name&quot;: &quot;fg-body&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f4f3f1b8&quot;,
+          &quot;light&quot;: &quot;#14161acc&quot;
+        },
+        &quot;usage&quot;: &quot;Texto corrido longo e slugs de comando em listas, sobre `background` e `card`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;fg-muted&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f4f3f199&quot;,
+          &quot;light&quot;: &quot;#14161ab3&quot;
+        },
+        &quot;usage&quot;: &quot;Parágrafos de apoio, descrições, lead do hero, links de navegação em repouso. Sobre `background` e `card`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;fg-subtle&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f4f3f185&quot;,
+          &quot;light&quot;: &quot;#14161aa3&quot;
+        },
+        &quot;usage&quot;: &quot;Notas legais curtas (\&quot;Sem spam\&quot;), placeholders, links secundários.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;fg-label&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f4f3f17a&quot;,
+          &quot;light&quot;: &quot;#14161a99&quot;
+        },
+        &quot;usage&quot;: &quot;Datas, nomes de repositório, setas de linha em repouso.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;fg-faint&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f4f3f14d&quot;,
+          &quot;light&quot;: &quot;#14161a59&quot;
+        },
+        &quot;usage&quot;: &quot;Somente decoração: índices \&quot;01\&quot;, o prompt `$`. Não passa 4.5:1 em nenhum tema (≈2.5:1): nunca use para informação.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;line&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#ffffff14&quot;,
+          &quot;light&quot;: &quot;#14161a1a&quot;
+        },
+        &quot;usage&quot;: &quot;Hairline padrão de 1px: separadores de seção, linhas de lista, borda de input e de painéis.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;line-strong&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#ffffff1f&quot;,
+          &quot;light&quot;: &quot;#14161a24&quot;
+        },
+        &quot;usage&quot;: &quot;Borda de controles destacados: chips, card de repositório.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;line-soft&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#ffffff0f&quot;,
+          &quot;light&quot;: &quot;#14161a12&quot;
+        },
+        &quot;usage&quot;: &quot;Divisores internos discretos dentro de um painel.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;hover&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#ffffff12&quot;,
+          &quot;light&quot;: &quot;#14161a0f&quot;
+        },
+        &quot;usage&quot;: &quot;Fundo de hover de linhas de lista, botões fantasma e icon buttons.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;secondary&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#ffffff12&quot;,
+          &quot;light&quot;: &quot;#14161a0f&quot;
+        },
+        &quot;usage&quot;: &quot;Fundo do botão secundário.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;primary&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c451&quot;,
+          &quot;light&quot;: &quot;#14161a&quot;
+        },
+        &quot;usage&quot;: &quot;Cor primária do tema: dourado no escuro, tinta no claro. Use `accent-fill` quando quiser o dourado nos dois temas.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;primary-foreground&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#191510&quot;,
+          &quot;light&quot;: &quot;#fbfbfc&quot;
+        },
+        &quot;usage&quot;: &quot;Texto sobre `primary`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-fill&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c451&quot;,
+          &quot;light&quot;: &quot;#f5c451&quot;
+        },
+        &quot;usage&quot;: &quot;O único acento: CTA principal, estrela de contagem. Um por tela. Texto sobre ele é sempre `accent-fill-foreground`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-fill-hover&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#ffd873&quot;,
+          &quot;light&quot;: &quot;#eab534&quot;
+        },
+        &quot;usage&quot;: &quot;Hover do CTA dourado.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-fill-foreground&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#191510&quot;,
+          &quot;light&quot;: &quot;#191510&quot;
+        },
+        &quot;usage&quot;: &quot;Texto e ícones sobre `accent-fill` (≈11:1).&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-text&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c451&quot;,
+          &quot;light&quot;: &quot;lab(53.6319% 12.9281 64.513)&quot;
+        },
+        &quot;usage&quot;: &quot;Acento como texto: kickers mono, versão no changelog, badge NEW, link Install. No claro é o `mark-gold` da fonte e dá ≈3.8:1 sobre `background`: limite a 11–12px mono em peso 500 ou troque por `foreground`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-tint&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c45124&quot;,
+          &quot;light&quot;: &quot;#14161a0f&quot;
+        },
+        &quot;usage&quot;: &quot;Fundo do botão de copiar no bloco de comando (dourado a 14%).&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-wash&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c45112&quot;,
+          &quot;light&quot;: &quot;#14161a0a&quot;
+        },
+        &quot;usage&quot;: &quot;Fundo do botão de acento contornado (\&quot;Install ↓\&quot;).&quot;
+      },
+      {
+        &quot;name&quot;: &quot;accent-line&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c45159&quot;,
+          &quot;light&quot;: &quot;#14161a38&quot;
+        },
+        &quot;usage&quot;: &quot;Borda do botão de acento e do badge NEW.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;ring&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c45159&quot;,
+          &quot;light&quot;: &quot;#14161a59&quot;
+        },
+        &quot;usage&quot;: &quot;Anel de foco original da fonte (35%). Fica abaixo de 3:1 sobre `background`; mantido por fidelidade. Para novos componentes use `focus-ring`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;focus-ring&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;#f5c451&quot;,
+          &quot;light&quot;: &quot;#14161a&quot;
+        },
+        &quot;usage&quot;: &quot;Adicionado: anel de foco sólido de 2px com offset de 2px, ≥3:1 em todas as superfícies.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;destructive&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;lab(31.1699% 55.5567 47.4694)&quot;,
+          &quot;light&quot;: &quot;lab(50.9656% 54.806 39.6151)&quot;
+        },
+        &quot;usage&quot;: &quot;Preenchimento de ações destrutivas. No escuro é um vermelho escuro: use como fundo com `destructive-foreground`, não como texto.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;destructive-foreground&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;lab(90.5592% 0.191122 1.51047)&quot;,
+          &quot;light&quot;: &quot;lab(99.0272% 0.190765 1.51021)&quot;
+        },
+        &quot;usage&quot;: &quot;Texto sobre `destructive`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;mark-yes&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;lab(78.7751% -48.9898 21.5753)&quot;,
+          &quot;light&quot;: &quot;lab(45.9926% -41.8497 21.6371)&quot;
+        },
+        &quot;usage&quot;: &quot;Marca de \&quot;sim/suportado\&quot; em tabelas comparativas. Sempre com ícone ✓ ou palavra: verde e vermelho só por matiz não bastam.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;mark-gold&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;{accent-fill}&quot;,
+          &quot;light&quot;: &quot;lab(53.6319% 12.9281 64.513)&quot;
+        },
+        &quot;usage&quot;: &quot;Marca de destaque/parcial em tabelas comparativas.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;mark-no&quot;,
+        &quot;value&quot;: {
+          &quot;dark&quot;: &quot;lab(65.8493% 53.3364 30.7453)&quot;,
+          &quot;light&quot;: &quot;lab(45.9154% 59.7076 40.9321)&quot;
+        },
+        &quot;usage&quot;: &quot;Marca de \&quot;não\&quot; em tabelas comparativas. Sempre com ícone ✕ ou palavra.&quot;
+      }
+    ]
+  },
+  &quot;type&quot;: {
+    &quot;fonts&quot;: [],
+    &quot;families&quot;: {
+      &quot;sans&quot;: &quot;Geist, ui-sans-serif, system-ui, sans-serif&quot;,
+      &quot;mono&quot;: &quot;\&quot;Geist Mono\&quot;, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace&quot;
+    },
+    &quot;groups&quot;: [
+      {
+        &quot;name&quot;: &quot;Display&quot;,
+        &quot;family&quot;: &quot;sans&quot;,
+        &quot;styles&quot;: [
+          {
+            &quot;name&quot;: &quot;display-lg&quot;,
+            &quot;fontSize&quot;: &quot;52px&quot;,
+            &quot;lineHeight&quot;: 1.02,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.036em&quot;,
+            &quot;usage&quot;: &quot;H1 do hero a partir de 1024px. Máx. 22ch, text-wrap: balance.&quot;,
+            &quot;sample&quot;: &quot;AI Skills for Real Engineers&quot;
+          },
+          {
+            &quot;name&quot;: &quot;display-md&quot;,
+            &quot;fontSize&quot;: &quot;44px&quot;,
+            &quot;lineHeight&quot;: 1.04,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.032em&quot;,
+            &quot;usage&quot;: &quot;H1 do hero entre 640 e 1023px.&quot;,
+            &quot;sample&quot;: &quot;AI Skills for Real Engineers&quot;
+          },
+          {
+            &quot;name&quot;: &quot;display&quot;,
+            &quot;fontSize&quot;: &quot;34px&quot;,
+            &quot;lineHeight&quot;: 1.04,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.032em&quot;,
+            &quot;usage&quot;: &quot;H1 do hero no celular.&quot;,
+            &quot;sample&quot;: &quot;AI Skills for Real Engineers&quot;
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;Headings&quot;,
+        &quot;family&quot;: &quot;sans&quot;,
+        &quot;styles&quot;: [
+          {
+            &quot;name&quot;: &quot;heading-lg&quot;,
+            &quot;fontSize&quot;: &quot;34px&quot;,
+            &quot;lineHeight&quot;: 1.06,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.03em&quot;,
+            &quot;usage&quot;: &quot;H2 de seção a partir de 1024px.&quot;,
+            &quot;sample&quot;: &quot;What changed recently&quot;
+          },
+          {
+            &quot;name&quot;: &quot;heading-md&quot;,
+            &quot;fontSize&quot;: &quot;28px&quot;,
+            &quot;lineHeight&quot;: 1.08,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.028em&quot;,
+            &quot;usage&quot;: &quot;H2 de seção entre 640 e 1023px.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;heading&quot;,
+            &quot;fontSize&quot;: &quot;24px&quot;,
+            &quot;lineHeight&quot;: 1.08,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.028em&quot;,
+            &quot;usage&quot;: &quot;H2 de seção no celular.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;title&quot;,
+            &quot;fontSize&quot;: &quot;18px&quot;,
+            &quot;lineHeight&quot;: 1.2,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.02em&quot;,
+            &quot;usage&quot;: &quot;Títulos de grupo numerado, de card e de changelog (20px a partir de 640px).&quot;,
+            &quot;sample&quot;: &quot;Getting Started&quot;
+          },
+          {
+            &quot;name&quot;: &quot;title-sm&quot;,
+            &quot;fontSize&quot;: &quot;16px&quot;,
+            &quot;lineHeight&quot;: 1.3,
+            &quot;fontWeight&quot;: 700,
+            &quot;letterSpacing&quot;: &quot;-0.018em&quot;,
+            &quot;usage&quot;: &quot;Títulos de bloco pequeno (\&quot;Install the skills\&quot;).&quot;
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;Text&quot;,
+        &quot;family&quot;: &quot;sans&quot;,
+        &quot;styles&quot;: [
+          {
+            &quot;name&quot;: &quot;lead&quot;,
+            &quot;fontSize&quot;: &quot;20px&quot;,
+            &quot;lineHeight&quot;: 1.4,
+            &quot;fontWeight&quot;: 500,
+            &quot;letterSpacing&quot;: &quot;-0.018em&quot;,
+            &quot;usage&quot;: &quot;Parágrafo de manifesto (22px em 640px, 24px em 1024px). Máx. 64ch.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;body-lg&quot;,
+            &quot;fontSize&quot;: &quot;17px&quot;,
+            &quot;lineHeight&quot;: 1.55,
+            &quot;fontWeight&quot;: 400,
+            &quot;usage&quot;: &quot;Subtítulo do hero em `fg-muted` (18.5px em 640px). Máx. 52ch.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;body&quot;,
+            &quot;fontSize&quot;: &quot;14px&quot;,
+            &quot;lineHeight&quot;: 1.625,
+            &quot;fontWeight&quot;: 400,
+            &quot;usage&quot;: &quot;Texto corrido de apoio, descrições de card, resumos.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;item-title&quot;,
+            &quot;fontSize&quot;: &quot;16px&quot;,
+            &quot;lineHeight&quot;: &quot;22px&quot;,
+            &quot;fontWeight&quot;: 500,
+            &quot;usage&quot;: &quot;Título de item de lista (SkillRow).&quot;
+          },
+          {
+            &quot;name&quot;: &quot;ui&quot;,
+            &quot;fontSize&quot;: &quot;14px&quot;,
+            &quot;lineHeight&quot;: 1.375,
+            &quot;fontWeight&quot;: 500,
+            &quot;usage&quot;: &quot;Links de navegação e links inline.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;button&quot;,
+            &quot;fontSize&quot;: &quot;14px&quot;,
+            &quot;lineHeight&quot;: &quot;20px&quot;,
+            &quot;fontWeight&quot;: 700,
+            &quot;usage&quot;: &quot;Rótulo de botão primário.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;label&quot;,
+            &quot;fontSize&quot;: &quot;14px&quot;,
+            &quot;lineHeight&quot;: 1,
+            &quot;fontWeight&quot;: 500,
+            &quot;usage&quot;: &quot;Rótulo de campo de formulário.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;small&quot;,
+            &quot;fontSize&quot;: &quot;13px&quot;,
+            &quot;lineHeight&quot;: 1.35,
+            &quot;fontWeight&quot;: 400,
+            &quot;usage&quot;: &quot;Notas sob formulários.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;banner&quot;,
+            &quot;fontSize&quot;: &quot;12.5px&quot;,
+            &quot;lineHeight&quot;: 1.4,
+            &quot;fontWeight&quot;: 500,
+            &quot;letterSpacing&quot;: &quot;-0.025em&quot;,
+            &quot;usage&quot;: &quot;Texto da barra de anúncio.&quot;
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;Mono&quot;,
+        &quot;family&quot;: &quot;mono&quot;,
+        &quot;styles&quot;: [
+          {
+            &quot;name&quot;: &quot;stat&quot;,
+            &quot;fontSize&quot;: &quot;20px&quot;,
+            &quot;lineHeight&quot;: 1.5,
+            &quot;fontWeight&quot;: 500,
+            &quot;letterSpacing&quot;: &quot;-0.02em&quot;,
+            &quot;usage&quot;: &quot;Números de destaque (até 27px em containers largos). tabular-nums.&quot;,
+            &quot;sample&quot;: &quot;326,388&quot;
+          },
+          {
+            &quot;name&quot;: &quot;mono&quot;,
+            &quot;fontSize&quot;: &quot;13px&quot;,
+            &quot;lineHeight&quot;: 1.35,
+            &quot;fontWeight&quot;: 400,
+            &quot;usage&quot;: &quot;Nome de repositório, links técnicos do rodapé.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;mono-sm&quot;,
+            &quot;fontSize&quot;: &quot;12px&quot;,
+            &quot;lineHeight&quot;: 1.4,
+            &quot;fontWeight&quot;: 400,
+            &quot;usage&quot;: &quot;Notas técnicas sob comandos, datas, \&quot;Start with /comando\&quot;.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;index&quot;,
+            &quot;fontSize&quot;: &quot;12px&quot;,
+            &quot;lineHeight&quot;: &quot;16px&quot;,
+            &quot;fontWeight&quot;: 500,
+            &quot;letterSpacing&quot;: &quot;-0.03em&quot;,
+            &quot;usage&quot;: &quot;Índice de grupo \&quot;01\&quot; em `fg-faint`.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;code&quot;,
+            &quot;fontSize&quot;: &quot;11.5px&quot;,
+            &quot;lineHeight&quot;: 1.5,
+            &quot;fontWeight&quot;: 500,
+            &quot;usage&quot;: &quot;Comando dentro do bloco de comando.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;eyebrow&quot;,
+            &quot;fontSize&quot;: &quot;11px&quot;,
+            &quot;lineHeight&quot;: 1.4,
+            &quot;fontWeight&quot;: 500,
+            &quot;letterSpacing&quot;: &quot;0.16em&quot;,
+            &quot;usage&quot;: &quot;Sobretítulo em CAIXA ALTA (\&quot;WHAT IS A SKILL?\&quot;).&quot;
+          },
+          {
+            &quot;name&quot;: &quot;kicker&quot;,
+            &quot;fontSize&quot;: &quot;11px&quot;,
+            &quot;lineHeight&quot;: 1.4,
+            &quot;fontWeight&quot;: 500,
+            &quot;usage&quot;: &quot;Título de painel em `accent-text` (\&quot;The problem\&quot;). Caixa de frase.&quot;
+          },
+          {
+            &quot;name&quot;: &quot;stat-label&quot;,
+            &quot;fontSize&quot;: &quot;11px&quot;,
+            &quot;lineHeight&quot;: 1.35,
+            &quot;fontWeight&quot;: 500,
+            &quot;letterSpacing&quot;: &quot;0.12em&quot;,
+            &quot;usage&quot;: &quot;Rótulo de estatística em CAIXA ALTA (\&quot;GITHUB STARS\&quot;).&quot;
+          },
+          {
+            &quot;name&quot;: &quot;micro&quot;,
+            &quot;fontSize&quot;: &quot;9px&quot;,
+            &quot;lineHeight&quot;: 1,
+            &quot;fontWeight&quot;: 500,
+            &quot;letterSpacing&quot;: &quot;0.1em&quot;,
+            &quot;usage&quot;: &quot;Badge NEW em CAIXA ALTA.&quot;
+          }
+        ]
+      }
+    ]
+  },
+  &quot;spacing&quot;: {
+    &quot;note&quot;: &quot;Escala de 4px do Tailwind; o número do nome é o valor em px. Os passos de 2, 6, 10, 14 e 18 existem na fonte e ficam como estão.&quot;,
+    &quot;tokens&quot;: [
+      {
+        &quot;name&quot;: &quot;space-2&quot;,
+        &quot;value&quot;: &quot;2px&quot;,
+        &quot;usage&quot;: &quot;Gap entre slug, título e descrição numa linha de lista.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-4&quot;,
+        &quot;value&quot;: &quot;4px&quot;,
+        &quot;usage&quot;: &quot;Gap mínimo entre ícone e texto em botões mono.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-6&quot;,
+        &quot;value&quot;: &quot;6px&quot;,
+        &quot;usage&quot;: &quot;Gap entre chips; padding vertical de chip.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-8&quot;,
+        &quot;value&quot;: &quot;8px&quot;,
+        &quot;usage&quot;: &quot;Gap entre rótulo e input; padding vertical do input.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-10&quot;,
+        &quot;value&quot;: &quot;10px&quot;,
+        &quot;usage&quot;: &quot;Gap no bloco de comando e na linha de repositório.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-12&quot;,
+        &quot;value&quot;: &quot;12px&quot;,
+        &quot;usage&quot;: &quot;Padding vertical de linha de lista e do bloco de comando.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-14&quot;,
+        &quot;value&quot;: &quot;14px&quot;,
+        &quot;usage&quot;: &quot;Padding horizontal de input e de bloco de comando.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-16&quot;,
+        &quot;value&quot;: &quot;16px&quot;,
+        &quot;usage&quot;: &quot;Gap padrão entre ícone e texto em listas; padding horizontal de cards.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-18&quot;,
+        &quot;value&quot;: &quot;18px&quot;,
+        &quot;usage&quot;: &quot;Padding lateral do header.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-20&quot;,
+        &quot;value&quot;: &quot;20px&quot;,
+        &quot;usage&quot;: &quot;Gap do header; padding interno de painel; padding dos botões grandes.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-24&quot;,
+        &quot;value&quot;: &quot;24px&quot;,
+        &quot;usage&quot;: &quot;Respiro entre blocos dentro de uma seção.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-40&quot;,
+        &quot;value&quot;: &quot;40px&quot;,
+        &quot;usage&quot;: &quot;Gap entre colunas no desktop.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;space-48&quot;,
+        &quot;value&quot;: &quot;48px&quot;,
+        &quot;usage&quot;: &quot;Padding vertical de seção.&quot;
+      }
+    ]
+  },
+  &quot;radius&quot;: {
+    &quot;note&quot;: &quot;Raios pequenos e quase quadrados. 9px é o raio base (`--radius` na fonte).&quot;,
+    &quot;tokens&quot;: [
+      {
+        &quot;name&quot;: &quot;radius-xs&quot;,
+        &quot;value&quot;: &quot;4px&quot;,
+        &quot;usage&quot;: &quot;Badge NEW.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;radius-sm&quot;,
+        &quot;value&quot;: &quot;6px&quot;,
+        &quot;usage&quot;: &quot;Chips, botão de acento pequeno, botão de copiar.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;radius-nav&quot;,
+        &quot;value&quot;: &quot;7px&quot;,
+        &quot;usage&quot;: &quot;Icon buttons e link do logotipo no header.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;radius-icon&quot;,
+        &quot;value&quot;: &quot;8px&quot;,
+        &quot;usage&quot;: &quot;Tiles de ícone 40×40 nas listas.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;radius&quot;,
+        &quot;value&quot;: &quot;9px&quot;,
+        &quot;usage&quot;: &quot;Inputs, botões, bloco de comando, card de repositório.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;radius-lg&quot;,
+        &quot;value&quot;: &quot;12px&quot;,
+        &quot;usage&quot;: &quot;Grupos de painéis empilhados.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;radius-2xl&quot;,
+        &quot;value&quot;: &quot;16px&quot;,
+        &quot;usage&quot;: &quot;Containers grandes e modais.&quot;
+      }
+    ]
+  },
+  &quot;size&quot;: {
+    &quot;note&quot;: &quot;Medidas fixas de layout e controles.&quot;,
+    &quot;tokens&quot;: [
+      {
+        &quot;name&quot;: &quot;nav-height&quot;,
+        &quot;value&quot;: &quot;62px&quot;,
+        &quot;usage&quot;: &quot;Altura do header fixo.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;container&quot;,
+        &quot;value&quot;: &quot;960px&quot;,
+        &quot;usage&quot;: &quot;Largura máxima do conteúdo.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;measure-lead&quot;,
+        &quot;value&quot;: &quot;64ch&quot;,
+        &quot;usage&quot;: &quot;Largura máxima do parágrafo `lead`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;measure-body&quot;,
+        &quot;value&quot;: &quot;52ch&quot;,
+        &quot;usage&quot;: &quot;Largura máxima do subtítulo `body-lg`.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;control-height&quot;,
+        &quot;value&quot;: &quot;48px&quot;,
+        &quot;usage&quot;: &quot;Altura de input.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;button-height&quot;,
+        &quot;value&quot;: &quot;50px&quot;,
+        &quot;usage&quot;: &quot;Altura do botão primário grande.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;icon-button&quot;,
+        &quot;value&quot;: &quot;36px&quot;,
+        &quot;usage&quot;: &quot;Icon button do header.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;copy-button&quot;,
+        &quot;value&quot;: &quot;30px&quot;,
+        &quot;usage&quot;: &quot;Botão de copiar no bloco de comando.&quot;
+      },
+      {
+        &quot;name&quot;: &quot;icon-tile&quot;,
+        &quot;value&quot;: &quot;40px&quot;,
+        &quot;usage&quot;: &quot;Tile de ícone de linha de lista.&quot;
+      }
+    ]
+  }
+}</code></pre></details>
+</div></section>
+</main>
+</div>
+<div class="toast" role="status" aria-live="polite"></div>
+<script>
+(function () {
+  var root = document.documentElement, KEY = 'slash-ds-theme';
+  var btns = document.querySelectorAll('.theme button');
+  function apply(mode) {
+    if (mode === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', mode);
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.mode === mode)); });
+  }
+  var saved = 'system'; try { saved = localStorage.getItem(KEY) || 'system'; } catch (e) {}
+  apply(saved);
+  btns.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.mode); try { localStorage.setItem(KEY, b.dataset.mode); } catch (e) {} }); });
+
+  var toast = document.querySelector('.toast'), tt;
+  function say(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove('show'); }, 1400); }
+  function copy(text, el, done) {
+    function fallback() { try { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); say('Selecionado — use Ctrl+C'); } catch (e) {} }
+    try { navigator.clipboard.writeText(text).then(function () { say(done || 'Copiado'); }, fallback); } catch (e) { fallback(); }
+  }
+  document.querySelectorAll('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { copy(b.dataset.copy, b, 'Copiado: ' + b.dataset.copy); }); });
+  document.querySelectorAll('.code-copy').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.preventDefault(); var pre = b.closest('.comp-code, .src').querySelector('pre code'); copy(pre.textContent, pre); });
+  });
+  document.querySelectorAll('.ex .sl-copy').forEach(function (b) {
+    b.addEventListener('click', function () { var code = b.parentNode.querySelector('.sl-cmd-code'); copy(code.textContent, code, 'Comando copiado'); });
+  });
+  document.querySelectorAll('.ex a[href="#"], .ex form').forEach(function (el) {
+    el.addEventListener(el.tagName === 'FORM' ? 'submit' : 'click', function (e) { e.preventDefault(); });
+  });
+
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a:not(.nav-sub)'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { var i = secs.indexOf(en.target); links.forEach(function (l, j) { l.classList.toggle('on', i === j); }); } });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    secs.forEach(function (s) { if (s) io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

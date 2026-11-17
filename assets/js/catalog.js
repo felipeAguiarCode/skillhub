@@ -24,6 +24,13 @@
     debugging: 'Depuração',
     performance: 'Performance',
     testing: 'Testes',
+    tdd: 'TDD',
+    'coding-style': 'Coding style',
+    office: 'Office',
+    scaffolding: 'Inicializadores',
+    marketing: 'Marketing',
+    copywriting: 'Copywriting',
+    node: 'Node.js',
     git: 'Git e versionamento',
     /* Infra e operação */
     devops: 'DevOps',
@@ -58,19 +65,18 @@
 
   /** Configuração editorial de cada coleção (usada pelas 4 rotas de listagem). */
   var COLLECTIONS = {
-    'claude-skills': {
-      type: 'claude-skill',
-      eyebrow: 'Claude Code',
-      title: 'Claude Skills',
-      copy: 'Descubra, use e compartilhe Skills para Claude Code.',
-      searchPlaceholder: 'Buscar Claude Skills...'
-    },
-    'codex-skills': {
-      type: 'codex-skill',
-      eyebrow: 'OpenAI Codex',
-      title: 'Codex Skills',
-      copy: 'Skills para acelerar seu desenvolvimento com Codex.',
-      searchPlaceholder: 'Buscar Codex Skills...'
+    /* Claude Code e Codex numa coleção só: quem procura uma skill procura pelo
+       que ela faz, e a plataforma é um filtro dentro da página. `type` aceita
+       lista por causa disto. */
+    skills: {
+      type: ['claude-skill', 'codex-skill'],
+      /* A categoria é escolhida na pasta do menu lateral, então a página fica
+         só com a busca (ver pages/listing.js). */
+      folder: true,
+      eyebrow: 'Claude Code · Codex',
+      title: 'Skills',
+      copy: 'Skills para Claude Code e Codex num lugar só. Escolha a categoria no menu ao lado.',
+      searchPlaceholder: 'Buscar skills...'
     },
     'prompt-engineering': {
       type: 'prompt',
@@ -133,8 +139,10 @@
     return null;
   }
 
+  /** `type` é um tipo ou uma lista deles (a coleção "skills" junta dois). */
   function byType(type) {
-    return items.filter(function (item) { return item.type === type; });
+    var wanted = [].concat(type);
+    return items.filter(function (item) { return wanted.indexOf(item.type) !== -1; });
   }
 
   /** Texto pesquisável de uma entrada (PRD §6). Calculado uma vez por item. */
@@ -290,6 +298,39 @@
     }).sort(byRecent).slice(0, limit || 4);
   }
 
+  /* --- Skills do mercado ---------------------------------------------------- */
+
+  /* Skills de terceiros que entram na página de Skills, na categoria a que
+     pertencem (data/market-skills.js). Não são itens do catálogo — sem content,
+     format nem risk — então têm consulta própria, e a linha abre o link oficial. */
+  var market = Array.isArray(window.SKILL_HUB_MARKET) ? window.SKILL_HUB_MARKET : [];
+
+  /** As do mercado numa categoria ('all' para todas), filtradas pelo texto. */
+  function marketSkills(category, text) {
+    var needle = String(text || '').trim().toLowerCase();
+    return market.filter(function (entry) {
+      if (category && category !== 'all' && (entry.categories || []).indexOf(category) === -1) return false;
+      if (!needle) return true;
+      return [entry.name, entry.author, entry.repo, entry.description, (entry.tags || []).join(' ')]
+        .join(' ').toLowerCase().indexOf(needle) !== -1;
+    });
+  }
+
+  /**
+   * Categorias da pasta de skills: as do catálogo MAIS as que só existem no
+   * mercado (TDD, Node.js), em ordem de rótulo. É a lista do menu lateral e a
+   * que valida a categoria da URL.
+   */
+  function folderCategories(type) {
+    var keys = facets(type).categories.slice();
+    market.forEach(function (entry) {
+      (entry.categories || []).forEach(function (key) {
+        if (keys.indexOf(key) === -1) keys.push(key);
+      });
+    });
+    return keys.sort(function (a, b) { return categoryLabel(a).localeCompare(categoryLabel(b)); });
+  }
+
   /* --- Favoritos ----------------------------------------------------------- */
 
   function favorites() {
@@ -323,6 +364,8 @@
     search: search,
     featured: featured,
     recent: recent,
+    marketSkills: marketSkills,
+    folderCategories: folderCategories,
     collection: collection,
     collections: collections,
     categoryLabel: categoryLabel,

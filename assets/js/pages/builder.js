@@ -67,7 +67,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         el('a', {
           class: 'section__link',
           href: '#/what-is-a-skill',
-          style: { 'margin-top': 'var(--space-3)' }
+          style: { 'margin-top': 'var(--space-12)' }
         }, [
           el('span', null, 'O que é uma Skill, em doze slides'),
           SkillHub.icons.get('arrow-right', 'icon--sm')
@@ -78,7 +78,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
               href: docHref,
               target: '_blank',
               rel: 'noopener noreferrer',
-              style: { 'margin-top': 'var(--space-3)' }
+              style: { 'margin-top': 'var(--space-12)' }
             }, [
               el('span', null, 'Documentação oficial'),
               SkillHub.icons.get('external', 'icon--sm')
@@ -119,7 +119,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         body: [
           el('div', { class: 'card__head' }, el('span', { class: 'card__label' }, 'Validação deste passo')),
           refs.validation,
-          el('div', { class: 'u-stack', style: { 'margin-top': 'var(--space-4)' } }, refs.scores)
+          el('div', { class: 'u-stack', style: { 'margin-top': 'var(--space-16)' } }, refs.scores)
         ]
       })
     ]);

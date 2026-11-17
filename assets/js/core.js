@@ -378,7 +378,9 @@ window.SkillHub = window.SkillHub || {};
 (function (SkillHub) {
   'use strict';
 
-  var TYPES = { success: 'check', info: 'info', warning: 'alert', error: 'alert' };
+  /* Um desenho por tipo: o toast é uma pílula invertida, e sobre fundo claro a
+     cor do ícone não distingue aviso de erro. */
+  var TYPES = { success: 'check', info: 'info', warning: 'alert', error: 'x' };
   var timer = null;
 
   function show(message, type) {
@@ -413,22 +415,29 @@ window.SkillHub = window.SkillHub || {};
    * `navigator.clipboard` não existe em contexto não seguro (file://), por isso
    * a API é sempre checada e há fallback por textarea + execCommand.
    */
-  function copy(value, successMessage) {
+  function copy(value, successMessage, onSuccess) {
     var content = String(value === null || value === undefined ? '' : value);
     var done = successMessage || 'Copiado para a área de transferência.';
 
     if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
       navigator.clipboard.writeText(content).then(function () {
-        SkillHub.toast.show(done, 'success');
+        succeed(done, onSuccess);
       }).catch(function () {
-        fallback(content, done);
+        fallback(content, done, onSuccess);
       });
       return;
     }
-    fallback(content, done);
+    fallback(content, done, onSuccess);
   }
 
-  function fallback(content, done) {
+  /* onSuccess existe para quem confirma no próprio controle (o botão do bloco
+     de comando vira um check): só dispara quando a cópia aconteceu de fato. */
+  function succeed(done, onSuccess) {
+    SkillHub.toast.show(done, 'success');
+    if (typeof onSuccess === 'function') onSuccess();
+  }
+
+  function fallback(content, done, onSuccess) {
     var area = SkillHub.dom.el('textarea', {
       'aria-hidden': 'true',
       tabindex: '-1',
@@ -444,7 +453,7 @@ window.SkillHub = window.SkillHub || {};
       copied = false;
     }
     area.remove();
-    if (copied) SkillHub.toast.show(done, 'success');
+    if (copied) succeed(done, onSuccess);
     else SkillHub.toast.show('Não foi possível copiar automaticamente. Selecione o texto e use Ctrl+C.', 'warning');
   }
 

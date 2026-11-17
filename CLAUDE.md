@@ -18,7 +18,8 @@ Só uma árvore é o produto:
 | `index.html` + `assets/` | **O aplicativo.** É aqui que se mexe. |
 | `tools/` | Scripts de desenvolvimento, rodados à mão com `node`. Não fazem parte do app. |
 | `prototype/` | Protótipo original do blueprint. **Referência histórica — não editar.** |
-| `design-system/` | Vitrine de tokens/componentes do blueprint. **Referência — não editar.** |
+| `assets/fonts/` | Geist e Geist Mono em `.woff2` variável, mais a licença (`OFL.txt`). |
+| `design-system/` | `slash-design-system.html` é a **referência visual corrente** (ver Regras visuais). O resto é a vitrine do blueprint. **Referência — não editar.** |
 | `docs/` | Especificação (PRD, ADR, Design System, Spec do Builder, Gates, QA). |
 | `reference/concept-ui.png` | Conceito visual de 6 frames. |
 | `.inspo/` | Quatro capturas de uma aula sobre Skills mais um resumo. É a base do conteúdo e do desenho da apresentação. **Referência — não editar.** |
@@ -136,6 +137,13 @@ que se capturam erros de console de verdade (`Runtime.exceptionThrown`,
 Ler antes de alterar comportamento: `docs/PRD.md`, `docs/ADR.md`,
 `docs/DESIGN_SYSTEM.md`, `docs/SKILL_BUILDER_SPEC.md`, `docs/QA_CHECKLIST.md`.
 
+**O visual não segue mais `docs/DESIGN_SYSTEM.md`.** O app foi redesenhado sobre o
+Slash (`design-system/slash-design-system.html`), por pedido. O documento do
+blueprint fica como registro e não foi reescrito; onde ele fala de cor,
+tipografia, raio, sombra, ícone ou anatomia de componente, vale a seção Regras
+visuais deste arquivo. O que ele diz de comportamento e acessibilidade continua
+valendo.
+
 Em caso de conflito, a ADR-017 manda: **ADR → PRD → DESIGN_SYSTEM →
 SKILL_BUILDER_SPEC → IMPLEMENTATION_GATES → CLAUDE.md**.
 
@@ -194,10 +202,15 @@ certa em `index.html`.
 - **`core.js`** — `SkillHub.dom`, `util`, `store`, `toast`, `clipboard`, `download`.
 - **`formats.js`** — o registry acima.
 - **`components.js`** — `SkillHub.ui.*`: toda fábrica de componente. Reutilize antes
-  de criar CSS de página. `ui.rowActivatable(node, href)` faz a linha inteira de um
-  card navegar: o botão continua sendo o **único** focável, e o clique na linha é
-  conveniência de mouse. Envolver o card num `<a>` colocaria um botão dentro de um
-  link — HTML inválido e ruim de teclado. `ui.chipLine(label, group, options, onSelect)`
+  de criar CSS de página. `ui.skillCard`, `ui.styleCard` e `ui.categoryCard` saem
+  todos da mesma linha de catálogo: **a linha inteira é um `<a>`**, com um foco
+  só e nenhum controle dentro — por isso a estrela de favorito ali é indicador
+  (com texto para leitor de tela) e favoritar continua na página do item. Um
+  botão dentro do link seria HTML inválido e ruim de teclado. O rótulo de um
+  `ui.button` é o **primeiro `<span>`**, e é contrato: `detail.js`, `listing.js`
+  e `coding-styles.js` escrevem nele. `ui.command` é a linha que se digita, com
+  botão de copiar que vira ✓ só quando a cópia aconteceu (`clipboard.copy` tem
+  um terceiro argumento para isso). `ui.stat` é só para contagem real. `ui.chipLine(label, group, options, onSelect)`
   é a linha de chips de filtro, usada por `listing` e por `coding-styles`: o
   `data-group`/`data-value` é contrato, porque quem consome vira o `aria-pressed`
   **no lugar** em vez de recriar os nós — é isso que mantém o foco no campo de busca.
@@ -314,7 +327,10 @@ arquivo ruim no disco. Antes disso ele valida `GUIDES` na fronteira — `icon`
 existe em `icons.js`, `area` está na lista, `depth` é `full`/`essential`, id
 único e no máximo uma variante por `family`+`depth`. Essa validação é a rede de
 proteção real: ícone inexistente não gera erro de console, só renderiza
-`sparkle` calado (`icons.js:181`).
+`sparkle` calado. Ela lê as chaves de `icons.js` por regex, ancorando na
+**primeira** ocorrência do texto da declaração de `PATHS` e de `FALLBACK` —
+escrever essas declarações por extenso num comentário acima delas zera a lista
+e o gerador recusa todos os guias.
 
 Os dois arquivos de dado são **gerados**: editar à mão é perder a mudança na
 próxima geração. Para acrescentar um guia, escreva o `.md` na pasta de origem,
@@ -449,6 +465,26 @@ Consequências práticas:
 
 ### Catálogo
 
+**O conteúdo das Skills e dos arquivos do Codex segue um formato só**, tirado das
+skills mais usadas do mercado (Superpowers, as da Anthropic, o `ub-mode`):
+
+- `description` começa com **"Use when"** e diz só QUANDO usar — nunca resume o
+  fluxo, porque o agente que lê um resumo segue o resumo em vez de abrir a skill.
+  `when_to_use` não é mais usado: os gatilhos ficam na `description`;
+- corpo, nesta ordem: `## Overview` (com **Core principle**), `## The Iron Law`
+  (uma regra em caixa alta num bloco de código), `## When to Use` (com "Don't
+  use when"), `## Process` (passos numerados, cada um terminando em algo que dá
+  para conferir), `## Output` quando há relatório, `## Red Flags - STOP`,
+  `## Common Rationalizations` (tabela Excuse | Reality) e
+  `## Verification Checklist`;
+- prompt do Codex: o mesmo corpo, com frontmatter restrito a `description` e
+  `argument-hint`, e todo placeholder do original preservado;
+- `AGENTS.md`: sem frontmatter e sem "When to Use" (não é acionado), no molde do
+  `ub-mode` — uma regra imperativa por linha, fechando com `## Red Flags` e
+  `## Before You Finish`.
+
+Uma skill nova no catálogo entra nesse formato.
+
 Cada entrada declara `tool` + `format`, e **`content` tem de ser válido para o próprio
 formato** — um `codex-agents` com frontmatter é bug. `files[]` precisa conter o arquivo
 de entrada que `formats.entryFileName()` deriva. `license: null` é renderizado como
@@ -460,7 +496,13 @@ e `category` tem de existir em `CATEGORY_LABELS` (`catalog.js`) e `icon` em
 `icons.js` — uma chave inexistente renderiza vazio, sem erro de console.
 
 **Não existe métrica de uso.** Nada de downloads, likes ou "tendência": o app é
-estático e não mede nada, então exibir número seria invenção. Destaque é curadoria
+estático e não mede nada, então exibir número seria invenção. Os dois números
+do hero da Home são **contagem** (itens no catálogo, guias de estilo), lida em
+runtime do que o app carrega.
+
+O slug mono de cada linha também não é inventado: `formats.slug()` devolve o
+acionamento declarado no formato, ou o nome do arquivo quando o formato não se
+aciona (`AGENTS.md`). Destaque é curadoria
 declarada no dado (`featured: true`) e a segunda seção da Home é `updatedAt`
 descendente, já excluindo o que apareceu em destaque logo acima.
 
@@ -473,8 +515,14 @@ o ícone `calendar` foram removidos junto, porque ficaram sem consumidor.
 Sete camadas (`01-tokens` → `07-responsive`), na ordem de `DESIGN_SYSTEM.md` §23.
 Nomes de componente são os do `design-system/` (`.btn`, `.card`, `.skill-card`,
 `.chip`, `.badge`, `.stepper`, `.code-box`, `.risk`, `.toast`, `.field`), sem prefixo.
-**Nenhum valor visual novo sem token equivalente** — hoje os 86 tokens estão todos em
-uso e é assim que deve continuar. Cuidado ao varrer por token morto:
+Os nomes de classe são os do app; o desenho é o do Slash.
+**Nenhum valor visual novo sem token equivalente** — hoje os 104 tokens estão todos em
+uso e é assim que deve continuar. Os nomes são os do Slash (`--background`,
+`--card`, `--foreground`, `--fg-muted`, `--line`, `--accent-fill`…), e em
+espaçamento e tipo **o número do nome é o valor em px** (`--space-16`,
+`--text-14`). A escala antiga contava de 4 em 4 (`--space-4` era 16px): um
+trecho colado de um commit anterior ao redesign usa o nome certo com o valor
+errado, sem erro nenhum. Cuidado ao varrer por token morto:
 `--duration-morph` e `--duration-morph-max` são lidos pelo JS via
 `getComputedStyle`, então um `grep` por `var(` não os encontra.
 
@@ -523,15 +571,65 @@ certa — frágil, porque a contagem de filhos muda (um filho `hidden` não cria
 
 ## 🎨 Regras visuais
 
-- Tokens de `docs/DESIGN_SYSTEM.md` como fonte de verdade.
-- Laranja quente só como destaque, nunca como cor dominante de grandes áreas.
-- Fundo quase preto com subtom quente (não azulado).
-- Card off-white como contraste editorial **pontual** — hoje há exatamente um, no
-  bloco de comunidade da Home. Não espalhar.
-- Bordas finas, cantos arredondados sem aparência "bubble", pouco shadow, separação
-  por espaço e contraste.
-- Evitar gradiente roxo, glassmorphism exagerado, estética genérica de SaaS.
-- Ícones lineares em SVG inline (`SkillHub.icons`), `currentColor`.
+A referência é o Slash (`design-system/slash-design-system.html`), só o tema
+escuro. `01-tokens.css` é a fonte de verdade dos valores.
+
+- **Linhas, não sombras.** Seção, lista e painel se separam por hairline de 1px
+  (`--line`) e por mudança leve de superfície. Não há `box-shadow` no app.
+- **Degradê existe, e são quatro tokens** (`--gradient-*`), pedidos depois do
+  redesign — o Slash em si é chapado. Todos terminam em transparente:
+  `banner-top` é a luz de acento no alto de toda página (`.main::before`, que
+  some na apresentação); `banner-panel` é o fundo de `ui.banner`, o bloco de
+  chamada (um por página, e o botão dele não é primário se a página já tem um);
+  `rule` e `rule-center` são as réguas. Degradê novo entra como token, não
+  solto no CSS.
+- **Régua minimalista** (`.rule`, e já aplicada a `.section`, `.detail__block`
+  e `.hero__stats`): um traço curto de acento abre a linha, que some à direita.
+  São dois `background` de 1px, não borda — e por isso **nada de `background`
+  em shorthand num elemento com régua ou arco-íris**: ele zera `repeat` e
+  `position`, e a faixa de 1px passa a ladrilhar o bloco inteiro.
+- **Um acento, e um preenchido por tela.** `.btn--primary` (`--accent-fill`) é a
+  ação principal da tela e aparece uma vez. O resto do acento é texto pequeno
+  (`--accent-text`) ou contorno (`--accent-line` sobre `--accent-wash`). É por
+  isso que a linha de catálogo não tem botão "Ver".
+- **A cor do acento é o laranja do Claude Code (`#d97757`), não o dourado do
+  Slash** — troca pedida. O aviso/"moderado" tem âmbar próprio (`--mark-gold`) e
+  não é o acento: laranja ao lado do vermelho de "elevado" seriam quase a mesma
+  cor. Pela mesma razão badge de flag e de ferramenta é neutro.
+- **Mono significa "isto é técnico".** Slug, comando, caminho, badge, contagem e
+  sobretítulo em Geist Mono; prosa em Geist. Caixa alta só em rótulo mono com
+  tracking — e **nunca em badge**, que carrega identificador literal
+  (`context: fork`, `Bash(git *)`).
+- **Hierarquia por um tom só**: `--foreground` descendo em `--fg-strong` →
+  `--fg-body` → `--fg-muted` → `--fg-subtle` → `--fg-label`. `--fg-faint` é
+  decorativo e não passa 4.5:1. No Slash esses degraus são cor com alfa; aqui são
+  o equivalente opaco, porque traço translúcido soma brilho onde as primitivas
+  de um ícone se sobrepõem.
+- Raios pequenos: 9px em controle e bloco, 6 em chip, 4 em badge, 12 em grupo de
+  painéis, 16 em diálogo. Pílula (`--radius-full`) só em interruptor e barra.
+- **Fontes no repositório** (`assets/fonts/`), por `@font-face` relativo e sem
+  `preload` — em `file://` o preload gera aviso de console. São os arquivos
+  completos: o subset "latin" não tem os glifos de caixa da árvore de arquivos.
+  O tamanho base (14px) vai no `body`, nunca no `html`: a apresentação tem
+  medidas em `rem` e `ch`.
+- **Toda skill tem medalha** (`icons.trophy(nome)`): um hexágono no acento com a
+  miniatura do ícone dentro, no lugar do tile, nas linhas e no título do
+  detalhe. Desenho próprio e **igual para todas**: já houve níveis (bronze,
+  prata, ouro, platina) e foram retirados por pedido. É decorativa.
+- **A linha de catálogo é uma caixa**, no jeito de uma lista de troféus: bloco
+  próprio com borda e raio e medalha de 48px à esquerda. `.catalog` separa as
+  caixas por espaço, não por hairline.
+- **Ícones do Lucide** (ISC), traço 2, em `SkillHub.icons`, sempre
+  `currentColor`. As chaves são as do app; o desenho é copiado, nunca refeito de
+  memória. A estrela é o único que aparece preenchido, e quem a preenche é o CSS
+  de quem a usa (`.btn--favorite[aria-pressed="true"]`), não o ícone.
+- **Foco**: um anel só, `2px solid var(--focus-ring)` com offset 2px, igual em
+  todo controle — campo de formulário inclusive. Nenhuma regra tira o outline de
+  input; a `.search` desenha o anel no contêiner por `:focus-within`.
+- Sem logotipo: a marca é tipográfica (`/` em mono + `skill-hub`). A barra é o
+  que sobra na bitola recolhida.
+- Interface em 150ms, e só cor, fundo, borda, opacidade ou 2px de deslocamento.
+  O "shine" do botão primário do Slash **não** entrou: é animação infinita.
 - Motion curto e funcional; `prefers-reduced-motion` respeitado globalmente. A
   **única** animação contínua do app é o balanço lento dos doodles da
   apresentação — decorativa, só no slide visível, e nunca por opacidade ou troca
@@ -540,8 +638,37 @@ certa — frágil, porque a contagem de filhos muda (um filho `hidden` não cria
 
 ## 🧭 Navegação
 
-A sidebar contém, nesta ordem: Home, Claude Skills, Codex Skills, Prompt
-Engineering, **Coding Styles**, Agentes, divisor, Skill Builder. **Não criar
+A sidebar e a topbar ficaram (o Slash usa só um header; aqui são oito destinos),
+redesenhadas com os tokens dele. A sidebar contém, nesta ordem: Home, **Trendings**, **Skills** (pasta), Prompt
+Engineering, **Coding Styles**, Agentes, divisor, Skill Builder.
+
+**"Skills" é uma pasta, e junta Claude Code e Codex.** As duas coleções viraram
+uma (`#/skills`, com `type` em lista no `COLLECTIONS` de `catalog.js`); a
+plataforma passou a ser filtro dentro da página. Ao entrar na rota, a pasta abre
+no menu e lista as categorias que existem de fato no catálogo, cada uma um link
+para `#/skills/<categoria>`. Três coisas a saber:
+
+- **a categoria mora na URL**, em toda listagem. O chip de categoria só troca o
+  hash; quem aplica é `onParam` (as listagens são `ownsParam`), então trocar de
+  categoria atualiza chips e lista no lugar, sem re-render nem rolagem;
+- **a pasta é recolhível**, pelo botão de seta ao lado do item. Entrar na rota
+  abre, sair fecha, e dentro dela quem manda é o botão: trocar de categoria não
+  reabre uma pasta recém-recolhida. A altura é animada por
+  `grid-template-rows` (0fr → 1fr) — `height: auto` não anima — e, fechada,
+  `visibility` tira os links do teclado. Por isso o estado é `data-open`, não o
+  atributo `hidden`;
+- **as categorias da pasta são a união** das do catálogo com as que só existem
+  no mercado (`catalog.folderCategories`): TDD, Node.js, Coding style e Office
+  não têm item hospedado aqui;
+- os sublinks **não levam `data-route`** — `updateNav` marcaria todos como
+  página atual. Quem abre a pasta e marca o atual é `SkillHub.shell.syncFolder`
+  (`app.js`), chamado pela listagem;
+- na página de Skills **só fica a busca** (`folder: true` na coleção): sem
+  ordenação e, de 1180px para cima, sem o bloco de chips — a pasta é o filtro.
+  Abaixo disso a pasta some com os rótulos do menu, então o bloco continua atrás
+  do botão "Filtros"; sem ele não haveria como escolher categoria no celular;
+- `#/claude-skills` e `#/codex-skills` continuam registradas só para
+  redirecionar a `#/skills`: link antigo não dá 404. **Não criar
 Login, Dashboard, My Skills ou Account** — a proibição é de conceito de conta,
 não de coleção.
 
@@ -562,7 +689,50 @@ Ao mexer no botão, lembre que o rótulo encolhe por **dois** mecanismos distint
 imposta pela media query de 1180px (onde o estado guardado não vale). Faltando um
 dos dois, o botão estoura a coluna — foi o que aconteceu na primeira tentativa.
 
-Rotas: `#/home`, `#/claude-skills`, `#/codex-skills`, `#/prompt-engineering`,
+**Trendings** (`#/trending`, `pages/trending.js`) também é posterior ao blueprint
+e foi pedido. Lista **skills de terceiros** que circulam no mercado, por
+especialidade, cada uma com link para o repositório oficial. Tem filtros no
+estilo de base de dados: busca, uma especialidade e várias tags (que **somam** —
+duas ligadas mostram quem tem as duas), e cada filtro ligado vira uma pílula
+removível. Só a lista é refeita; os controles ficam no lugar. Por isso toda
+entrada de `data/trending.js` tem `tags`, como toda entrada do catálogo. O dado é
+`data/trending.js` (`window.SKILL_HUB_TRENDING`), separado do catálogo de
+propósito: o Skill Hub não hospeda o conteúdo delas, então não há `content`,
+`format` nem `risk`, e a linha (`ui.externalCard`) abre a origem numa aba nova
+em vez de ir para `#/skill/<id>`. Três regras ao mexer nessa lista:
+
+- **toda URL é aberta e conferida antes de entrar** — nunca deduzida do nome
+  (uma das candidatas, de um resultado de busca, dava 404);
+- **nenhum número** de estrela ou instalação: o app não mede uso, e os rankings
+  públicos discordam entre si e envelhecem. "Popular" ali é curadoria do que se
+  repete em rankings e listas da comunidade, e a página diz isso;
+- a descrição sai do README ou da descrição do repositório, e projeto de
+  comunidade "baseado em" um autor é identificado como tal.
+
+**Skills do mercado dentro de Skills** (`data/market-skills.js`,
+`window.SKILL_HUB_MARKET`): por categoria, a página de Skills lista também
+skills de terceiros — TDD, Backend, Banco de dados, APIs, Dados, Refatoração,
+Node.js, Coding style, Automação, Office, Marketing, Copywriting, Testes, Mobile,
+Segurança e Inicializadores. As seis `node-*-init` do catálogo têm
+`category: 'scaffolding'` e ficam em Inicializadores junto com as do mercado. Valem as mesmas três regras acima, e
+mais duas:
+
+- vêm **depois** das do catálogo, sob o rótulo "Do mercado", e cada linha abre o
+  link oficial (`ui.externalCard`). Seguem a busca e a categoria;
+- **saem da lista quando há filtro de plataforma, formato, risco, scripts ou
+  shell**: são fatos que só o catálogo declara, e mostrá-las ali seria fingir que
+  passaram no filtro.
+
+Uma entrada pode estar em mais de uma categoria (`categories` é lista). Para
+acrescentar uma skill: abra a URL, leia o `SKILL.md`, e só então escreva a
+entrada.
+
+A lista tem efeito de menu de jogo (`.select-list`: cursor ao lado do item sob
+foco, título em âmbar, setas do teclado andando pelas linhas). É desta página e
+não deve vazar para as outras listagens. Já houve um arco-íris aqui; foi
+retirado por pedido.
+
+Rotas: `#/trending`, `#/home`, `#/claude-skills`, `#/codex-skills`, `#/prompt-engineering`,
 `#/coding-styles/<id>`, `#/agents`, `#/skill-builder`, `#/skill/<id>`,
 `#/what-is-a-skill/<passo>`.
 

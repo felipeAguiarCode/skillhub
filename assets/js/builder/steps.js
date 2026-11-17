@@ -656,7 +656,7 @@ window.SkillHub.builder = window.SkillHub.builder || {};
             copy: 'Uma Skill válida precisa apenas do SKILL.md. Adicione arquivos quando o corpo começar a ficar longo.'
           }),
 
-      el('div', { class: 'btn-row', style: { 'margin-top': 'var(--space-4)' } },
+      el('div', { class: 'btn-row', style: { 'margin-top': 'var(--space-16)' } },
         [ui.button({
           label: 'Adicionar arquivo',
           variant: 'primary',
@@ -700,7 +700,7 @@ window.SkillHub.builder = window.SkillHub.builder || {};
       return ui.card({
         body: [
           el('p', { class: 'card__label' }, key),
-          el('p', { class: 'u-strong', style: { 'margin-top': 'var(--space-2)' } }, value)
+          el('p', { class: 'u-strong', style: { 'margin-top': 'var(--space-8)' } }, value)
         ]
       });
     }
@@ -717,13 +717,13 @@ window.SkillHub.builder = window.SkillHub.builder || {};
       ]),
 
       el('div', null, [
-        el('p', { class: 'card__label', style: { 'margin-bottom': 'var(--space-3)' } },
+        el('p', { class: 'card__label', style: { 'margin-bottom': 'var(--space-12)' } },
           spec.usesDirectory ? 'Árvore do pacote' : 'Arquivo gerado'),
         ui.fileTree(serialize.buildFileTree(model))
       ]),
 
       el('div', null, [
-        el('p', { class: 'card__label', style: { 'margin-bottom': 'var(--space-3)' } },
+        el('p', { class: 'card__label', style: { 'margin-bottom': 'var(--space-12)' } },
           serialize.entryFileName(model) + ' gerado'),
         ui.codeBox({
           title: serialize.entryLabel(model),
@@ -733,7 +733,7 @@ window.SkillHub.builder = window.SkillHub.builder || {};
       ]),
 
       el('div', null, [
-        el('p', { class: 'card__label', style: { 'margin-bottom': 'var(--space-3)' } }, 'Validação completa'),
+        el('p', { class: 'card__label', style: { 'margin-bottom': 'var(--space-12)' } }, 'Validação completa'),
         ui.validationList({
           errors: validation.blocking,
           warnings: validation.warnings,
@@ -833,7 +833,7 @@ window.SkillHub.builder = window.SkillHub.builder || {};
       return el('div', { class: 'u-row u-row--between' }, [
         el('div', null, [
           el('p', { class: 'card__label' }, row.key),
-          el('p', { class: 'u-mono u-sm u-accent u-break', style: { 'margin-top': 'var(--space-1)' } }, row.value),
+          el('p', { class: 'u-mono u-sm u-accent u-break', style: { 'margin-top': 'var(--space-4)' } }, row.value),
           row.hint ? el('p', { class: 'u-faint u-xs' }, row.hint) : null
         ]),
         ui.iconButton({

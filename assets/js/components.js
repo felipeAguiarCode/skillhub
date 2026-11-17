@@ -62,10 +62,13 @@
       disabled: opts.disabled ? true : null,
       title: opts.title || null,
       'aria-label': opts.ariaLabel || null,
+      'aria-pressed': opts.pressed === undefined ? null : String(Boolean(opts.pressed)),
       dataset: opts.dataset || null,
       onclick: opts.onClick || null
     };
 
+    /* O rótulo é o PRIMEIRO <span> do botão, e isso é contrato: quem troca o
+       texto depois (favoritar, contador de filtros) escreve nele. */
     var content = [
       opts.icon ? icon(opts.icon) : null,
       opts.label ? el('span', null, opts.label) : null,
@@ -101,21 +104,37 @@
   function pageHeader(options) {
     var opts = options || {};
     return el('header', { class: 'page-header' }, [
-      el('div', { class: 'page-header__text' }, [
-        opts.eyebrow ? eyebrow(opts.eyebrow) : null,
-        el('h1', { class: 'page-title' }, opts.title),
-        opts.copy ? el('p', { class: 'page-copy' }, opts.copy) : null
-      ]),
-      opts.art ? el('div', { class: 'page-header__art' }, opts.art) : null
+      opts.eyebrow ? eyebrow(opts.eyebrow) : null,
+      el('h1', { class: 'page-title' }, opts.title),
+      opts.copy ? el('p', { class: 'page-copy' }, opts.copy) : null
     ]);
   }
 
+  /**
+   * Cabeçalho de grupo. `large` é o título de bloco de página (home).
+   * `index` ("01") e `description` são opcionais — número
+   * só quando os grupos formam uma sequência de verdade.
+   */
   function section(options) {
     var opts = options || {};
-    return el('section', { class: 'section' }, [
+    return el('section', { class: 'section' + (opts.large ? ' section--large' : '') }, [
       el('div', { class: 'section__head' }, [
-        el('h2', { class: 'section__title' }, opts.title),
-        opts.linkHref ? el('a', { class: 'section__link', href: opts.linkHref }, [
+        el('div', { class: 'section__heading' }, [
+          el('div', { class: 'section__top' }, [
+            opts.index ? el('span', { class: 'section__index', 'aria-hidden': 'true' }, opts.index) : null,
+            el('h2', { class: 'section__title' }, opts.title)
+          ]),
+          opts.description ? el('p', { class: 'section__desc' }, opts.description) : null
+        ]),
+        /* `linkButton`: o link vira botão de contorno, para a seção que abre
+           um bloco inteiro da página. */
+        opts.linkHref && opts.linkButton ? button({
+          label: opts.linkLabel || 'Ver todos',
+          variant: 'outline',
+          iconAfter: 'arrow-right',
+          href: opts.linkHref
+        }) : null,
+        opts.linkHref && !opts.linkButton ? el('a', { class: 'section__link', href: opts.linkHref }, [
           el('span', null, opts.linkLabel || 'Ver todos'),
           icon('arrow-right', 'icon--sm')
         ]) : null
@@ -129,9 +148,6 @@
   function card(options) {
     var opts = options || {};
     var classes = ['card'];
-    if (opts.paper) classes.push('card--paper');
-    if (opts.editorial) classes.push('card--editorial');
-    if (opts.flush) classes.push('card--flush');
     if (opts.href) classes.push('card--link');
     if (opts.className) classes.push(opts.className);
 
@@ -140,115 +156,197 @@
     return el(opts.href ? 'a' : 'div', props, opts.body);
   }
 
+  /**
+   * Painéis empilhados numa borda só: [{ kicker, body }]. Para explicar um
+   * conceito em duas a quatro partes; nada de botão dentro.
+   */
+  function panels(items) {
+    return el('div', { class: 'panels' }, (items || []).map(function (item) {
+      return el('section', { class: 'panel' }, [
+        el('h3', { class: 'panel__kicker' }, item.kicker),
+        el('p', { class: 'panel__body' }, item.body)
+      ]);
+    }));
+  }
+
+  /**
+   * Bloco de chamada com fundo em degradê: título, uma frase e UMA ação.
+   * `action` é um nó pronto — quem chama escolhe a variante do botão, porque
+   * só a página sabe se já tem um primário.
+   */
+  function banner(options) {
+    var opts = options || {};
+    return el('div', { class: 'banner' }, [
+      el('div', { class: 'banner__text' }, [
+        opts.eyebrow ? eyebrow(opts.eyebrow) : null,
+        el('h2', { class: 'banner__title' }, opts.title),
+        opts.copy ? el('p', { class: 'banner__copy' }, opts.copy) : null
+      ]),
+      opts.action ? el('div', { class: 'banner__action' }, opts.action) : null
+    ]);
+  }
+
+  /** Número com rótulo. Só para contagem real: o app não mede uso. */
+  function stat(options) {
+    var opts = options || {};
+    return el('div', { class: 'stat' }, [
+      opts.icon ? el('span', { class: 'stat__icon' }, icon(opts.icon, 'icon--xl')) : null,
+      el('span', { class: 'stat__value' }, String(opts.value)),
+      el('span', { class: 'stat__label' }, opts.label)
+    ]);
+  }
+
+  /* --- Linha de catálogo --------------------------------------------------- */
+
+  /**
+   * O item padrão do sistema: tile, slug mono, título, uma frase, badges, seta.
+   *
+   * A linha inteira é UM link. Não há controle dentro dela — por isso a estrela
+   * é só indicador (com texto para leitor de tela) e favoritar continua na
+   * página do item: um botão dentro de um <a> é HTML inválido e ruim de teclado.
+   */
+  function row(opts) {
+    return el('a', {
+      class: 'skill-card',
+      href: opts.href,
+      // Link para fora do app nunca compartilha o contexto de navegação.
+      target: opts.external ? '_blank' : null,
+      rel: opts.external ? 'noopener noreferrer' : null
+    }, [
+      opts.trophy
+        ? SkillHub.icons.trophy(opts.icon)
+        : el('span', { class: 'skill-card__icon' }, icon(opts.icon, 'icon--lg')),
+      el('div', { class: 'skill-card__body' }, [
+        opts.slug ? el('span', { class: 'skill-card__slug' }, opts.slug) : null,
+        el('h3', { class: 'skill-card__title' }, opts.title),
+        opts.desc ? el('p', { class: 'skill-card__desc', title: opts.desc }, opts.desc) : null,
+        opts.meta && opts.meta.length ? el('div', { class: 'skill-card__meta' }, opts.meta) : null
+      ]),
+      opts.favorite ? [
+        icon('star', 'skill-card__star'),
+        el('span', { class: 'u-sr-only' }, 'Favorito')
+      ] : null,
+      opts.external ? el('span', { class: 'u-sr-only' }, '(abre em nova aba)') : null,
+      icon(opts.external ? 'external' : 'arrow-right', 'skill-card__arrow')
+    ]);
+  }
+
   function categoryCard(options) {
     var opts = options || {};
-    return card({
-      href: opts.href,
-      paper: opts.paper,
-      className: 'category-card',
-      body: [
-        el('div', { class: 'card__icon' }, icon(opts.icon, 'icon--lg')),
-        el('div', { class: 'category-card__foot' }, [
-          el('h3', { class: 'card__title' }, opts.title),
-          el('p', { class: 'card__copy' }, opts.copy)
-        ])
+    return row({ href: opts.href, icon: opts.icon, slug: opts.slug, title: opts.title, desc: opts.copy });
+  }
+
+  /**
+   * `categoryLabel` e `favorite` vêm de quem chama: os rótulos e os favoritos
+   * moram em catalog.js, que carrega depois deste arquivo.
+   */
+  function skillCard(item, options) {
+    var opts = options || {};
+    var format = SkillHub.formats.get(item.format);
+    var flags = item.flags || {};
+    return row({
+      href: '#/skill/' + encodeURIComponent(item.id),
+      icon: item.icon,
+      trophy: true,
+      slug: SkillHub.formats.slug(item.format, item.id),
+      title: item.name,
+      desc: item.description,
+      favorite: opts.favorite,
+      meta: [
+        // O formato vem primeiro: é o que decide onde o arquivo é instalado.
+        badge(format.short, 'info', format.icon),
+        badge(opts.categoryLabel || item.category),
+        riskBadge(item.risk),
+        /* Neutros de propósito: flag colorida ao lado do badge de risco leria
+           como um segundo aviso, e o acento ficaria espalhado pela lista. */
+        flags.shell ? badge(flags.shell === 'powershell' ? 'PowerShell' : 'Bash', null, 'terminal') : null,
+        flags.scripts ? badge('Scripts', null, 'file') : null,
+        flags.fork ? badge('Fork', null, 'layers') : null
       ]
     });
   }
 
-  /* --- Skill card (linha de catálogo) ------------------------------------- */
-
   /**
-   * Faz a linha inteira de um card navegar, não só o botão.
-   *
-   * O botão continua sendo o único elemento focável do card: teclado e leitor
-   * de tela recebem UMA ação clara, e o clique na linha é conveniência de
-   * mouse. Envolver tudo num <a> colocaria um botão dentro de um link, o que é
-   * HTML inválido e péssimo para navegação por teclado.
-   */
-  function rowActivatable(node, href) {
-    var safe = SkillHub.dom.safeHref(href);
-    if (!safe) return node;
-    node.classList.add('is-activatable');
-    node.addEventListener('click', function (event) {
-      /* Clique no próprio botão já navega; não duplicar. */
-      if (event.target.closest && event.target.closest('a, button')) return;
-      /* Dentro de gesto do usuário, então o Chrome empilha no histórico e o
-         botão voltar funciona — diferente de atribuição sem gesto. */
-      window.location.hash = safe;
-    });
-    return node;
-  }
-
-
-  function skillCard(item, options) {
-    var opts = options || {};
-    var format = SkillHub.formats.get(item.format);
-    var href = '#/skill/' + encodeURIComponent(item.id);
-    var node = el('article', { class: 'skill-card' }, [
-      el('div', { class: 'skill-card__icon' }, icon(item.icon, 'icon--lg')),
-      el('div', { class: 'skill-card__body' }, [
-        el('h3', { class: 'skill-card__title' }, item.name),
-        el('p', { class: 'skill-card__desc', title: item.description }, item.description),
-        el('div', { class: 'skill-card__meta' }, [
-          // O formato vem primeiro: é o que decide onde o arquivo é instalado.
-          badge(format.short, 'info', format.icon),
-          badge(opts.categoryLabel || item.category),
-          riskBadge(item.risk),
-          item.flags && item.flags.shell ? badge(item.flags.shell === 'powershell' ? 'PowerShell' : 'Bash', 'accent', 'terminal') : null,
-          item.flags && item.flags.scripts ? badge('Scripts', 'accent', 'file') : null,
-          item.flags && item.flags.fork ? badge('Fork', 'accent', 'layers') : null
-        ])
-      ]),
-      el('div', { class: 'skill-card__aside' }, button({
-        label: 'Ver',
-        variant: 'primary',
-        href: href
-      }))
-    ]);
-    return rowActivatable(node, href);
-  }
-
-  /* --- Style card (coleção de coding styles) ------------------------------- */
-
-  /**
-   * Mesmo visual do skill card, dado diferente. Não reuso skillCard porque ele
-   * espera a forma de uma entrada de catálogo (format, risk, flags), e um guia
-   * de estilo não tem nenhuma dessas coisas — forçar a forma seria inventar
-   * campos só para satisfazer a função.
+   * Mesma linha, dado diferente. Não reuso skillCard porque ele espera a forma
+   * de uma entrada de catálogo (format, risk, flags), e um guia de estilo não
+   * tem nenhuma dessas coisas.
    *
    * Os rótulos de área e de profundidade vêm de fora (opts.areaLabel,
-   * opts.depthLabel), como o categoryLabel do skillCard: quem tem a lista
-   * ordenada de áreas é a página, e duas tabelas de rótulo divergiriam.
+   * opts.depthLabel): quem tem a lista ordenada de áreas é a página, e duas
+   * tabelas de rótulo divergiriam.
    */
   function styleCard(guide, options) {
     var opts = options || {};
-    var href = '#/coding-styles/' + encodeURIComponent(guide.id);
     var count = guide.sectionCount;
-    var node = el('article', { class: 'skill-card' }, [
-      el('div', { class: 'card__icon skill-card__icon' }, icon(guide.icon, 'icon--lg')),
-      el('div', { class: 'skill-card__body' }, [
-        el('h3', { class: 'skill-card__title' }, guide.title),
-        el('p', { class: 'skill-card__desc' }, guide.summary),
-        badgeRow([
-          badge(opts.areaLabel || guide.area, 'info', 'book'),
-          /* Profundidade sem variante de cor: o botão "Ler" já repete laranja
-             em toda linha, e mais dez badges de destaque fariam do acento a cor
-             dominante da lista. O ícone e o texto distinguem. */
-          badge(opts.depthLabel || guide.depth, null,
-            guide.depth === 'full' ? 'layers' : 'zap'),
-          badge(count + ' ' + SkillHub.util.pluralize(count, 'seção', 'seções'))
-        ].concat((guide.stack || []).map(function (item) {
-          return badge(item);
-        })))
-      ]),
-      el('div', { class: 'skill-card__aside' }, button({
-        label: 'Ler',
-        variant: 'primary',
-        href: href
+    return row({
+      href: '#/coding-styles/' + encodeURIComponent(guide.id),
+      icon: guide.icon,
+      slug: guide.id,
+      title: guide.title,
+      desc: guide.summary,
+      meta: [
+        badge(opts.areaLabel || guide.area, 'info', 'book'),
+        badge(opts.depthLabel || guide.depth, null, guide.depth === 'full' ? 'layers' : 'zap'),
+        badge(count + ' ' + SkillHub.util.pluralize(count, 'seção', 'seções'))
+      ].concat((guide.stack || []).map(function (item) {
+        return badge(item);
       }))
+    });
+  }
+
+  /**
+   * Linha para uma skill de terceiro (data/trending.js): não é entrada do
+   * catálogo, então leva ao repositório oficial, numa aba nova. O slug é o
+   * repositório, e os badges dizem de quem é.
+   */
+  function externalCard(entry) {
+    return row({
+      href: entry.url,
+      external: true,
+      icon: entry.icon,
+      trophy: true,
+      slug: entry.repo,
+      title: entry.name,
+      desc: entry.description,
+      meta: [badge(entry.author, 'info', 'users')].concat((entry.tags || []).map(function (tag) {
+        return badge(tag);
+      }))
+    });
+  }
+
+  /* --- Command ------------------------------------------------------------- */
+
+  /**
+   * Uma linha que se digita, com botão de copiar. O botão vira um check por
+   * 1,6s — e só quando a cópia aconteceu de fato (ver clipboard.copy).
+   * `prompt` é decorativo ("$" para shell); nunca entra no texto copiado.
+   */
+  function command(options) {
+    var opts = options || {};
+    var text = String(opts.command === null || opts.command === undefined ? '' : opts.command);
+    var timer = null;
+    var copy = el('button', {
+      class: 'command__copy',
+      type: 'button',
+      title: opts.copyLabel || 'Copiar',
+      'aria-label': opts.copyLabel || 'Copiar',
+      onclick: function () {
+        SkillHub.clipboard.copy(text, opts.copiedMessage, function () {
+          SkillHub.dom.replace(copy, icon('check'));
+          if (timer) window.clearTimeout(timer);
+          timer = window.setTimeout(function () {
+            SkillHub.dom.replace(copy, icon('copy'));
+            timer = null;
+          }, 1600);
+        });
+      }
+    }, icon('copy'));
+
+    return el('div', { class: 'command' }, [
+      opts.prompt ? el('span', { class: 'command__prompt', 'aria-hidden': 'true' }, opts.prompt) : null,
+      el('code', { class: 'command__code' }, text),
+      copy
     ]);
-    return rowActivatable(node, href);
   }
 
   /* --- Chips, segmented ---------------------------------------------------- */
@@ -481,7 +579,7 @@
         el('span', null, opts.title || 'SKILL.md'),
         opts.onCopy ? button({
           label: 'Copiar',
-          variant: 'ghost',
+          variant: 'accent',
           icon: 'copy',
           onClick: opts.onCopy
         }) : null
@@ -525,7 +623,7 @@
 
         var dotContent = number < current && !(opts.invalidSteps || []).length
           ? icon('check', 'icon--sm')
-          : String(number);
+          : (number < 10 ? '0' : '') + number;
 
         var reachable = Boolean(opts.onSelect) && number <= (opts.maxReachable || current);
         var dot = reachable
@@ -791,10 +889,14 @@
     pageHeader: pageHeader,
     section: section,
     card: card,
+    panels: panels,
+    banner: banner,
+    stat: stat,
     categoryCard: categoryCard,
     skillCard: skillCard,
     styleCard: styleCard,
-    rowActivatable: rowActivatable,
+    externalCard: externalCard,
+    command: command,
     chipLine: chipLine,
     segmented: segmented,
     searchField: searchField,

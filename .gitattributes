@@ -5,3 +5,4 @@
 
 # Binários não passam por normalização.
 *.png binary
+*.woff2 binary

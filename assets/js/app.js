@@ -78,6 +78,81 @@
     toggle.addEventListener('click', function () { apply(!collapsed, true); });
   }
 
+  /* --- Pasta de skills -------------------------------------------------------- */
+
+  var FOLDER_ROUTE = 'skills';
+
+  /**
+   * "Skills" no menu é uma pasta recolhível. Ela abre sozinha ao entrar na
+   * rota e fecha ao sair; o botão de seta a recolhe e expande a qualquer hora.
+   * As categorias saem do que existe de fato (catálogo + skills do mercado),
+   * cada uma um link para #/skills/<categoria>.
+   *
+   * Os sublinks NÃO levam data-route: updateNav marcaria todos como página
+   * atual. Quem marca o atual é syncFolder, chamado pela listagem.
+   */
+  var folder = { open: false, route: null };
+
+  function setFolderOpen(open) {
+    var host = document.getElementById('nav-skills');
+    var toggle = document.getElementById('nav-skills-toggle');
+    if (!host || !toggle) return;
+    folder.open = Boolean(open);
+    /* O CSS anima a altura por este atributo e tira os links do teclado
+       (visibility) quando fechada — por isso não é o atributo hidden. */
+    host.dataset.open = String(folder.open);
+    toggle.setAttribute('aria-expanded', String(folder.open));
+    var label = (folder.open ? 'Recolher' : 'Expandir') + ' categorias de skills';
+    toggle.setAttribute('aria-label', label);
+    toggle.setAttribute('title', label);
+  }
+
+  function setupSkillsFolder() {
+    var list = document.getElementById('nav-skills-list');
+    var toggle = document.getElementById('nav-skills-toggle');
+    var config = SkillHub.catalog.collection(FOLDER_ROUTE);
+    if (!list || !toggle || !config) return;
+
+    var el = SkillHub.dom.el;
+    var categories = SkillHub.catalog.folderCategories(config.type);
+    var links = [{ key: 'all', label: 'Visão geral', index: null }].concat(categories.map(function (key, i) {
+      return { key: key, label: SkillHub.catalog.categoryLabel(key), index: String(i + 1) };
+    }));
+
+    SkillHub.dom.replace(list, links.map(function (link) {
+      return el('a', {
+        class: 'nav__sublink',
+        href: '#/' + FOLDER_ROUTE + (link.key === 'all' ? '' : '/' + encodeURIComponent(link.key)),
+        dataset: { category: link.key }
+      }, [
+        link.index ? el('span', { class: 'nav__subindex', 'aria-hidden': 'true' }, link.index) : null,
+        el('span', null, link.label)
+      ]);
+    }));
+
+    toggle.addEventListener('click', function () { setFolderOpen(!folder.open); });
+    setFolderOpen(false);
+  }
+
+  /**
+   * Chamado pela listagem. Entrar na rota de skills abre a pasta, sair fecha;
+   * dentro da rota quem manda é o botão — trocar de categoria não reabre uma
+   * pasta que a pessoa acabou de recolher.
+   */
+  function syncFolder(route, category) {
+    var list = document.getElementById('nav-skills-list');
+    if (!list) return;
+    var inside = route === FOLDER_ROUTE;
+    if (inside !== (folder.route === FOLDER_ROUTE)) setFolderOpen(inside);
+    folder.route = route;
+    Array.prototype.forEach.call(list.querySelectorAll('.nav__sublink'), function (link) {
+      if (inside && link.dataset.category === category) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  SkillHub.shell = { syncFolder: syncFolder };
+
   /* --- Rotas ---------------------------------------------------------------- */
 
   function registerRoutes() {
@@ -88,11 +163,23 @@
       SkillHub.router.register(route, listings[route]);
     });
 
+    /* As duas coleções viraram uma. Link antigo não dá 404: cai em #/skills. */
+    ['claude-skills', 'codex-skills'].forEach(function (old) {
+      SkillHub.router.register(old, {
+        title: 'Skills',
+        render: function () {
+          window.location.replace('#/' + FOLDER_ROUTE);
+          return SkillHub.dom.el('div');
+        }
+      });
+    });
+
     SkillHub.router.register('skill', SkillHub.pages.detail);
     SkillHub.router.register('skill-builder', SkillHub.pages.builder);
     /* Apresentação sem item de sidebar, como #/skill/<id>: a navegação tem
        exatamente seis itens (PRD §5) e a entrada é por link na Home. */
     SkillHub.router.register('coding-styles', SkillHub.pages.codingStyles);
+    SkillHub.router.register('trending', SkillHub.pages.trending);
     SkillHub.router.register('what-is-a-skill', SkillHub.pages.deck);
   }
 
@@ -117,13 +204,29 @@
       return;
     }
     event.preventDefault();
-    SkillHub.router.go('claude-skills');
+    SkillHub.router.go('skills');
   }
 
   /* --- Boot ----------------------------------------------------------------- */
 
+  /**
+   * As fontes são `font-display: swap`: o texto aparece na fonte de sistema e
+   * troca quando o arquivo chega. Pedir os dois arquivos já no boot faz a troca
+   * acontecer antes de qualquer interação — importa para a apresentação, cujo
+   * morph mede a posição do texto e mediria errado se a fonte trocasse no meio.
+   * Cada família é um arquivo variável só, então um pedido por família basta.
+   */
+  function warmFonts() {
+    if (!document.fonts || typeof document.fonts.load !== 'function') return;
+    ['700 34px Geist', '500 12px "Geist Mono"'].forEach(function (font) {
+      document.fonts.load(font).catch(function () { /* cai na fonte de sistema */ });
+    });
+  }
+
   function start() {
+    warmFonts();
     mountIcons();
+    setupSkillsFolder();
     setupSidebar();
     SkillHub.builder.state.load();
     registerRoutes();

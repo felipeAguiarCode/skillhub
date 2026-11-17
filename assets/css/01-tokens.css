@@ -1,113 +1,203 @@
 /* ==========================================================================
    01 · Tokens — única fonte de verdade visual do Skill Hub.
-   Referência: docs/DESIGN_SYSTEM.md §2–§6, §20. Nenhum valor visual novo deve
-   ser escrito fora deste arquivo quando existir token equivalente (ADR-005).
+
+   Os nomes e os valores vêm do design system Slash
+   (design-system/slash-design-system.html), só o tema escuro. Nenhum valor
+   visual novo deve ser escrito fora deste arquivo quando existir token
+   equivalente (ADR-005). O que é do app e não do Slash — layout da shell,
+   apresentação — fica nos blocos do fim, marcado como tal.
    ========================================================================== */
+
+/* Geist e Geist Mono (SIL OFL 1.1, ver assets/fonts/OFL.txt). Arquivos
+   variáveis e completos: um arquivo cobre todos os pesos, então título e corpo
+   chegam juntos, e o subset "latin" não teria os glifos de caixa da árvore de
+   arquivos. Caminho relativo à folha: funciona em file:// e em subpasta. Sem
+   <link rel="preload">: em file:// ele gera aviso de console. */
+@font-face {
+  font-family: "Geist";
+  src: url("../fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   color-scheme: dark;
 
-  /* --- Neutros escuros ---------------------------------------------------- */
-  --color-bg: #0d0c0b;
-  --color-bg-soft: #11100e;
-  --color-bg-blur: rgba(13, 12, 11, .88);
-  --color-surface: #161310;
-  --color-surface-2: #1c1815;
-  --color-surface-3: #241e1a;
-  --color-border: rgba(255, 255, 255, .08);
-  --color-border-strong: rgba(255, 255, 255, .14);
-  --color-overlay: rgba(6, 5, 5, .68);
+  /* --- Superfícies -------------------------------------------------------- */
+  /* Quase iguais de propósito: a separação vem das linhas, não do contraste. */
+  --page-background: #080808;
+  --background: #0b0b0b;
+  --band: #0e0e0d;
+  --card: #100f0e;
+  --popover: #0d0d0c;
+  --accent-panel: #1f1511;
+  --glass: #0b0b0be6;
+  --overlay: #080808c7;
 
-  /* --- Accent ------------------------------------------------------------- */
-  --color-accent: #ff5d3a;
-  --color-accent-hover: #ff704f;
-  --color-accent-deep: #a83e25;
-  --color-accent-soft: rgba(255, 93, 58, .14);
-  --color-accent-faint: rgba(255, 93, 58, .08);
-  --color-accent-line: rgba(255, 93, 58, .25);
-  --color-accent-rail: rgba(255, 93, 58, .55);
-  --color-accent-ring: rgba(255, 93, 58, .1);
+  /* --- Texto -------------------------------------------------------------- */
+  /* Um tom só, descendo em degraus. No Slash os degraus são o foreground com
+     alfa (90, 72, 60, 52, 48 e 30%); aqui entram como o equivalente OPACO sobre
+     --background. Traço translúcido soma brilho onde duas primitivas de um
+     ícone ou doodle se sobrepõem, e a junção aparece mais clara que a linha. */
+  --foreground: #f4f3f1;
+  --fg-strong: #dddcda;
+  --fg-body: #b3b2b1;
+  --fg-muted: #979695;
+  --fg-subtle: #848483;
+  --fg-label: #7b7a79;
+  /* Decorativo (índices, prompt $): não passa 4.5:1, nunca carrega informação. */
+  --fg-faint: #515150;
 
-  /* --- Claros ------------------------------------------------------------- */
-  --color-paper: #eee8e0;
-  --color-paper-2: #f7f2ec;
-  --color-paper-border: rgba(0, 0, 0, .08);
-  --color-ink: #171411;
-  --color-ink-muted: rgba(23, 20, 17, .66);
-  --color-text: #f6f1eb;
-  --color-text-muted: #a9a098;
-  --color-text-faint: #746d66;
+  /* --- Linhas e estados --------------------------------------------------- */
+  --line: #ffffff14;
+  --line-strong: #ffffff1f;
+  --line-soft: #ffffff0f;
+  --hover: #ffffff12;
+  --secondary: #ffffff12;
+
+  /* --- Acento ------------------------------------------------------------- */
+  /* Um acento só, e um preenchido por tela: --accent-fill é a ação principal. O
+     resto do acento aparece só como texto pequeno (--accent-text) ou contorno
+     (--accent-line sobre --accent-wash).
+     A estrutura é a do Slash; a COR não: o Slash usa dourado (#f5c451), e aqui
+     o acento é o laranja do Claude Code, por pedido. Contraste sobre
+     --background: 6.6:1; tinta sobre o preenchido: 6.0:1. */
+  --accent-fill: #d97757;
+  --accent-fill-hover: #e58d70;
+  --accent-fill-foreground: #191510;
+  --accent-text: #d97757;
+  --accent-tint: #d9775729;
+  --accent-wash: #d9775714;
+  --accent-line: #d9775766;
+  --focus-ring: #d97757;
 
   /* --- Semânticas --------------------------------------------------------- */
-  --color-success: #7abf8c;
-  --color-success-soft: rgba(122, 191, 140, .08);
-  --color-success-line: rgba(122, 191, 140, .24);
-  --color-warning: #e1a85a;
-  --color-warning-soft: rgba(225, 168, 90, .08);
-  --color-warning-line: rgba(225, 168, 90, .24);
-  --color-danger: #e66b62;
-  --color-danger-soft: rgba(230, 107, 98, .08);
-  --color-danger-line: rgba(230, 107, 98, .24);
-  --color-info: #7fa8c9;
-  --color-info-soft: rgba(127, 168, 201, .08);
-  --color-info-line: rgba(127, 168, 201, .24);
+  /* Sempre acompanhadas de ícone e texto: risco nunca é só cor. O aviso tem
+     âmbar próprio (--mark-gold) e NÃO é o acento: laranja de acento ao lado do
+     vermelho de "elevado" seriam quase a mesma cor. Pela mesma razão os badges
+     de flag e de ferramenta são neutros, não de acento. */
+  --mark-yes: lab(78.7751% -48.9898 21.5753);
+  --mark-yes-line: color-mix(in srgb, var(--mark-yes) 32%, transparent);
+  --mark-gold: #f5c451;
+  --mark-gold-soft: #f5c45112;
+  --mark-gold-line: #f5c45159;
+  --mark-no: lab(65.8493% 53.3364 30.7453);
+  --mark-no-soft: color-mix(in srgb, var(--mark-no) 9%, transparent);
+  --mark-no-line: color-mix(in srgb, var(--mark-no) 36%, transparent);
 
-  /* --- Código ------------------------------------------------------------- */
-  --color-code-bg: #090807;
-  --color-code-text: #ddd5cb;
+  /* --- Degradês e réguas -------------------------------------------------- */
+  /* Os únicos degradês do app, e todos feitos do acento ou da linha. Sempre
+     terminam em transparente: nenhum tem borda dura, então podem sangrar sem
+     precisar de recorte.
+     - banner-top: a luz no topo de toda página, atrás da topbar e do cabeçalho;
+     - banner-panel: o fundo dos blocos de chamada (.banner);
+     - rule: régua que nasce cheia à esquerda e some à direita;
+     - rule-center: régua que some nas duas pontas, para divisor solto. */
+  --gradient-banner-top:
+    radial-gradient(60% 100% at 85% 0%, var(--accent-tint), transparent 70%),
+    linear-gradient(180deg, var(--accent-wash), transparent);
+  --gradient-banner-panel:
+    radial-gradient(90% 140% at 100% 0%, var(--accent-tint), transparent 60%),
+    linear-gradient(120deg, var(--accent-wash), transparent 55%);
+  --gradient-rule: linear-gradient(90deg, var(--line-strong), transparent);
+  --gradient-rule-center: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+  /* Altura da luz do topo e largura do traço de acento que abre uma régua. */
+  --banner-top-height: 360px;
+  --rule-tick: 24px;
 
   /* --- Tipografia --------------------------------------------------------- */
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  /* Sans para ler, mono para tudo que se digita ou se conta: comandos, slugs,
+     caminhos, badges, contagens, sobretítulos. */
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --text-xs: 11px;
-  --text-sm: 13px;
-  --text-md: 15px;
-  --text-lg: 18px;
-  --text-xl: 24px;
-  --text-2xl: 34px;
-  --text-hero: clamp(42px, 6vw, 72px);
+  /* O número do nome é o valor em px, como no espaçamento. */
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-28: 28px;
+  --text-34: 34px;
+  /* Hero: 34px no celular, 52px a partir de ~1040px de largura. */
+  --text-display: clamp(34px, 5vw, 52px);
 
-  --leading-tight: 1.08;
-  --leading-snug: 1.25;
-  --leading-normal: 1.55;
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
+  --leading-normal: 1.625;
 
-  /* --- Spacing (base 4px) ------------------------------------------------- */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-20: 80px;
+  /* Título grande leva tracking negativo; rótulo mono em caixa alta, positivo.
+     Sempre em em: o morph da apresentação interpola font-size, e tracking em
+     px ficaria errado no meio do caminho. */
+  --tracking-display: -.034em;
+  --tracking-heading: -.028em;
+  --tracking-title: -.02em;
+  --tracking-caps: .12em;
+
+  /* --- Spacing ------------------------------------------------------------ */
+  /* Escala do Slash: o número é o valor em px. 32, 64 e 80 são do app. */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
 
   /* --- Radius ------------------------------------------------------------- */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
-  --radius-pill: 999px;
+  /* Pequenos e quase quadrados. 9px é a base: inputs, botões, blocos. */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-nav: 7px;
+  --radius-icon: 8px;
+  --radius: 9px;
+  --radius-lg: 12px;
+  --radius-2xl: 16px;
+  /* Só para trilho e botão de interruptor e barras de progresso. */
+  --radius-full: 999px;
 
-  /* --- Elevação ----------------------------------------------------------- */
-  --shadow-card: 0 14px 40px rgba(0, 0, 0, .18);
-  --shadow-float: 0 18px 55px rgba(0, 0, 0, .28);
+  /* --- Medidas de controle ------------------------------------------------ */
+  --control-height: 48px;
+  --button-height: 50px;
+  --button-height-md: 40px;
+  --button-height-sm: 29px;
+  --icon-button: 36px;
+  --copy-button: 30px;
+  --icon-tile: 40px;
 
   /* --- Motion ------------------------------------------------------------- */
-  --duration-fast: 140ms;
+  /* Interface: 150ms, e só cor, fundo, borda, opacidade ou 2px de deslocamento.
+     --duration-normal fica para o que muda de TAMANHO (largura da sidebar,
+     barras de progresso, revelação de build) e --duration-slow para a queda do
+     doodle; a 150ms esses saltariam. */
+  --duration-fast: 150ms;
   --duration-normal: 220ms;
   --duration-slow: 360ms;
-  --ease-standard: cubic-bezier(.2, .8, .2, 1);
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);
 
-  /* Morph da apresentação (#/what-is-a-skill), e só dela. O DESIGN_SYSTEM §20
-     mapeia motion em 140–360ms porque trata de cromo de interface: hover, troca
-     de passo, drawer. Aqui o movimento é o conteúdo — é ele que mostra que a
-     pílula do slide anterior virou a code box deste. Mesmo assim a duração é
-     proporcional ao esforço: deslocamento curto fica no piso, só a travessia
-     com troca de escala chega ao teto. Nada do app fica mais lento por isto. */
+  /* Morph da apresentação (#/what-is-a-skill), e só dela. Aqui o movimento é o
+     conteúdo — é ele que mostra que a pílula do slide anterior virou a code box
+     deste. Mesmo assim a duração é proporcional ao esforço: deslocamento curto
+     fica no piso, só a travessia com troca de escala chega ao teto. */
   /* Lidos também pelo JS, via getComputedStyle — uma varredura por `var()` não
      os encontra, mas eles não estão sem uso. */
   --duration-morph: 320ms;
@@ -119,19 +209,18 @@
   /* Balanço do traço desenhado à mão: a única animação contínua do app, e vale
      só para ilustração decorativa. É LENTA de propósito — a versão rápida, que
      alternava dois desenhos a 8 quadros por segundo, lia como pisca ao lado de
-     texto. O bloco global de prefers-reduced-motion (02-base.css) a desliga. */
+     texto. O bloco global de prefers-reduced-motion (02-base.css) a desliga.
+     É por essa regra que o "shine" do botão primário do Slash não entrou. */
   --duration-sway: 5200ms;
   /* Entrada elástica com leve ultrapassagem, para o desenho "cair" no lugar. */
   --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
 
-  /* --- Layout ------------------------------------------------------------- */
+  /* --- Layout (do app) ---------------------------------------------------- */
   --sidebar-width: 220px;
-  --sidebar-rail: 76px;
-  --topbar-height: 68px;
-  --page-max: 1440px;
-  --page-pad: var(--space-8);
-  --control-height: 44px;
-  --control-height-lg: 52px;
+  --sidebar-rail: 68px;
+  --topbar-height: 62px;
+  --page-max: 1120px;
+  --page-pad: var(--space-32);
 
   /* Apresentação. As duas barras são finas de propósito: cada pixel de cromo
      sai da altura do slide, e slide que não cabe vira rolagem no meio de uma
@@ -141,9 +230,8 @@
   --deck-shell-h: 100vh;
   --deck-bar-h: 52px;
   --deck-topbar-h: 48px;
-  --deck-inset: var(--space-8);
+  --deck-inset: var(--space-32);
 
   /* Breakpoints não viram token: `@media` não resolve custom properties.
-     Os valores de DESIGN_SYSTEM §7 vivem em 07-responsive.css — mobile 768px,
-     tablet 1180px, wide 1480px. */
+     Vivem em 07-responsive.css — mobile 768px, tablet 1180px, wide 1480px. */
 }

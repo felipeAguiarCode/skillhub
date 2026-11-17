@@ -696,7 +696,7 @@ window.SkillHub.deck = window.SkillHub.deck || {};
       })),
       el('div', { class: 'slide__actions', 'data-build': '1' }, [
         el('a', { class: 'btn btn--primary', href: '#/skill-builder' }, el('span', {}, 'Criar uma Skill')),
-        el('a', { class: 'btn', href: '#/claude-skills' }, el('span', {}, 'Ver o catálogo'))
+        el('a', { class: 'btn', href: '#/skills' }, el('span', {}, 'Ver o catálogo'))
       ])
     ];
   }

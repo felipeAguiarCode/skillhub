@@ -1,9 +1,19 @@
 /* ==========================================================================
    pages/home.js — SkillHub.pages.home
 
-   Hero editorial, entrada por categoria, destaques, tendências, favoritos e o
-   bloco claro de comunidade (PRD §5). A busca do hero é a busca global: filtra
-   o catálogo inteiro e troca as seções por resultados.
+   A home segue a composição de aihero.dev, seção por seção:
+   1. hero: título grande, uma frase, dois botões, e três números embaixo de
+      uma linha — sem campo de busca dentro dele;
+   2. a tese: uma afirmação à esquerda, o argumento à direita;
+   3. as skills numa grade de seis células, cada uma com índice, slugs de
+      amostra e um "Comece por /slug";
+   4. "O que você quer fazer?": à esquerda a pergunta, à direita as respostas
+      em linhas com etiqueta de tipo.
+   Depois vêm o que é só daqui: a busca global, favoritos, destaques e a
+   chamada para o builder.
+
+   O texto, os números e a arte são do Skill Hub. Todo número é contagem real
+   do que o app carrega, e toda linha aponta para algo que existe.
    ========================================================================== */
 
 window.SkillHub.pages = window.SkillHub.pages || {};
@@ -15,22 +25,28 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   var ui = SkillHub.ui;
 
   var MIN_QUERY = 2;
+  var SKILL_TYPES = ['claude-skill', 'codex-skill'];
+  /* Quantas categorias viram célula na grade, e quantos slugs cabem em cada. */
+  var GRID_CELLS = 6;
+  var CELL_SLUGS = 5;
+  /* Quantas respostas cada pergunta mostra. */
+  var ANSWERS = 3;
 
   /* Espelhado no campo de busca: o input lê deste estado, nunca o contrário. */
   var state = { query: '' };
 
   var refs = { results: null, sections: null, input: null, favorites: null };
 
-  var CATEGORY_ENTRIES = [
-    { route: 'claude-skills', icon: 'sparkle', title: 'Claude Skills', copy: 'Estenda o Claude Code.' },
-    { route: 'codex-skills', icon: 'hexagon', title: 'Codex Skills', copy: 'Turbine seu fluxo com Codex.' },
-    { route: 'prompt-engineering', icon: 'doc', title: 'Prompt Engineering', copy: 'Prompts melhores, respostas melhores.' },
-    { route: 'agents', icon: 'graph', title: 'Agentes', copy: 'Automatize com IA.' }
-  ];
+  function skills() {
+    return SkillHub.catalog.byType(SKILL_TYPES);
+  }
 
   function catalogList(items) {
     return el('div', { class: 'catalog' }, items.map(function (item) {
-      return ui.skillCard(item, { categoryLabel: SkillHub.catalog.categoryLabel(item.category) });
+      return ui.skillCard(item, {
+        categoryLabel: SkillHub.catalog.categoryLabel(item.category),
+        favorite: SkillHub.catalog.isFavorite(item.id)
+      });
     }));
   }
 
@@ -79,52 +95,210 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     renderResults();
   }
 
-  /* --- Seções -------------------------------------------------------------- */
+  /* --- 1. Hero ---------------------------------------------------------------- */
 
-  function hero() {
-    var search = ui.searchField({
-      id: 'home-search',
-      className: 'hero__search',
-      label: 'Buscar no catálogo',
-      placeholder: 'Buscar skills, prompts, agentes...',
-      value: state.query,
-      onInput: onSearchInput,
-      action: ui.button({
-        variant: 'round',
-        icon: 'arrow-right',
-        ariaLabel: 'Ver resultados da busca',
-        onClick: function () {
-          if (state.query.trim().length >= MIN_QUERY) renderResults();
-          else SkillHub.router.go('claude-skills');
-        }
-      })
-    });
-    refs.input = search.__input;
-
-    return el('section', { class: 'hero' }, [
-      el('div', { class: 'hero__content' }, [
-        ui.eyebrow('Open source'),
-        el('h1', { class: 'hero__title' }, 'Skills for a more capable you.'),
-        el('p', { class: 'hero__copy' },
-          'Um marketplace gratuito de skills, prompts e agentes para Claude, Codex e além. Sem login, sem backend.'),
-        search
-      ]),
-      el('div', { class: 'hero__art' }, SkillHub.icons.heroArt(260))
+  /** Contagens reais, tiradas do que o app carrega. Nada de métrica de uso. */
+  function stats() {
+    return el('div', { class: 'stats hero__stats' }, [
+      ui.stat({ value: skills().length, label: 'Skills do catálogo' }),
+      ui.stat({ value: SkillHub.catalog.marketSkills('all').length, label: 'Skills do mercado' }),
+      ui.stat({ value: (window.SKILL_HUB_CODING_STYLES || []).length, label: 'Guias de estilo' })
     ]);
   }
 
-  function categories() {
-    return ui.section({
-      title: 'Explore por categoria',
-      body: el('div', { class: 'grid grid--4' }, CATEGORY_ENTRIES.map(function (entry) {
-        return ui.categoryCard({
-          href: '#/' + entry.route,
-          icon: entry.icon,
-          title: entry.title,
-          copy: entry.copy
-        });
-      }))
+  function hero() {
+    return el('section', { class: 'hero' }, [
+      el('div', { class: 'hero__content' }, [
+        el('h1', { class: 'hero__title' }, 'Skills for a more capable you.'),
+        el('p', { class: 'hero__copy' },
+          'O processo de engenharia que você já segue, escrito num arquivo que o agente lê. ' +
+          'Para Claude Code e Codex, do pedido vago ao código revisado.'),
+        /* O único preenchido da tela: criar é a ação que o Skill Hub tem de
+           próprio. O segundo botão é só contorno, para não competir. */
+        el('div', { class: 'hero__actions' }, [
+          ui.button({
+            label: 'Criar uma Skill',
+            variant: 'primary',
+            className: 'btn--lg',
+            href: '#/skill-builder'
+          }),
+          ui.button({
+            label: 'Ver as skills',
+            variant: 'outline',
+            className: 'btn--lg',
+            iconAfter: 'arrow-right',
+            href: '#/skills'
+          })
+        ]),
+        stats()
+      ]),
+      el('div', { class: 'hero__art' }, SkillHub.icons.heroArt())
+    ]);
+  }
+
+  /* --- 2. A tese ---------------------------------------------------------------- */
+
+  function statement() {
+    return el('section', { class: 'section statement' }, [
+      el('h2', { class: 'statement__title' }, 'Agente sem processo escreve código plausível.'),
+      el('div', { class: 'statement__body' }, [
+        el('p', null,
+          'Um agente de código é rápido, e é exatamente por isso que o que você pede a ele importa mais. ' +
+          'Sem um processo, ele entrega algo que compila, parece certo e piora a base aos poucos.'),
+        el('p', null,
+          'Uma Skill é esse processo por escrito: quando usar, em que ordem, o que conferir antes de dizer ' +
+          'que acabou. O agente segue do mesmo jeito toda vez, e você revisa o arquivo uma vez só.'),
+        el('p', null,
+          'O Skill Hub mostra cada arquivo inteiro antes de qualquer cópia, e nunca executa conteúdo de Skill.')
+      ])
+    ]);
+  }
+
+  /* --- 3. Skills por categoria ---------------------------------------------------- */
+
+  /** As categorias com mais skills, cada uma com alguns slugs de amostra. */
+  function categoryCells() {
+    var byCategory = Object.create(null);
+    skills().forEach(function (item) {
+      (byCategory[item.category] = byCategory[item.category] || []).push(item);
     });
+
+    return Object.keys(byCategory).sort(function (a, b) {
+      return byCategory[b].length - byCategory[a].length ||
+        SkillHub.catalog.categoryLabel(a).localeCompare(SkillHub.catalog.categoryLabel(b));
+    }).slice(0, GRID_CELLS).map(function (key, index) {
+      var items = byCategory[key];
+      var first = items[0];
+      var label = SkillHub.catalog.categoryLabel(key);
+      return el('article', { class: 'cell' + (index === 0 ? ' cell--lead' : '') }, [
+        el('div', { class: 'cell__top' }, [
+          el('span', { class: 'section__index', 'aria-hidden': 'true' }, '0' + (index + 1)),
+          el('h3', { class: 'cell__title' },
+            el('a', { href: '#/skills/' + encodeURIComponent(key) }, label))
+        ]),
+        el('p', { class: 'cell__desc' },
+          items.length + ' ' + SkillHub.util.pluralize(items.length, 'skill', 'skills') + ' nesta categoria.'),
+        el('div', { class: 'chips' }, items.slice(0, CELL_SLUGS).map(function (item) {
+          return el('span', { class: 'chip chip--static' }, SkillHub.formats.slug(item.format, item.id));
+        })),
+        /* "Comece por": leva à skill, não à categoria — a categoria é o título. */
+        el('a', { class: 'cell__link', href: '#/skill/' + encodeURIComponent(first.id) }, [
+          el('span', null, 'Comece por ' + SkillHub.formats.slug(first.format, first.id)),
+          SkillHub.icons.get('arrow-right', 'icon--sm')
+        ])
+      ]);
+    });
+  }
+
+  function skillsGrid() {
+    var total = skills().length;
+    return ui.section({
+      large: true,
+      title: 'Um processo de engenharia, em skills instaláveis',
+      description: 'Toda skill aqui é gratuita e vem com o arquivo aberto. Comece por qualquer categoria.',
+      linkHref: '#/skills',
+      linkLabel: 'Ver as ' + total + ' skills',
+      linkButton: true,
+      body: el('div', { class: 'cells' }, categoryCells())
+    });
+  }
+
+  /* --- 4. Por intenção ---------------------------------------------------------- */
+
+  function answerRow(tag, title, href, external) {
+    return el('a', {
+      class: 'answer',
+      href: href,
+      target: external ? '_blank' : null,
+      rel: external ? 'noopener noreferrer' : null
+    }, [
+      el('span', { class: 'badge answer__tag' }, el('span', null, tag)),
+      el('span', { class: 'answer__title' }, title),
+      external ? el('span', { class: 'u-sr-only' }, '(abre em nova aba)') : null,
+      SkillHub.icons.get(external ? 'external' : 'arrow-right', 'answer__arrow')
+    ]);
+  }
+
+  /** Uma pergunta à esquerda, suas respostas à direita. */
+  function question(opts) {
+    return el('div', { class: 'question' }, [
+      el('div', { class: 'question__ask' }, [
+        el('span', { class: 'badge' }, el('span', null, opts.kicker)),
+        el('h3', { class: 'question__title' }, opts.title),
+        el('a', { class: 'section__link', href: opts.moreHref }, [
+          el('span', null, opts.moreLabel),
+          SkillHub.icons.get('arrow-right', 'icon--sm')
+        ])
+      ]),
+      el('div', { class: 'question__answers' }, opts.answers)
+    ]);
+  }
+
+  function intents() {
+    /* As respostas saem do dado, não de uma lista escrita à mão: os três
+       primeiros guias completos, e as três primeiras trendings. */
+    var guides = (window.SKILL_HUB_CODING_STYLES || []).filter(function (guide) {
+      return guide.depth === 'full';
+    }).slice(0, ANSWERS);
+    var trending = (window.SKILL_HUB_TRENDING || []).slice(0, ANSWERS);
+
+    return ui.section({
+      large: true,
+      title: 'O que você quer fazer?',
+      description: 'Escolha pelo que precisa agora, não pelo tipo de arquivo.',
+      linkHref: '#/skills',
+      linkLabel: 'Ver tudo',
+      linkButton: true,
+      body: el('div', { class: 'questions' }, [
+        question({
+          kicker: 'Entender',
+          title: 'O que é uma Skill, e como o agente a carrega?',
+          moreHref: '#/what-is-a-skill',
+          moreLabel: 'Abrir a apresentação',
+          answers: [
+            answerRow('Slides', 'O que é uma Skill, em doze slides', '#/what-is-a-skill'),
+            answerRow('Exemplo', 'API Reviewer, a skill usada de exemplo', '#/skill/api-reviewer'),
+            answerRow('Builder', 'Montar a sua, passo a passo', '#/skill-builder')
+          ]
+        }),
+        question({
+          kicker: 'Padronizar',
+          title: 'Como faço o agente escrever no meu padrão?',
+          moreHref: '#/coding-styles',
+          moreLabel: 'Mais em Coding Styles',
+          answers: guides.map(function (guide) {
+            return answerRow('Guia', guide.title, '#/coding-styles/' + encodeURIComponent(guide.id));
+          })
+        }),
+        question({
+          kicker: 'Descobrir',
+          title: 'O que os outros devs estão usando?',
+          moreHref: '#/trending',
+          moreLabel: 'Ver as Trendings',
+          answers: trending.map(function (entry) {
+            return answerRow('Mercado', entry.name + ', de ' + entry.author, entry.url, true);
+          })
+        })
+      ])
+    });
+  }
+
+  /* --- O que é só daqui ---------------------------------------------------------- */
+
+  /* A busca global sai do hero e ganha uma seção: é o que o "/" e o ícone da
+     topbar focam. */
+  function searchBand() {
+    var search = ui.searchField({
+      id: 'home-search',
+      className: 'home__search',
+      label: 'Buscar no catálogo',
+      placeholder: 'Buscar skills, prompts, agentes...',
+      value: state.query,
+      kbd: '/',
+      onInput: onSearchInput
+    });
+    refs.input = search.__input;
+    return el('div', { class: 'home__searchband' }, search);
   }
 
   function favoritesSection() {
@@ -140,42 +314,37 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     }));
   }
 
-  function pitch() {
-    return el('section', { class: 'section' }, ui.card({
-      paper: true,
-      className: 'pitch',
-      body: [
-        el('h2', { class: 'pitch__title' }, 'Crie skills de maneira rápida e prática'),
-        ui.button({
-          label: 'Criar uma Skill',
-          variant: 'primary',
-          iconAfter: 'arrow-right',
-          href: '#/skill-builder'
-        })
-      ]
+  /* O primário da tela é o do hero; aqui o convite se repete sem competir. */
+  function cta() {
+    return el('div', { class: 'home__cta' }, ui.banner({
+      eyebrow: 'Skill Builder',
+      title: 'Tem um passo a passo que você repete?',
+      copy: 'Transforme em Skill. O builder gera o arquivo no formato da ferramenta e mostra o risco de cada escolha antes de exportar.',
+      action: ui.button({
+        label: 'Abrir o Skill Builder',
+        variant: 'outline',
+        className: 'btn--lg',
+        iconAfter: 'arrow-right',
+        href: '#/skill-builder'
+      })
     }));
   }
 
   /* --- Página -------------------------------------------------------------- */
 
   function render() {
-    var highlights = SkillHub.catalog.featured(4);
     var sections = el('div', null, [
-      categories(),
+      statement(),
+      skillsGrid(),
+      intents(),
       favoritesSection(),
       ui.section({
         title: 'Em destaque',
-        linkHref: '#/claude-skills',
-        body: catalogList(highlights)
+        description: 'Escolhidas pela curadoria do catálogo.',
+        linkHref: '#/skills',
+        body: catalogList(SkillHub.catalog.featured(4))
       }),
-      ui.section({
-        title: 'Atualizados recentemente',
-        linkHref: '#/agents',
-        body: catalogList(SkillHub.catalog.recent(4, highlights.map(function (item) {
-          return item.id;
-        })))
-      }),
-      pitch()
+      cta()
     ]);
 
     var results = el('div', { hidden: true, 'aria-live': 'polite' });
@@ -183,7 +352,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     refs.sections = sections;
     refs.results = results;
 
-    var page = el('div', null, [hero(), results, sections]);
+    var page = el('div', null, [hero(), searchBand(), results, sections]);
     renderResults();
     return page;
   }
@@ -198,11 +367,11 @@ window.SkillHub.pages = window.SkillHub.pages || {};
           onClick: function () { if (refs.input) refs.input.focus(); }
         }),
         ui.iconButton({
-          icon: 'bookmark',
+          icon: 'star',
           ariaLabel: 'Ir para seus favoritos',
           onClick: function () {
             if (!SkillHub.catalog.favorites().length) {
-              SkillHub.toast.show('Você ainda não marcou favoritos. Abra uma Skill e use o ícone de marcador.', 'info');
+              SkillHub.toast.show('Você ainda não marcou favoritos. Abra uma Skill e use a estrela.', 'info');
               return;
             }
             if (refs.favorites) refs.favorites.scrollIntoView({ behavior: 'smooth', block: 'start' });

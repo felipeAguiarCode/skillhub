@@ -4,15 +4,14 @@
 
 .u-skip-link {
   position: fixed;
-  top: var(--space-3);
-  left: var(--space-3);
+  top: var(--space-12);
+  left: var(--space-12);
   z-index: 80;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--color-accent);
-  color: var(--color-ink);
-  font-size: var(--text-sm);
-  font-weight: 600;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius);
+  background: var(--accent-fill);
+  color: var(--accent-fill-foreground);
+  font-weight: 700;
   transform: translateY(-160%);
   transition: transform var(--duration-fast) var(--ease-standard);
 }
@@ -74,11 +73,11 @@
   overflow: hidden;
   pointer-events: none;
 }
-.app-shell[data-sidebar="collapsed"] .sidebar { padding-left: var(--space-2); padding-right: var(--space-2); }
+.app-shell[data-sidebar="collapsed"] .sidebar { padding-left: var(--space-16); padding-right: var(--space-16); }
 .app-shell[data-sidebar="collapsed"] .brand { justify-content: center; gap: 0; padding: 0; }
 .app-shell[data-sidebar="collapsed"] .nav__link { justify-content: center; gap: 0; padding: 0; }
 .app-shell[data-sidebar="collapsed"] .sidebar__cta { justify-content: center; gap: 0; padding: 0; }
-.app-shell[data-sidebar="collapsed"] .nav__divider { margin-left: var(--space-2); margin-right: var(--space-2); }
+.app-shell[data-sidebar="collapsed"] .nav__divider { margin-left: var(--space-8); margin-right: var(--space-8); }
 
 /* --- Modo apresentação ---------------------------------------------------- */
 
@@ -100,7 +99,7 @@
    especificidade idêntica (0,2,0), decidida por ordem de origem. O
    `[data-sidebar]` a mais sobe para (0,3,0) e torna o estado independente da
    ordem — sem ele, mover este bloco para cima daquele deixaria a sidebar travada
-   na bitola de 76px para quem a tem recolhida. */
+   na bitola para quem a tem recolhida. */
 .app-shell[data-deck="on"][data-sidebar] { --sidebar-width: 0px; }
 
 /* Uma coluna de largura zero esconde a sidebar mas NÃO a tira da ordem de
@@ -116,8 +115,8 @@
 /* Altura definida na shell, e não `calc(100vh - var(--topbar-height))`: aquele
    token é um `min-height` da topbar, então a conta erraria assim que a barra
    crescesse. Com flex, a página fica exatamente com a altura que sobrar. */
-/* A topbar encolhe junto: em apresentação ela é só a saída e o mapa, e os 68px
-   do resto do app viram altura de slide. */
+/* A topbar encolhe junto: em apresentação ela é só a saída e o mapa, e a altura
+   que ela tem no resto do app vira altura de slide. */
 .app-shell[data-deck="on"] { height: var(--deck-shell-h); --topbar-height: var(--deck-topbar-h); }
 .app-shell[data-deck="on"] .main { min-height: 0; }
 /* Sangra até a borda e passa a ser contêiner flex: é o que dá altura definida ao
@@ -140,122 +139,219 @@
   align-self: start;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-24);
   height: 100vh;
-  padding: var(--space-6) var(--space-4);
-  border-right: 1px solid var(--color-border);
-  background: var(--color-surface);
+  padding: 0 var(--space-12) var(--space-20);
+  border-right: 1px solid var(--line);
+  background: var(--background);
   /* Clipar na horizontal é o que faz os rótulos "entrarem" na bitola. */
   overflow-x: hidden;
   overflow-y: auto;
 }
 
+/* Wordmark tipográfico: a barra em mono e o nome em sans, sem logotipo. A barra
+   (.brand__mark) é o que sobra na bitola recolhida, então ela nunca some. A
+   altura é a da topbar, para a linha de baixo das duas se encontrar. */
 .brand {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: 0 var(--space-2);
-  font-size: var(--text-lg);
+  min-height: var(--topbar-height);
+  padding: 0 var(--space-10);
+  border-radius: var(--radius-nav);
+  color: var(--foreground);
+  font-size: var(--text-16);
   font-weight: 700;
-  letter-spacing: -.03em;
-  color: var(--color-accent);
+  line-height: 1;
+  letter-spacing: -.01em;
 }
 .brand__mark {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
-  background: var(--color-accent);
-  color: var(--color-ink);
-  font-size: var(--text-sm);
-  font-weight: 800;
+  flex: 0 0 auto;
+  color: var(--accent-text);
+  font-family: var(--font-mono);
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 .nav__link {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  min-height: 38px;
-  padding: 0 var(--space-3);
-  border-radius: var(--radius-md);
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-  transition: background var(--duration-fast) var(--ease-standard),
+  gap: var(--space-10);
+  min-height: var(--icon-button);
+  padding: 0 var(--space-10);
+  border-radius: var(--radius-sm);
+  color: var(--fg-muted);
+  font-weight: 500;
+  line-height: 1.375;
+  transition: background-color var(--duration-fast) var(--ease-standard),
               color var(--duration-fast) var(--ease-standard);
 }
 .nav__link .icon { flex: 0 0 auto; }
-.nav__link:hover {
-  background: var(--color-surface-2);
-  color: var(--color-text);
-}
+.nav__link:hover,
 .nav__link[aria-current="page"] {
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  background: var(--hover);
+  color: var(--foreground);
 }
+/* Pasta de skills: o item, um botão de seta que a recolhe, e as categorias
+   recuadas embaixo. Some junto com os rótulos — na bitola recolhida e abaixo de
+   1180px não há onde mostrá-la. */
+.nav__folder { position: relative; }
+.nav__folder .nav__link { padding-right: var(--space-32); }
+.nav__chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--space-6);
+  display: grid;
+  place-items: center;
+  width: var(--space-24);
+  height: var(--space-24);
+  margin-top: calc(-1 * var(--space-12));
+  border-radius: var(--radius-xs);
+  color: var(--fg-label);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.nav__chevron:hover { background: var(--hover); color: var(--foreground); }
+.nav__chevron .icon {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--duration-normal) var(--ease-standard);
+}
+.nav__chevron[aria-expanded="true"] .icon { transform: rotate(90deg); }
+
+/* Abre e fecha suave: a altura é animada por grid-template-rows (0fr → 1fr),
+   que é o jeito de transicionar para "a altura que o conteúdo tiver" — height:
+   auto não anima. Fechada, visibility tira os links do teclado e do leitor de
+   tela; o atraso na volta deixa o fechamento terminar antes de escondê-los. */
+.nav__sub {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows var(--duration-normal) var(--ease-standard),
+              visibility 0s linear var(--duration-normal);
+}
+.nav__sub[data-open="true"] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.nav__sub-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  overflow: hidden;
+}
+.nav__sub[data-open="true"] .nav__sub-inner { padding: var(--space-2) 0 var(--space-6); }
+.app-shell[data-sidebar="collapsed"] .nav__sub,
+.app-shell[data-sidebar="collapsed"] .nav__chevron { display: none; }
+.nav__sublink {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-10);
+  padding: var(--space-6) var(--space-10) var(--space-6) var(--space-32);
+  border-radius: var(--radius-sm);
+  color: var(--fg-muted);
+  font-size: var(--text-13);
+  line-height: 1.375;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.nav__sublink:hover,
+.nav__sublink[aria-current] {
+  background: var(--hover);
+  color: var(--foreground);
+}
+.nav__sublink span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav__subindex {
+  flex: 0 0 auto;
+  min-width: 2ch;
+  color: var(--fg-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  text-align: right;
+}
+
 .nav__divider {
   height: 1px;
-  margin: var(--space-3) var(--space-3);
-  background: var(--color-border);
+  margin: var(--space-10) 0;
+  background: var(--gradient-rule-center);
 }
 
 /* Botão no fim do menu, para a apresentação. Fica FORA de #main-nav de
-   propósito: a navegação continua com exatamente os seis itens que o
-   docs/PRD.md §5 fixa, e este tem aparência de botão, não de item de lista.
-   Mesmo assim carrega data-route, então o router marca aria-current nele como
-   em qualquer alvo de rota. */
+   propósito: a navegação continua com exatamente os itens fixados, e este tem
+   aparência de botão, não de item de lista. Mesmo assim carrega data-route,
+   então o router marca aria-current nele como em qualquer alvo de rota. É o
+   botão "accent" do Slash: contorno no acento, nunca preenchido — o preenchido
+   pertence ao conteúdo da página. */
 .sidebar__cta {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  min-height: 38px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--color-accent-line);
-  border-radius: var(--radius-md);
-  background: var(--color-accent-faint);
-  color: var(--color-text);
-  font-size: var(--text-sm);
-  transition: background var(--duration-fast) var(--ease-standard),
-              border-color var(--duration-fast) var(--ease-standard),
-              color var(--duration-fast) var(--ease-standard);
+  gap: var(--space-10);
+  min-height: var(--icon-button);
+  padding: 0 var(--space-10);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-sm);
+  background: var(--accent-wash);
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: 500;
+  transition: background-color var(--duration-fast) var(--ease-standard);
 }
-.sidebar__cta .icon {
-  flex: 0 0 auto;
-  color: var(--color-accent);
-}
-.sidebar__cta:hover {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
-}
-.sidebar__cta[aria-current="page"] {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
-}
+.sidebar__cta .icon { flex: 0 0 auto; }
+.sidebar__cta:hover,
+.sidebar__cta[aria-current="page"] { background: var(--accent-tint); }
 
 .sidebar__footer {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  padding: 0 var(--space-3);
-  color: var(--color-text-faint);
-  font-size: var(--text-sm);
+  gap: var(--space-4);
+  padding: 0 var(--space-10);
+  color: var(--fg-label);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
 }
-.sidebar__footer span:first-child { color: var(--color-text-muted); }
+.sidebar__footer span:first-child { color: var(--fg-muted); }
 
 /* --- Main ---------------------------------------------------------------- */
 
 .main {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  background: var(--background);
 }
+/* Banner de topo: uma luz de acento que desce do alto de toda página e some
+   antes do conteúdo denso. É um pseudo-elemento só com background — sem
+   transform nem filter, para não virar referencial do .deck__ghosts — e não
+   recebe clique. Na apresentação ele sai: o palco é chapado. */
+.main::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--banner-top-height);
+  background: var(--gradient-banner-top);
+  pointer-events: none;
+}
+.app-shell[data-deck="on"] .main::before { display: none; }
 
+/* O vidro fica na topbar e só nela. .app-shell, .main, .page e .deck não podem
+   ganhar transform, filter nem backdrop-filter: viram referencial do
+   .deck__ghosts (position: fixed) e os fantasmas do morph sairiam do lugar. */
 .topbar {
   position: sticky;
   top: 0;
@@ -263,26 +359,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-16);
   min-height: var(--topbar-height);
   padding: 0 var(--page-pad);
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg-blur);
-  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 /* O botão de recolher só faz sentido onde a sidebar tem duas larguras: abaixo
    de 1180px ela já é bitola de ícones por media query. */
-.topbar__toggle { flex: 0 0 auto; margin-right: var(--space-2); }
+.topbar__toggle { flex: 0 0 auto; margin-left: calc(-1 * var(--space-8)); }
 
 .topbar__lead {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-10);
   min-width: 0;
   flex: 1;
   overflow: hidden;
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  font-size: var(--text-13);
 }
 /* A topbar é uma linha só: um nome comprido trunca aqui. Quebrar linha
    aumentaria a altura da barra e empurrar as ações as tiraria da tela. */
@@ -297,66 +394,112 @@
 .topbar__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-4);
 }
 
 .page {
+  /* Acima da luz do topo. */
+  position: relative;
   flex: 1;
   width: 100%;
   max-width: var(--page-max);
-  padding: var(--space-10) var(--page-pad) var(--space-20);
+  padding: var(--space-48) var(--page-pad) var(--space-80);
 }
 .page:focus { outline: none; }
 
 .page-header {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-8);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-32);
+  max-width: 64ch;
 }
-.page-header__text { max-width: 60ch; }
 .page-title {
-  margin: var(--space-3) 0 var(--space-2);
-  font-size: var(--text-2xl);
-  font-weight: 700;
+  margin: var(--space-10) 0 var(--space-12);
+  font-size: var(--text-34);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-heading);
 }
 .page-copy {
-  color: var(--color-text-muted);
-  font-size: var(--text-md);
-}
-.page-header__art {
-  flex: 0 0 auto;
-  color: var(--color-accent);
-  opacity: .9;
+  max-width: 52ch;
+  color: var(--fg-muted);
+  font-size: var(--text-16);
+  line-height: 1.55;
 }
 
-.section { margin-top: var(--space-12); }
+/* Régua minimalista: um traço curto de acento abre a linha, que segue em tinta
+   e some à direita. Dois backgrounds de 1px no topo do bloco, não borda —
+   borda não aceita degradê sem border-image, que ignora border-radius. */
+.rule,
+.section,
+.detail__block,
+.hero__stats {
+  background-image: linear-gradient(var(--accent-fill), var(--accent-fill)), var(--gradient-rule);
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-size: var(--rule-tick) 1px, 100% 1px;
+}
+
+/* Seções empilhadas e separadas pela régua: é a linha, não o espaço nem a
+   sombra, que diz onde uma acaba. */
+.section {
+  margin-top: var(--space-48);
+  padding-top: var(--space-48);
+}
 .section__head {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
+  gap: var(--space-16);
+  margin-bottom: var(--space-20);
 }
-.section__title {
-  font-size: var(--text-xl);
-  font-weight: 600;
+.section__heading {
+  display: grid;
+  gap: var(--space-8);
+  min-width: 0;
 }
+.section__top {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+}
+/* Índice decorativo: só existe quando os grupos formam sequência de verdade. */
+.section__index {
+  color: var(--fg-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: 500;
+  letter-spacing: -.03em;
+}
+.section__title { font-size: var(--text-20); }
+.section__desc { color: var(--fg-muted); }
+/* Título de bloco de página: maior, em até duas linhas, com a descrição em
+   corpo de leitura. */
+.section--large .section__title {
+  max-width: 22ch;
+  font-size: var(--text-28);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-heading);
+}
+.section--large .section__desc {
+  max-width: 52ch;
+  font-size: var(--text-16);
+  line-height: 1.55;
+}
+.section--large .section__head { margin-bottom: var(--space-32); }
 .section__link {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
+  gap: var(--space-4);
+  color: var(--fg-muted);
+  font-weight: 500;
   transition: color var(--duration-fast) var(--ease-standard);
 }
-.section__link:hover { color: var(--color-accent); }
+.section__link .icon { transition: transform var(--duration-fast) var(--ease-standard); }
+.section__link:hover { color: var(--foreground); }
+.section__link:hover .icon { transform: translateX(2px); }
 
 /* --- Grids --------------------------------------------------------------- */
 
-.grid { display: grid; gap: var(--space-4); }
+.grid { display: grid; gap: var(--space-16); }
 .grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -364,7 +507,7 @@
 .split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: var(--space-6);
+  gap: var(--space-24);
   align-items: start;
 }
 

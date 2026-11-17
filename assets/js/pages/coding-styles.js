@@ -349,8 +349,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         title: 'Coding Styles',
         copy: 'Guias de estilo por stack. Cada um define naming, formatação e as ' +
           'decisões que um agente deve seguir ao escrever código naquela stack, em ' +
-          'duas profundidades: o guia completo e o cartão de referência.',
-        art: SkillHub.icons.ornament('prompt-engineering')
+          'duas profundidades: o guia completo e o cartão de referência.'
       }),
       ui.notice({
         icon: 'info',

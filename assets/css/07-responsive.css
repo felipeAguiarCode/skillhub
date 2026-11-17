@@ -6,7 +6,7 @@
 /* --- Wide: mais respiro ---------------------------------------------------- */
 
 @media (min-width: 1480px) {
-  :root { --page-pad: var(--space-12); }
+  :root { --page-pad: var(--space-48); }
 }
 
 /* 100vh no iOS Safari é o viewport GRANDE: a barra de controle ficaria sob a
@@ -22,7 +22,7 @@
 
 @media (max-width: 1179px) {
   :root {
-    --page-pad: var(--space-6);
+    --page-pad: var(--space-24);
     --sidebar-width: var(--sidebar-rail);
   }
 
@@ -39,18 +39,20 @@
   .sidebar__cta span,
   .sidebar__footer { display: none; }
 
-  .sidebar { align-items: center; padding: var(--space-6) var(--space-2); }
-  .brand { padding: 0; }
+  .sidebar { align-items: center; padding: 0 var(--space-16) var(--space-20); }
+  .brand { justify-content: center; padding: 0; }
   .nav { width: 100%; }
   .nav__link { justify-content: center; padding: 0; }
   .sidebar__cta { justify-content: center; gap: 0; padding: 0; width: 100%; }
 
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
-  }
-  .hero__content { max-width: none; }
+  .hero { grid-template-columns: minmax(0, 1fr); }
   .hero__art { display: none; }
+  .statement { grid-template-columns: minmax(0, 1fr); gap: var(--space-20); }
+  .question { grid-template-columns: minmax(0, 1fr); gap: var(--space-20); }
+  .cells { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nav__sub,
+  .nav__chevron { display: none; }
+  .nav__folder .nav__link { padding-right: 0; }
 
   .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -66,10 +68,6 @@
     max-height: 320px;
   }
 
-  .pitch { grid-template-columns: minmax(0, 1fr); }
-
-  .page-header__art { display: none; }
-
   .builder__stepper { overflow-x: auto; }
   .stepper { min-width: 620px; }
 }
@@ -78,7 +76,7 @@
 
 @media (max-width: 767px) {
   :root {
-    --page-pad: var(--space-4);
+    --page-pad: var(--space-16);
     --sidebar-width: 100%;
   }
 
@@ -89,25 +87,42 @@
     height: auto;
     flex-direction: row;
     align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-3) var(--space-4);
+    gap: var(--space-12);
+    padding: var(--space-8) var(--space-16);
     border-right: 0;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--line);
     overflow-x: auto;
   }
   .nav {
     flex-direction: row;
     width: auto;
-    gap: var(--space-1);
+    gap: var(--space-4);
   }
   .nav__divider { display: none; }
-  /* Na faixa horizontal o botão não encolhe nem estica: o `width: 100%` da
-     bitola do tablet ainda se aplica aqui e o deixaria com a largura da tela. */
-  .sidebar__cta { flex: 0 0 auto; width: auto; }
+  /* Na faixa horizontal cada alvo é um quadrado de 36px: sem largura própria o
+     link encolheria até o ícone de 16px, pequeno demais para o dedo. A marca
+     perde a altura de topbar que tem na coluna. */
+  .brand { min-height: var(--icon-button); }
+  .nav__link { flex: 0 0 auto; width: var(--icon-button); }
+  /* O `width: 100%` da bitola do tablet ainda se aplica aqui e deixaria o
+     botão com a largura da tela. */
+  .sidebar__cta { flex: 0 0 auto; width: var(--icon-button); }
 
-  .page { padding: var(--space-6) var(--page-pad) var(--space-16); }
+  .page { padding: var(--space-32) var(--page-pad) var(--space-64); }
 
-  .page-header { flex-direction: column; gap: var(--space-4); }
+  .page-title,
+  .builder__title { font-size: var(--text-28); }
+  .section { margin-top: var(--space-40); padding-top: var(--space-40); }
+  .section__head { flex-wrap: wrap; }
+  .hero__actions .btn { flex: 1 1 auto; }
+  .cells { grid-template-columns: minmax(0, 1fr); }
+  .section--large .section__title { font-size: var(--text-24); }
+  .banner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-24);
+  }
+  .banner__action .btn { width: 100%; }
 
   .grid--4,
   .grid--3,
@@ -121,29 +136,26 @@
 
   .builder__file-head { grid-template-columns: minmax(0, 1fr); }
 
+  /* Linha de catálogo no celular: a frase quebra em vez de truncar, o tile
+     sobe para o topo e a seta some — a linha inteira já é o alvo do toque. */
   .skill-card {
-    flex-wrap: wrap;
     align-items: flex-start;
-    padding: var(--space-4);
+    gap: var(--space-12);
+    padding: var(--space-12);
   }
+  .skill-card > .trophy { width: var(--icon-tile); height: var(--icon-tile); }
   .skill-card__desc { white-space: normal; }
-  /* O aside tem um botão só desde que a data saiu do card. */
-  .skill-card__aside { justify-items: start; }
+  .skill-card__arrow { display: none; }
 
   .meta-row,
-  .builder__path-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+  .builder__path-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 
   /* Stepper vira indicador textual compacto (DESIGN_SYSTEM §15). */
-  .builder__stepper { padding: var(--space-4); }
+  .builder__stepper { padding: var(--space-16); }
   .stepper { display: none; }
   .stepper__compact { display: block; }
 
-  .toast {
-    left: var(--space-4);
-    right: var(--space-4);
-    bottom: var(--space-4);
-    max-width: none;
-  }
+  .toast { bottom: var(--space-16); }
 
   .builder__actions { flex-direction: column-reverse; align-items: stretch; }
   .builder__actions .btn { width: 100%; }
@@ -166,23 +178,23 @@
 
   /* Numa coluna só: o que era lado a lado empilha, e o fio entre o agente e as
      pastas some — ele liga colunas que deixaram de existir. */
-  .slide { gap: var(--space-4); }
+  .slide { gap: var(--space-16); }
   .slide__split,
   .slide__split--folder,
   .slide__split--craft,
   .slide__split--levels,
   .slide__split--howto,
-  .slide__cover { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+  .slide__cover { grid-template-columns: minmax(0, 1fr); gap: var(--space-20); }
   .levels__item { grid-template-columns: auto minmax(0, 1fr); }
   .levels__cost { grid-column: 2; justify-self: start; }
-  .uses__item { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  .uses__item { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
   /* O split do arquivo é flex, não grid: empilhar aqui é trocar a direção. */
-  .slide__split--code { flex-direction: column; gap: var(--space-5); }
+  .slide__split--code { flex-direction: column; gap: var(--space-20); }
   .slide__split--code > .slide__code { flex: 1 1 auto; }
   .slide__split--code > .slide__notes { flex: 0 0 auto; }
   .wiring { grid-template-columns: minmax(0, 1fr); }
   .wiring__wires { display: none; }
-  .pill-row { grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3); }
+  .pill-row { grid-template-columns: auto minmax(0, 1fr); gap: var(--space-12); }
   .pill-row .pill { grid-column: 1 / -1; }
   .paths__item { grid-template-columns: minmax(0, 1fr); }
   .paths__key,

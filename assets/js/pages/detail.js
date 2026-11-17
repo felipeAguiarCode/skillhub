@@ -88,6 +88,12 @@ window.SkillHub.pages = window.SkillHub.pages || {};
 
     return el('div', { class: 'u-stack' }, [
       el('p', { class: 'detail__prose' }, spec.summary),
+      /* AGENTS.md é carregado sozinho: não há o que digitar, então não há bloco. */
+      spec.autoLoaded ? null : ui.command({
+        command: SkillHub.formats.slug(item.format, item.id),
+        copyLabel: 'Copiar acionamento',
+        copiedMessage: 'Acionamento copiado.'
+      }),
       ui.metaList(rows),
       docHref
         ? el('a', {
@@ -132,7 +138,9 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         el('p', { class: 'u-faint u-xs' }, 'Pré-aprovadas: rodam sem novo pedido de permissão no turno que invoca a Skill.'),
         el('div', { class: 'badge-row' }, allowed.map(function (tool) {
           var isShell = /bash|powershell|pwsh|sh\b/i.test(tool);
-          return ui.badge(tool, isShell ? 'elevated' : 'accent', isShell ? 'terminal' : null);
+          /* Ferramenta comum é neutra: cor aqui é reservada ao que é sensível
+             (shell), para o aviso não se diluir. */
+          return ui.badge(tool, isShell ? 'elevated' : null, isShell ? 'terminal' : null);
         }))
       ]) : null,
       disallowed.length ? el('div', { class: 'u-stack--sm' }, [
@@ -214,7 +222,9 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     var favorite = ui.button({
       label: SkillHub.catalog.isFavorite(item.id) ? 'Nos favoritos' : 'Favoritar',
       variant: 'secondary',
-      icon: 'bookmark',
+      icon: 'star',
+      className: 'btn--favorite',
+      pressed: SkillHub.catalog.isFavorite(item.id),
       block: true,
       onClick: function () { toggleFavorite(item); }
     });
@@ -273,7 +283,11 @@ window.SkillHub.pages = window.SkillHub.pages || {};
     if (refs.favorite) {
       var label = refs.favorite.querySelector('span');
       if (label) label.textContent = added ? 'Nos favoritos' : 'Favoritar';
+      /* É o aria-pressed que preenche a estrela, no CSS. */
+      refs.favorite.setAttribute('aria-pressed', String(added));
     }
+    /* A estrela da topbar é outro nó: sem isto ela ficaria no estado antigo. */
+    SkillHub.router.refreshTopbar();
     SkillHub.toast.show(added ? 'Adicionado aos favoritos.' : 'Removido dos favoritos.', 'success');
   }
 
@@ -345,31 +359,26 @@ window.SkillHub.pages = window.SkillHub.pages || {};
   function helpBlock(item) {
     var spec = format(item);
 
-    return el('section', { class: 'detail__help' }, ui.card({
-      body: el('div', { class: 'detail__help-row' }, [
-        el('div', { class: 'card__icon' }, SkillHub.icons.get('info', 'icon--lg')),
-        el('div', { class: 'detail__help-text' }, [
-          el('p', { class: 'card__title' }, 'Primeira vez instalando?'),
-          el('p', { class: 'card__copy' },
-            'O passo a passo de instalar e usar em ' + spec.toolLabel + ', com os caminhos e o ' +
-            'acionamento desta entrada já preenchidos.')
-        ]),
-        ui.button({
-          label: 'Como instalar e usar',
-          variant: 'primary',
-          icon: 'book',
-          onClick: function () { openInstallHelp(item); }
-        })
-      ])
+    return el('section', { class: 'detail__help' }, ui.banner({
+      eyebrow: 'Instalação',
+      title: 'Primeira vez instalando?',
+      copy: 'O passo a passo de instalar e usar em ' + spec.toolLabel + ', com os caminhos e o ' +
+        'acionamento desta entrada já preenchidos.',
+      action: ui.button({
+        label: 'Como instalar e usar',
+        variant: 'secondary',
+        icon: 'book',
+        onClick: function () { openInstallHelp(item); }
+      })
     }));
   }
 
   /* --- Página -------------------------------------------------------------- */
 
   function backRoute(item) {
-    var found = 'claude-skills';
+    var found = 'skills';
     SkillHub.catalog.collections().forEach(function (entry) {
-      if (entry.type === item.type) found = entry.route;
+      if ([].concat(entry.type).indexOf(item.type) !== -1) found = entry.route;
     });
     return found;
   }
@@ -389,7 +398,7 @@ window.SkillHub.pages = window.SkillHub.pages || {};
         icon: 'alert',
         title: 'Item inexistente',
         copy: 'O catálogo é estático: se o link veio de uma versão anterior, o item pode ter sido renomeado.',
-        action: ui.button({ label: 'Explorar Claude Skills', variant: 'primary', href: '#/claude-skills' })
+        action: ui.button({ label: 'Explorar as Skills', variant: 'primary', href: '#/skills' })
       })
     ]);
   }
@@ -412,11 +421,11 @@ window.SkillHub.pages = window.SkillHub.pages || {};
       ])),
       ui.eyebrow(TYPE_LABELS[item.type] || 'Skill'),
       el('h1', { class: 'detail__title' }, [
-        el('span', { class: 'card__icon' }, SkillHub.icons.get(item.icon, 'icon--lg')),
+        SkillHub.icons.trophy(item.icon),
         el('span', null, item.name)
       ]),
       el('p', { class: 'page-copy' }, item.description),
-      el('div', { class: 'badge-row', style: { 'margin-top': 'var(--space-4)' } }, [
+      el('div', { class: 'badge-row detail__badges' }, [
         ui.badge(spec.short, 'info', spec.icon),
         ui.badge(SkillHub.catalog.categoryLabel(item.category)),
         ui.riskBadge(item.risk)
@@ -477,9 +486,10 @@ window.SkillHub.pages = window.SkillHub.pages || {};
       lead: el('span', null, item ? item.name : 'Item'),
       actions: [
         ui.iconButton({
-          icon: 'bookmark',
+          icon: 'star',
+          className: 'btn--favorite',
           ariaLabel: item && SkillHub.catalog.isFavorite(item.id) ? 'Remover dos favoritos' : 'Favoritar',
-          active: Boolean(item && SkillHub.catalog.isFavorite(item.id)),
+          pressed: Boolean(item && SkillHub.catalog.isFavorite(item.id)),
           onClick: function () { if (item) toggleFavorite(item); }
         }),
         ui.button({

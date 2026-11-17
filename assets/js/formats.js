@@ -259,6 +259,18 @@ window.SkillHub = window.SkillHub || {};
   }
 
   /**
+   * Como o item aparece numa linha de catálogo: o que se digita para
+   * acioná-lo. Quando o formato não se aciona (AGENTS.md é carregado sozinho),
+   * o que identifica o item é o arquivo. Nada aqui é inventado: sai de
+   * `invocation` e de `entryFile`.
+   */
+  function slug(id, name) {
+    if (get(id).autoLoaded) return entryFileName(id, name);
+    /* O portátil declara dois acionamentos; a linha mostra o primeiro. */
+    return invocationLabel(id, name).split(' ')[0];
+  }
+
+  /**
    * O procedimento de instalar e usar, em ordem, para o formato.
    *
    * Dado, não DOM: devolve [{ title, copy, code, codeLabel }], com `code` e o
@@ -419,6 +431,7 @@ window.SkillHub = window.SkillHub || {};
     installSteps: installSteps,
     installStepsText: installStepsText,
     invocationLabel: invocationLabel,
+    slug: slug,
     CLAUDE_KEYS: CLAUDE_KEYS,
     PORTABLE_SKILL_KEYS: PORTABLE_SKILL_KEYS,
     CODEX_PROMPT_KEYS: CODEX_PROMPT_KEYS,
